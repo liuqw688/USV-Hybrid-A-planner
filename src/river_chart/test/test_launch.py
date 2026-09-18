@@ -1,6 +1,6 @@
 """@brief ROS 2 启动文件测试。
 
-@author susheng
+
 @date 2026-08-28
 """
 
