@@ -1,7 +1,6 @@
 /// @file test_renderer.cpp
 /// @brief Marker / 规划 JSON 构造测试（对应原 Python test_node.py）。
-///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #include <gtest/gtest.h>

@@ -1,7 +1,7 @@
 /// @file node.cpp
 /// @brief S-57 海图发布节点实现。
 ///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #include "river_chart/node.hpp"

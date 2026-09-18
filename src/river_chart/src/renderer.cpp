@@ -1,7 +1,7 @@
 /// @file renderer.cpp
 /// @brief 海图渲染实现。
 ///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #include "river_chart/renderer.hpp"

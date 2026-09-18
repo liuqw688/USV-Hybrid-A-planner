@@ -1,7 +1,6 @@
 /// @file node.hpp
 /// @brief S-57 海图发布节点（C++ 版）。
-///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #ifndef RIVER_CHART__NODE_HPP_

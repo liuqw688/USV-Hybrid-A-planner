@@ -2,8 +2,7 @@
 /// @brief 把解码后的海图渲染为 ROS 话题消息（C++ 版，行为等价于原 Python node.py）。
 ///
 /// 渲染逻辑与 ROS 节点解耦，全部为纯函数式调用，便于单元测试。
-///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #ifndef RIVER_CHART__RENDERER_HPP_

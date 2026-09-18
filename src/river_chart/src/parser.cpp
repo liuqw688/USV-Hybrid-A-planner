@@ -1,7 +1,7 @@
 /// @file parser.cpp
 /// @brief S-57 XML 海图解析实现。
 ///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #include "river_chart/parser.hpp"
