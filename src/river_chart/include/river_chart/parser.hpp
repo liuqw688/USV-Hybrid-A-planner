@@ -3,8 +3,7 @@
 ///
 /// 导出文件里少量空属性被写成 ``<></>``，标准 XML 解析器会拒绝这种拼写，
 /// 因此读取后先做一次规范化，再交给 tinyxml2 解析，不依赖 GDAL/Shapely。
-///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #ifndef RIVER_CHART__PARSER_HPP_
