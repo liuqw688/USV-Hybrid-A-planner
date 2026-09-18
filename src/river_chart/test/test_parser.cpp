@@ -1,7 +1,6 @@
 /// @file test_parser.cpp
 /// @brief 海图 XML、WKT 和坐标转换测试（对应原 Python test_parser.py）。
-///
-/// @author susheng
+
 /// @date 2026-08-28
 
 #include <gtest/gtest.h>
