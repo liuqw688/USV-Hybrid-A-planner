@@ -1,6 +1,6 @@
 """@brief 启动海图发布节点和 RViz2。
 
-@author susheng
+
 @date 2026-08-28
 """
 
