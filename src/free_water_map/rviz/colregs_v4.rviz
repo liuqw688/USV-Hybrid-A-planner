@@ -1,0 +1,110 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded: ["/COLREGs risk layers", "/DWA candidates"]
+      Splitter Ratio: 0.55
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Tool Properties
+    Name: Tool Properties
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Background Color: 20; 28; 38
+    Fixed Frame: odom
+    Frame Rate: 30
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Water grid
+      Enabled: true
+      Plane Cell Count: 220
+      Cell Size: 1
+      Color: 80; 100; 120
+      Alpha: 0.35
+    - Class: rviz_default_plugins/Map
+      Name: Navigable costmap
+      Enabled: true
+      Topic:
+        Value: /local_costmap
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+      Alpha: 0.35
+      Color Scheme: map
+    - Class: rviz_default_plugins/Path
+      Name: Hybrid A* global path
+      Enabled: true
+      Topic:
+        Value: /hybrid_a_star_trajectory
+        Reliability Policy: Reliable
+      Line Style: Lines
+      Line Width: 0.18
+      Color: 30; 255; 80
+    - Class: rviz_default_plugins/MarkerArray
+      Name: COLREGs risk layers
+      Enabled: true
+      Marker Topic:
+        Value: /colregs/risk_markers
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Marker
+      Name: Planned avoidance envelope
+      Enabled: true
+      Marker Topic:
+        Value: /colregs/avoidance_envelope
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Marker
+      Name: DWA selected trajectory
+      Enabled: true
+      Marker Topic:
+        Value: /optimal_trajectory
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/MarkerArray
+      Name: DWA candidates
+      Enabled: true
+      Marker Topic:
+        Value: /candidate_trajectories
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Marker
+      Name: Own ship
+      Enabled: true
+      Marker Topic:
+        Value: /sim_boat_marker
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Target ship
+      Enabled: true
+      Marker Topic:
+        Value: /target_boat/markers
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+      Frame Timeout: 15
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+      Topic:
+        Value: /clicked_point
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Top view
+      Scale: 1.2
+      Angle: 0
+      X: 10
+      Y: 0
+Window Geometry:
+  Width: 1500
+  Height: 900
+  X: 60
+  Y: 40

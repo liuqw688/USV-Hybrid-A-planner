@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dwa_deep</name>
+  <version>0.0.1</version>
+  <description>
+    DWA local planner for unmanned surface vessel with simulation.
+    Provides dynamic window approach obstacle avoidance, interactive goal via /goal_pose,
+    and waypoint tracking via /waypoints.
+  </description>
+  <maintainer email="user@todo.todo">user</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>hybrid_a_star_planner</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>angles</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

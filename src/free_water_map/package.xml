@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>free_water_map</name>
+  <version>1.0.0</version>
+  <description>Bounded free-water costmap and complete COLREGs demonstration launch.</description>
+  <maintainer email="user@example.com">user</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>hybrid_a_star_planner</exec_depend>
+  <exec_depend>dwa_deep</exec_depend>
+  <exec_depend>virtual_boat_simulator</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

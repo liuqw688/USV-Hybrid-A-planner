@@ -1,0 +1,113 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Chart Markers1
+      Splitter Ratio: 0.5
+    Tree Height: 700
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 1
+      Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Chart Markers
+      Queue Size: 10
+      Namespaces:
+        s57/ACHARE: true
+        s57/BERTHS: true
+        s57/BOYSPP: true
+        s57/BRIDGE: true
+        s57/BUAARE: true
+        s57/BUISGL: true
+        s57/CBLOHD: true
+        s57/CRANES: true
+        s57/CURENT: true
+        s57/DAMCON: true
+        s57/DEPCNT: true
+        s57/DEPARE: true
+        s57/DISMAR: true
+        s57/FLODOC: true
+        s57/Generic: true
+        s57/LIGHT: true
+        s57/LIGHTS: true
+        s57/LNDARE: true
+        s57/LNDRGN: true
+        s57/LNDMRK: true
+        s57/M_NPUB: true
+        s57/M_NSYS: true
+        s57/M_QUAL: true
+        s57/PONTON: true
+        s57/PRCARE: true
+        s57/ROADWY: true
+        s57/RESARE: true
+        s57/SLCONS: true
+        s57/SLOTOP: true
+        s57/TOPMAR: true
+        s57/TSELNE: true
+        s57/TSSLPT: true
+        s57/TSSBND: true
+        s57/VEGATN: true
+        s57/brgare: true
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /chart_markers
+    - Alpha: 0.7
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: false
+      Name: Optional Geometry Grid
+      Topic: /chart_occupancy
+    - Alpha: 0.28
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: true
+      Enabled: true
+      Name: Planning Costmap
+      Topic: /chart_costmap
+    - Alpha: 0.65
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Static Obstacles
+      Topic: /chart_static_obstacles
+  Enabled: true
+  Global Options:
+    Background Color: 48; 50; 52
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/SetInitialPose
+    - Class: rviz_default_plugins/SetGoal
+    - Class: rviz_default_plugins/PublishPoint
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Angle: 0
+      Enable Stereo Rendering: false
+      Invert Z Axis: false
+      Name: TopDownOrtho
+      Near Clip Distance: 0.01
+      Scale: 20000
+      Target Frame: <Fixed Frame>
+      Value: true
+      X: 0
+      Y: 0
+      Z: 0
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1400
+  X: 80
+  Y: 40

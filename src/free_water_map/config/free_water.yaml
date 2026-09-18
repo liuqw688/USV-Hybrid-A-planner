@@ -1,0 +1,18 @@
+free_water_costmap:
+  ros__parameters:
+    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
+    topic: /local_costmap
+    # [作用与调节] 坐标系/TF frame名称。修改须与消息头、TF及接收节点一致；不是数值大小参数，缺失或失配会拒绝输入。
+    frame_id: odom
+    # [作用与调节] 开阔水域图每格边长(m)。增大：范围在格子数不变时变大、细节变粗；减小：范围变小、更细；与width/height共同调。
+    resolution: 1.0
+    # Wide enough that a Rule 17 emergency turn cannot be trapped by the
+    # artificial boundary while the target is still passing.
+    # [作用与调节] 开阔图东向格子数。增大：可规划范围和内存增加；减小：边界更近；实际宽度=格数×resolution，不是船体宽。
+    width: 290
+    # [作用与调节] 开阔水域图北向格子数。增大：可规划范围/内存增加；减小：范围缩小，边界外拒绝。
+    height: 180
+    # [作用与调节] 开阔图西南角东坐标(m)。增大向东移动整图、减小向西；不要移动船位却遗漏地图范围。
+    origin_x: -120.0
+    # [作用与调节] 开阔图西南角北坐标(m)。增大向北移动整图、减小向南；与起点/目标范围一致。
+    origin_y: -90.0
