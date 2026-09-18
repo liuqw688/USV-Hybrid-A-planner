@@ -1,0 +1,12 @@
+int32 type
+int32 risk
+bool locked
+bool takeover
+bool recovering
+float64 reference
+float64 speed
+float64 x
+float64 y
+float64 vx
+float64 vy
+float64 radius

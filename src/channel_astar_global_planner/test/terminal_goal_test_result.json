@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-17",
+  "left_goal": {
+    "passed": true,
+    "goal_xy": [-337.7923574241765, -101.30109988336864],
+    "global_publications": 1,
+    "waypoint_count": 3,
+    "local_publications_during_25s": 25,
+    "moved_m": 84.52
+  },
+  "safe_outside_goal": {
+    "passed": true,
+    "goal_xy": [-315.7923574241765, -101.30109988336864],
+    "global_publications": 1,
+    "waypoint_count": 3,
+    "local_publications_during_25s": 25,
+    "moved_m": 82.31
+  },
+  "scope": "短时真实河图接口联动，非最终目标完整到达或实船安全认证"
+}

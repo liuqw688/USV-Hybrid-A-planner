@@ -1,0 +1,159 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Cell Size: 4
+      Plane Cell Count: 250
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Chart Markers
+      Enabled: true
+      Queue Size: 10
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /chart_markers
+    - Class: rviz_default_plugins/Map
+      Name: Local Safety Costmap
+      Enabled: true
+      Alpha: 0.30
+      Color Scheme: costmap
+      Draw Behind: true
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /local_costmap
+    - Class: rviz_default_plugins/Map
+      Name: Dynamic Lane Policy
+      Enabled: true
+      Alpha: 0.22
+      Color Scheme: costmap
+      Draw Behind: false
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /channel/lane_costmap
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Lane Roles And Directions
+      Enabled: true
+      Queue Size: 10
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /channel/navigation_markers
+    - Class: rviz_default_plugins/Path
+      Name: Channel A Star Global Route
+      Enabled: true
+      Buffer Length: 1
+      Line Style: Lines
+      Line Width: 0.7
+      Color: 255; 255; 0
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        Value: /astar_channel_waypoints
+    - Class: rviz_default_plugins/Path
+      Name: Hybrid A Star Path
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.7
+      Color: 0; 255; 80
+      Topic:
+        Value: /hybrid_a_star_trajectory
+    - Class: rviz_default_plugins/MarkerArray
+      Name: DWA Candidates
+      Enabled: false
+      Topic:
+        Value: /candidate_trajectories
+    - Class: rviz_default_plugins/Marker
+      Name: DWA Optimal Trajectory
+      Enabled: true
+      Topic:
+        Value: /optimal_trajectory
+    - Class: rviz_default_plugins/Marker
+      Name: DWA Lookahead
+      Enabled: true
+      Topic:
+        Value: /dwa_lookahead_target
+    - Class: rviz_default_plugins/Marker
+      Name: Own Ship
+      Enabled: true
+      Topic:
+        Value: /sim_boat_marker
+    - Class: rviz_default_plugins/MarkerArray
+      Name: COLREG Risk Layers
+      Enabled: true
+      Topic:
+        Value: /colregs/risk_markers
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Virtual Ship
+      Enabled: true
+      Topic:
+        Value: /target_boat/markers
+    - Class: rviz_default_plugins/Marker
+      Name: Avoidance Envelope
+      Enabled: true
+      Topic:
+        Value: /colregs/avoidance_envelope
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        base_link:
+          Value: true
+        map:
+          Value: true
+        odom:
+          Value: true
+      Marker Scale: 20
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        map:
+          odom:
+            base_link:
+              {}
+      Update Interval: 0
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 42; 45; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: TopDownOrtho
+      Scale: 900
+      Target Frame: <Fixed Frame>
+      X: -270
+      Y: -270
+      Z: 0
+Window Geometry:
+  Height: 900
+  Width: 1500

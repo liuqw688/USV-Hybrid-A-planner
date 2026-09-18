@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-17",
+  "passed": true,
+  "start_xy": [-270.0, -270.0],
+  "goal_xy": [-324.0, -101.0],
+  "virtual_boat": false,
+  "goal_frame": "map",
+  "ordinary_switch_distance_m": 8.0,
+  "global_planning_timer": false,
+  "replan_on_lane_role_change": true,
+  "global_publications": 1,
+  "waypoint_count": 3,
+  "local_publications_during_25s": 24,
+  "moved_m": 75.90,
+  "active_goal_publications": 1,
+  "late_subscription": true,
+  "invalid_goal_stops": true,
+  "scope": "一次全局任务及局部连续规划联动，不是完整任务最终到达或实船避碰认证"
+}

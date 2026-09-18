@@ -1,0 +1,30 @@
+virtual_boat_node:
+  ros__parameters:
+    # [作用与调节] 虚拟船身份字符串，用于状态及文字显示；修改不影响航迹或规则。
+    vessel_name: "Target-Vessel-01"
+    # [作用与调节] 虚拟船类型诊断字符串，当前不驱动差异化动力学；修改不改变避让规则。
+    vessel_type: "VIRTUAL_SIM"
+    # [作用与调节] 虚拟船显示长度(m)。增大/减小只改变RViz模型；Hybrid半径由target_ship_radii单独设置。
+    length: 1.0        # RViz显示船长1m，显示尺寸不是规划碰撞半径。
+    # [作用与调节] 虚拟船显示宽度(m)。增大/减小只改变RViz模型；开阔图width则是格子数，见本包说明。
+    width: 1.5         # RViz显示船宽1.5m；规划半径由Hybrid YAML设为2m。
+    # [作用与调节] 启动实际/目标线速度(m/s)。增大：初始运动更快；减小：更慢；本船受限速和惯性、虚拟船直接匀速积分。
+    initial_speed: 2.0 # 匀速虚拟船航速2m/s。
+    # [作用与调节] 虚拟船积分/发布频率(Hz)。增大：数据更密/计算增加；减小：更粗，过低会触发目标2s失联保护。
+    update_rate: 20.0  # 仿真频率 20Hz
+    # [作用与调节] 虚拟船初始东向坐标(m)，增大向东、减小向西；相遇类型随布置变化，launch可覆盖YAML。
+    initial_x: 25.0
+    # [作用与调节] 虚拟船初始北向坐标(m)，增大向北、减小向南；与本船统一odom数值坐标。
+    initial_y: 0.0
+    # [作用与调节] 虚拟船初始yaw(rad)，增大逆时针、减小顺时针；改变运动方向与会遇类型。
+    initial_yaw: 3.141592653589793
+    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
+    command_topic: /target_boat/command
+    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
+    odom_topic: /target_boat/odom
+    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
+    status_topic: /target_boat/status
+    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
+    markers_topic: /target_boat/markers
+    # [作用与调节] 坐标系/TF frame名称。修改须与消息头、TF及接收节点一致；不是数值大小参数，缺失或失配会拒绝输入。
+    base_frame: target_boat/base_link
