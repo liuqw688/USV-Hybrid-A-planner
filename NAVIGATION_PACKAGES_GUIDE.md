@@ -5,7 +5,7 @@
 当前仍为仿真调试版，追越终点减速场景未稳定通过，不得将自动测试通过
 解读为全部避碰合格；具体失败与通过记录见根目录 `TEST_RESULTS_4MPS.md`。
 
-本船最高4m/s、半径1.5m；目标船速度2m/s、保守避碰半径2m、显示船长1m宽1.5m；buffer=4m。基础动态硬安全距离7.5m，8m以内发布停车命令，一般软避让范围9m。圆圈和CPA详细解释见 [COLREGS_GUIDE.md](COLREGS_GUIDE.md)。平滑调参见 [航道管理README](src/channel_navigation_manager/README.md)。
+本船最高4m/s、目标船2m/s；当前小型无人船等效规划半径均0.5m、buffer=1m，普通硬净空和最终停车线2m，追越3m，Hybrid软规划域8m。AIS式80m/40s监视不变。圆圈和CPA见 [COLREGS_GUIDE.md](COLREGS_GUIDE.md)。
 
 实际河道链路：
 
@@ -19,7 +19,7 @@ river_chart → /chart_costmap → local_costmap_generator → /local_costmap
                                                          Hybrid A*
                                       /hybrid_a_star_trajectory + /colregs/policies
                                                          ↓
-                        目标船odom → DWA（8m独立停车/短时动态避碰）
+                        目标船odom → DWA（2m最终独立停车/短时动态避碰）
                                                          ↓ /cmd_vel
                                                   boat_simulator
                                                          ↓ /odom、TF
@@ -65,7 +65,7 @@ ros2 launch channel_navigation_manager river_navigation.launch.py use_rviz:=fals
 ros2 launch channel_navigation_manager river_navigation.launch.py use_virtual_boat:=true target_x:=-310.0 target_y:=-210.0 target_yaw:=-0.99483767
 ```
 
-这是故意模拟靠近本船航迹的目标，初始位置不自动按航道约束目标船运动。目标船到地图外也不会自动回航，测试前要自行选择合适位置。RViz的Set Initial Pose目前用于虚拟船重设位置，不是本船重定位工具；在有本船惯性的情况下不要把目标直接放入8m停车圈并认为能保证瞬时停止。
+这是故意模拟靠近本船航迹的目标，初始位置不自动按航道约束目标船运动。目标船到地图外也不会自动回航。RViz的Set Initial Pose用于虚拟船重设位置；有惯性时不要把目标直接放入2m停车圈并认为能瞬时停止。
 
 ## 4. 分开调试时怎么启动
 
@@ -107,9 +107,9 @@ ros2 launch free_water_map colregs_demo.launch.py scenario:=head_on
 ## 6. 排查常见问题
 
 - 没有路径：检查是否设置目标、是否收到一次性静态图（Transient Local）、目标是否在可航水域，检查/channel/status和Hybrid日志。
-- 有Path却不走：检查策略valid、/cmd_vel、里程计和路径新鲜度；8m停车或目标数据过期会停车。
+- 有Path却不走：检查策略valid、/cmd_vel、里程计和路径新鲜度；2m停车或目标数据过期会停车。
 - 看到两个本船或船位乱跳：检查是否重复运行boat_simulator/dwa_sim/一键入口；TF与Marker同时显示也会有坐标轴叠加，但真正双TF必须停止重复发布者。
-- 进入红圈却没停：红色20m是风险门槛，不是8m停车；进入圈仍须DCPA/TCPA条件。
+- 进入红圈却没停：红色8m是紧急风险门槛，不是2m停车；进入圈仍须DCPA/TCPA组合条件。
 - 航道内有岸边膨胀：只忽略岸边源；独立航道障碍物和陆地核心依然生效。
 - 航速不到4m/s：急转弯、避障及终点减速是允许的；没有有效路径也会停车，不能绕过硬安全筛选。
 
