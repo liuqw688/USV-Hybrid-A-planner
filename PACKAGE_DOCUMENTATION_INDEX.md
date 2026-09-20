@@ -67,6 +67,8 @@ ros2 launch channel_navigation_manager river_navigation.launch.py
 - local_costmap_generator中的unknown_is_obstacle目前未被活动算法使用；历史831备份也未参与编译。
 - Hybrid部分兼容角度参数并不控制主策略全部分类，实际用处在参数文档标注。
 - 路径显示保留和允许船继续跟踪是两件事：DWA有独立时效检查。
+- Hybrid每周期仍重新搜索；跨周期近场连续性采用距离衰减的软约束。近处强、远处弱，动态碰撞和COLREG硬约束可立即覆盖；会遇安全通过后近场旧路径约束立即释放。
+- 当前小型无人船测试使用2m普通硬净空/最终停车线、3m追越硬净空、8m软规划域；AIS式80m/40s监视保持不变。4m/s下2m不是足够的物理制动起点。
 - 平滑复核不等于水动力学/曲率上限或实船法规认证；仿真没有完整物理碰撞阻挡。
 - 文档中的当前值来自源码YAML；launch追加值优先，river_chart直接由launch设参数，没有已加载YAML。
 
@@ -80,4 +82,3 @@ colcon test-result --verbose
 ```
 
 这轮注释工作应通过“去除注释后源码一致、Python语法、YAML解析、全包编译和已有自动测试”验证。已有闭环报告保留其具体场景/持续时间，不把短时联动测试解释为任意会遇全部通过。当前验证结果见 DOCUMENTATION_VERIFICATION.md。
-

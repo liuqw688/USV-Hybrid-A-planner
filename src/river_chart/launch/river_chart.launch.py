@@ -1,6 +1,6 @@
 """@brief 启动海图发布节点和 RViz2。
 
-
+@author susheng
 @date 2026-08-28
 """
 
@@ -12,6 +12,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
+# [功能与联系] 组装节点、参数与条件启动动作；launch只负责接线，不直接执行规划或控制。
 def generate_launch_description() -> LaunchDescription:
     # 👇 使用安装后的资源路径，而非源码绝对路径
     default_input_path = PathJoinSubstitution([
@@ -100,7 +101,7 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
         arguments=[
             "-d",
-            # 👇 与 CMake 安装目标 share/river_chart/rviz/ 一致
+            # 👇 去掉 "src"，与 setup.py 安装目标 share/river_chart/rviz/ 一致
             PathJoinSubstitution([
                 FindPackageShare("river_chart"),
                 "rviz",

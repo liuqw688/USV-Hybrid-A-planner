@@ -85,6 +85,9 @@ struct Policy {
               const VesselState &target) {
     metric=cpa(x,y,velocity*std::cos(heading),velocity*std::sin(heading),target);
     auto level_now=risk(metric,thresholds);
+    // 已完成一次会遇后若同一目标重新形成未来碰撞风险，立即退出恢复态；
+    // 事件规划器据此重新检查并在剩余路径受威胁时再次规划。
+    if(recovering && level_now!=Risk::CLEAR && metric.tcpa>=0) recovering=false;
     if(!locked && level_now!=Risk::CLEAR) {
       auto a=assessEncounter(x,y,heading,velocity,target,1e9,1e9,
                             20*deg,20*deg,112.5*deg,0.05);
@@ -94,7 +97,7 @@ struct Policy {
       target_heading=std::atan2(target.vy,target.vx);
       target_speed=std::hypot(target.vx,target.vy);
       baseline_dcpa=metric.dcpa;
-      takeover=false; ineffective_count=release_count=0; level=level_now;
+      takeover=false;recovering=false;ineffective_count=release_count=0;level=level_now;
     }
     if(!locked) return;
     const auto counterfactual=cpa(x,y,speed*std::cos(reference),speed*std::sin(reference),target);

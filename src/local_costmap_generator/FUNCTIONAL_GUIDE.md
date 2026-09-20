@@ -68,7 +68,7 @@ ros2 launch local_costmap_generator local_costmap.launch.py。
 半径/膨胀增大使高代价带变宽，减小可减少航道被岸边膨胀覆盖但也降低裕度。
 decay_factor增大使同距离值降得更快，不缩小总传播半径。
 阈值occupied降低使更多高代价源变成障碍源；high_cost降低使第二传播种子变多。
-阈值与船实际半径不是同一参数；当前robot_radius=3m，而规划半径为1.5m。
+阈值与动态船等效半径不是同一参数；当前岸线robot_radius=3m，而动态船等效规划半径为0.5m。
 后续独立感知障碍应发布到/channel/obstacle_costmap并保留来源，不把它当岸边膨胀清零。
 
 
@@ -111,4 +111,3 @@ decay_factor增大使同距离值降得更快，不缩小总传播半径。
 | 函数 | 主要职责、调用联系与作用 |
 |---|---|
 | `generate_launch_description` | 组装节点、参数与条件启动动作；launch只负责接线，不直接执行规划或控制。 |
-

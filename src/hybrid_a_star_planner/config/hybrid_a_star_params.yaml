@@ -1,7 +1,30 @@
 hybrid_a_star_node:
   ros__parameters:
-    # [作用与调节] Hybrid持续局部搜索频率(Hz)。增大：动态响应快但搜索算力增加；减小：响应迟、须防DWA路径3s过期；不同于全局A*事件触发。
+    # 安全监测频率，不再表示每秒都执行Hybrid A*搜索。缓存路径会按此频率
+    # 刷新时间戳；新目标或剩余路径重新出现风险时才真正搜索。
+    # [作用与调节] 事件安全检查频率(Hz)。增大：更快发现新风险、轻量检查更频繁；减小：响应变慢。
     planner_frequency: 1.0
+    # true为事件规划：正常只规划一次；false恢复每个timer周期完整重规划。
+    # [作用与调节] 开启后显著降低搜索量并固定DWA跟踪轨迹；安全监测和CPA更新仍持续运行。
+    event_driven.enabled: true
+    # 同一次会遇已成功规划后，只有剩余轨迹重新进入2m预测硬域才再次规划；
+    # 首次COLREG风险仍由远距离DCPA/TCPA状态提前触发，不会等到2m。
+    # [作用与调节] 不建议小于普通硬净空；增大容易让同一次会遇重复规划。
+    event_driven.collision_trigger_distance: 2.0
+    # 本船偏离缓存轨迹超过该距离时重新规划，处理流扰动或跟踪误差。
+    # [作用与调节] 增大：更愿意继续旧轨迹；减小：偏航后更快重规划。
+    event_driven.cross_track_limit: 8.0
+    # 目标船相对上次成功规划的航向变化超过5度，视为新机动并重新规划。
+    event_driven.target_course_change: 0.0872664626
+    # 目标船相对上次成功规划的速度变化超过0.3m/s，视为新机动。
+    event_driven.target_speed_change: 0.3
+    # 每次需要重规划时最多生成几个候选方案(1~3)，选择不绕圈且代价/长度更好的方案。
+    event_driven.search_attempts: 3
+    # 终点附近绕圈/异常长路线质量门槛；超过则不发布路径，等待下一次安全重算。
+    event_driven.max_path_length_ratio: 3.0
+    event_driven.max_path_extra_distance: 40.0
+    event_driven.goal_loop_radius: 3.0
+    event_driven.goal_loop_min_arc: 8.0
     # 单次重规划失败时最多保留最近有效路径3秒，避免RViz闪烁；持续失败后
     # 当前实现不按此参数清空显示；DWA路径过期停车。新目标会立即清空旧路径一次。
     # [作用与调节] 最近路径有效性标志保留时间(s)。增大：更晚标为无效；减小：更早失效；当前不直接清除RViz路径，停车由DWA路径过期负责。
@@ -46,10 +69,19 @@ hybrid_a_star_node:
     # 该项只让无新风险时的相邻规划保持连续，安全需要时允许主动偏离。
     # [作用与调节] 偏离上次安全路径的软代价倍率。增大：跨周期路线更稳定但可能保留绕路；减小：更追求当前短路但更易跳线；不锁死旧路线。
     stability.reference_path_weight: 0.5
+    # 本船近前方跨周期稳定的额外软权重。采用偏离距离平方项；碰撞和COLREG硬检查始终优先。
+    # [作用与调节] 增大：更不容易在旧路径两侧跳变，但必要绕障初期可能更保守；减小：更灵活但近场前视点更易跳动。建议4~12。
+    stability.near_field_reference_weight: 12.0
+    # 近场稳定项从本船处最强，到该前向距离处衰减为0；远端路线仍可提前改变。
+    # [作用与调节] 增大：稳定更长前方区段；减小：只稳定紧邻船首。4m/s船建议30~50m。
+    stability.near_field_reference_horizon: 45.0
+    # 偏离达到该距离时，近场平方代价约等于上述权重；不是硬走廊宽度。
+    # [作用与调节] 增大：同样偏离受到的约束更弱；减小：小偏离也会快速受罚。建议3~6m。
+    stability.near_field_deviation_scale: 3.0
     # 恢复目标方向仍有同步碰撞风险时，额外偏好上一条安全路线；纯软代价。
     # 不锁死航向，不强制直航。减小响应更灵活，增大减少避让过程跳线。
     # [作用与调节] 恢复方向仍不安全时的额外近端连续性代价。增大：减少避让中跳线；减小：更灵活但易摇摆；恢复安全时门控关闭。
-    stability.recovery_weight: 2.0
+    stability.recovery_weight: 4.0
     # 额外连续性只影响近端约航速×6秒范围，随距离衰减；恢复安全立即关闭。
     # [作用与调节] 风险恢复软偏好的近端时间尺度(s)。增大：影响更长前方范围；减小：只影响船前短段；不是强制直航或解锁等待时间。
     stability.recovery_horizon: 6.0
@@ -69,7 +101,7 @@ hybrid_a_star_node:
     stability.reference_path_max_distance: 12.0
     # 相邻运动基元反复改变舵角的惩罚，减小全局轨迹波浪形摆动。
     # [作用与调节] 相邻基元转角改变惩罚。增大：减少左右反复短弧；减小：搜索更灵活、整体更波浪。
-    stability.steering_change_weight: 1.0
+    stability.steering_change_weight: 1.5
     # 持续大舵角的平方惩罚，减少少量但尺度很大的S弯；避障/COLREG可覆盖。
     # [作用与调节] 大转角平方惩罚。增大：减少大S弯、转向更温和；减小：急转更容易；硬避障仍优先。
     stability.steering_magnitude_weight: 1.0
@@ -147,26 +179,29 @@ hybrid_a_star_node:
     # 必须与 DWA max_vel_x 和仿真器 max_linear_speed 保持一致。
     # [作用与调节] 动态时间同步典型航速(m/s)。增大：预测到达更早；减小：更晚；不是独立控制指令，应与DWA/仿真4m/s一致。
     cruise_speed: 4.0
-    # 两船中心间硬安全距离：本船1.5+目标船2+冗余4=7.5m。
+    # 小型无人船船体半径；动态硬禁入还会至少采用dynamic_hard_distance。
     # [作用与调节] 本船规划圆形半径(m)。增大：硬净空更大、绕行更宽；减小：更贴近且碰撞裕度减小；Hybrid/DWA须一致。
-    own_ship_radius: 1.5
+    own_ship_radius: 0.5
     # 安全距离冗余，不是船体半径；Hybrid A*和DWA必须一致。
     # [作用与调节] 两船半径之外的安全冗余(m)。增大：提前/更宽绕行、可行空间减少；减小：更靠近目标、抗跟踪误差更差；两级须一致。
-    safety_buffer: 0.5
-    # [作用与调节] 追越最小中心净空(m)，实际取其与半径和+buffer的较大值。增大：侧向更宽；减小到7.5m以下也不会降低基本硬净空。
-    overtaking_safe_distance: 4.0
+    safety_buffer: 1.0
+    # [作用与调节] 追越最小中心净空(m)，普通硬净空为2m；增大使追越更宽，减小到2m以下不再降低普通净空。
+    overtaking_safe_distance: 3.0
     # 动态目标最长外推时间；超过该值仍做硬碰撞检查，只停止累加软代价。
     # [作用与调节] 动态软代价累计时域(s)。增大：更关注远期目标轨迹、绕行可能更早；减小：远期软影响弱；超时仍做硬碰撞。
     dynamic_prediction_horizon: 60.0
     # 软避让域倍率。减小会让路径绕得更近，不能小于 1.0。
     # [作用与调节] 软避让距离相对硬净空倍率，至少1。增大：更大软域；减小：更紧绕行；同时受avoidance_radius影响。
-    dynamic_soft_distance_factor: 1.0
-    # RViz 青色圈，同时也是 Hybrid A* 软避让范围；调小可缩短绕行。
+    dynamic_soft_distance_factor: 3.5
+    # RViz 青色圈，同时也是有实际碰撞风险时的Hybrid A*软避让范围。
+    # 7m软域与3m硬域之间保留4m调整带；无碰撞风险的船不累加此软代价。
     # [作用与调节] 动态软避让域半径及RViz青圈(m)。增大：更远提前绕行；减小：更贴近，硬净空不会因此减小。
-    avoidance_radius: 4.0
+    avoidance_radius: 7.0
+    # 动态船中心距小于该值时禁止进入；外侧至avoidance_radius为软代价区。
+    dynamic_hard_distance: 4.0
     # 靠近软避让域时的代价权重，越大越倾向提前绕行。
     # [作用与调节] 目标船软邻近代价权重。增大：更宽/更早绕行；减小：更偏短路径；硬安全仍独立。
-    dynamic_cost_weight: 8.0
+    dynamic_cost_weight: 16.0
     # 目标船消息超过此时间未更新时，清空路径并停车。
     # [作用与调节] 目标消息有效时间(s)。增大：容忍通信抖动但预测更旧；减小：更快失联停车、也更易误停。
     target_state_timeout: 2.0
@@ -177,44 +212,43 @@ hybrid_a_star_node:
     # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
     target_odom_topics: [/target_boat/odom]
     # [作用与调节] 与目标话题对应的规划半径数组(m)。增大：目标硬域更大；减小：裕度减少；显示长宽不会自动更新它。
-    target_ship_radii: [1.0]
+    target_ship_radii: [0.5]
 
-    # 三层 DCPA 阈值（米）。已比 v4 的 20/15/8 m 缩小。
+    # 三层 DCPA 阈值（米）：远程监视保持10m，行动/紧急缩到5/2.5m。
     # [作用与调节] 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。
-    risk.monitor_dcpa: 6.0
+    risk.monitor_dcpa: 10.0
     # [作用与调节] 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。
     risk.action_dcpa: 5.0
     # [作用与调节] 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。
-    risk.emergency_dcpa: 3.0
+    risk.emergency_dcpa: 2.5
     # 三层当前中心距离阈值（米），RViz黄/橙/红细圈的半径。
-    # 按虚拟船速度2m/s × 时间40/24/10s换算，不叠加本船速度。
-    # 固定参数：后续修改目标船速度时需同步修改这些半径。
-    # 是预警范围，不是软/硬避让距离；进入仍须满足对应DCPA门槛。
-    # [作用与调节] 对应风险层当前中心距离上限(m)，还需满足DCPA门槛。增大：更远触发/圈更大；减小：更近触发；与TCPA是OR，非感知半径；目标2m/s×40/24/10s给80/48/20m。
+    # 80m监视层模拟AIS式远程预警并保持不变；24m行动、8m紧急层缩小。
+    # 它们不是传感器截止距离，也不是2m停车/7m软规划域。
+    # [作用与调节] AIS式远程监视距离(m)，与TCPA为OR且仍需满足DCPA；不是感知截止、软域或停车圈。
     risk.monitor_range: 80.0
-    # [作用与调节] 对应风险层当前中心距离上限(m)，还需满足DCPA门槛。增大：更远触发/圈更大；减小：更近触发；与TCPA是OR，非感知半径；目标2m/s×40/24/10s给80/48/20m。
-    risk.action_range: 40.0
-    # [作用与调节] 对应风险层当前中心距离上限(m)，还需满足DCPA门槛。增大：更远触发/圈更大；减小：更近触发；与TCPA是OR，非感知半径；目标2m/s×40/24/10s给80/48/20m。
-    risk.emergency_range: 4.0
-    # 三层 TCPA 阈值（秒）：40秒监测、24秒行动、10秒紧急，提前留出机动时间。
+    # [作用与调节] 行动层距离(m)，与16s TCPA为OR且仍需满足DCPA；增大更早行动，减小更晚。
+    risk.action_range: 24.0
+    # [作用与调节] 紧急层距离(m)，与6s TCPA为OR且仍需满足DCPA；不是2m最终停车线。
+    risk.emergency_range: 8.0
+    # 三层 TCPA 阈值（秒）：40秒远程监测保持不变，行动/紧急缩到16/6秒。
     # 仍需同时满足对应DCPA门槛；RViz预测线时间标签同步读取这些值。
     # [作用与调节] 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。
     risk.monitor_tcpa: 40.0
     # [作用与调节] 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。
-    risk.action_tcpa: 20.0
+    risk.action_tcpa: 16.0
     # [作用与调节] 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。
-    risk.emergency_tcpa: 3.0
-    # 风险解除条件：TCPA 小于 -2 s 且距离大于 12 m，连续 2 次即解除。
-    # 数值比旧版 -5 s/30 m/3 次更快恢复为开阔水域规划。
+    risk.emergency_tcpa: 6.0
+    # 历史会遇记录的解除条件：TCPA 小于 -2 s 且距离大于 6 m，连续 2 次即解除。
+    # 实际航向动作可由“已安全通过+恢复方向无碰撞”在此之前立即退出，不等待计时。
     # [作用与调节] 历史会遇释放要求TCPA小于此值(s)。数值增大接近0：更早释放；更负：更晚；安全recovering动作退出还看通过几何。
-    risk.release_tcpa: -1.0
-    # [作用与调节] 历史释放最小中心距离(m)。增大：更晚解锁；减小：更早解锁；不等于8m当前距离停车。
-    risk.release_range: 4.0
+    risk.release_tcpa: -2.0
+    # [作用与调节] 历史释放最小中心距离(m)。增大：更晚解锁；减小：更早解锁；不等于2m当前距离最终停车线。
+    risk.release_range: 6.0
     # [作用与调节] 满足释放条件的连续观察次数。增大：更抗抖动但记录更久；减小：解除更快；恢复动作不必等记录解除。
     risk.release_observations: 2
     # 已观察到目标船开始机动后，等待其 DCPA 改善的最长时间。
     # [作用与调节] 已观察到对方机动后允许DCPA改善的等待尺度(s)。增大：更容忍机动、接管可能更迟；减小：更快判定无效。
-    risk.manoeuvre_grace: 4.0
+    risk.manoeuvre_grace: 6.0
 
     # 是否发布 /colregs/risk_markers，供 RViz 显示全部风险图层。
     # [作用与调节] true：发布风险Marker；false：关闭风险显示，风险判断/安全检查仍执行。
@@ -225,10 +259,10 @@ hybrid_a_star_node:
     colregs_weight: 8.0
     # [作用与调节] 方向软代价死区(rad)。增大：允许更多微小相反偏转不罚；减小：小偏差也受罚，可能更敏感。
     colregs_heading_deadband: 0.05
-    # 兼容会遇预测门槛；DWA中同名参数负责当前距离<8m的独立停车。
+    # 兼容会遇预测门槛；默认tracking_only的DWA不读取同名目标船停车参数。
     # 不等于感知半径，三层风险依然由risk.*共同判定。
-    # [作用与调节] 兼容assessEncounter风险距离(m)。增大/减小影响兼容评估；当前主分层使用risk.*；DWA同名参数才执行8m当前距离STOP。
-    colregs_risk_distance: 3.0
+    # [作用与调节] 兼容assessEncounter风险距离(m)。增大/减小影响兼容评估；当前主分层使用risk.*；DWA同名参数执行2m当前距离STOP。
+    colregs_risk_distance: 2.0
     # [作用与调节] 兼容assessEncounter外推时域(s)。增大：更多远期会遇进入评估；减小：兼容评估更近；当前主风险使用risk.*。
     colregs_time_horizon: 60.0
     # [作用与调节] assessEncounter对遇相对方位范围(rad)。增大：更多侧向目标算对遇；减小：更严格；Policy首次锁定还含固定工程门槛，非全部由此项控制。

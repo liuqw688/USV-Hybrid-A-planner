@@ -7,8 +7,8 @@ Visualization Manager:
     - Class: rviz_default_plugins/Grid
       Name: Grid
       Enabled: true
-      Cell Size: 4
-      Plane Cell Count: 250
+      Cell Size: 20
+      Plane Cell Count: 50
     - Class: rviz_default_plugins/MarkerArray
       Name: Chart Markers
       Enabled: true
@@ -71,7 +71,7 @@ Visualization Manager:
         Value: /hybrid_a_star_trajectory
     - Class: rviz_default_plugins/MarkerArray
       Name: DWA Candidates
-      Enabled: false
+      Enabled: true
       Topic:
         Value: /candidate_trajectories
     - Class: rviz_default_plugins/Marker
@@ -105,28 +105,9 @@ Visualization Manager:
       Topic:
         Value: /colregs/avoidance_envelope
     - Class: rviz_default_plugins/TF
-      Enabled: true
-      Frame Timeout: 15
-      Frames:
-        All Enabled: true
-        base_link:
-          Value: true
-        map:
-          Value: true
-        odom:
-          Value: true
-      Marker Scale: 20
       Name: TF
-      Show Arrows: true
-      Show Axes: true
-      Show Names: true
-      Tree:
-        map:
-          odom:
-            base_link:
-              {}
-      Update Interval: 0
-      Value: true
+      # 默认只显示 /sim_boat_marker 这一艘本船；需要排查坐标系时再手动开启。
+      Enabled: false
   Enabled: true
   Global Options:
     Background Color: 42; 45; 48

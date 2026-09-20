@@ -4,18 +4,76 @@
 #include <gtest/gtest.h>
 using namespace hybrid_a_star_planner;
 
-TEST(CurrentDistanceSafety, EightMetreStopBoundaryIsIndependentOfCPA) {
-  EXPECT_TRUE(insideStopDistance(-270,-270,-262.01,-270,8));
-  EXPECT_FALSE(insideStopDistance(-270,-270,-262,-270,8));
-  EXPECT_FALSE(insideStopDistance(-270,-270,-261.99,-270,8));
-  EXPECT_TRUE(insideStopDistance(0,0,0,-7.9,8));
+TEST(CurrentDistanceSafety, TwoMetreStopBoundaryIsIndependentOfCPA) {
+  EXPECT_TRUE(insideStopDistance(-270,-270,-268.01,-270,2));
+  EXPECT_FALSE(insideStopDistance(-270,-270,-268,-270,2));
+  EXPECT_FALSE(insideStopDistance(-270,-270,-267.99,-270,2));
+  EXPECT_TRUE(insideStopDistance(0,0,0,-1.9,2));
+}
+
+TEST(EventDrivenPlanning, ReplansOnlyWhenRemainingPathBecomesUnsafe) {
+  HybridAStarPlanner planner;
+  auto map=std::make_shared<nav_msgs::msg::OccupancyGrid>();
+  map->info.width=100;map->info.height=80;map->info.resolution=1;
+  map->info.origin.position.x=-10;map->info.origin.position.y=-40;
+  map->info.origin.orientation.w=1;map->data.assign(100*80,0);
+  planner.setCostmap(map);planner.setParams(2,9,5,0.5,0.1,200000,88);
+  planner.setDynamicParams(4,0.5,1,60,3,6,12,8,0.05,3);
+  std::vector<geometry_msgs::msg::Pose> straight;
+  for(int x=0;x<=50;++x) {
+    geometry_msgs::msg::Pose pose;pose.position.x=x;pose.orientation.w=1;
+    straight.push_back(pose);
+  }
+  EXPECT_FALSE(planner.remainingPathNeedsReplan(straight,0,0,0,2.5,5));
+
+  // 能被感知但运动轨迹与本船路径不相交，不应仅因“附近有船”重规划。
+  DynamicObstacle harmless;harmless.state={20,15,0,2,0.5};
+  planner.setDynamicObstacles({harmless});
+  EXPECT_FALSE(planner.remainingPathNeedsReplan(straight,0,0,0,2.5,5));
+
+  // 正面对遇会进入预测碰撞域并违反右舷行动要求，必须触发一次新搜索。
+  DynamicObstacle head_on;head_on.state={25,0,-2,0,0.5};
+  head_on.policy.locked=true;head_on.policy.type=EncounterType::HEAD_ON;
+  head_on.policy.level=Risk::ACTION;head_on.policy.reference=0;
+  head_on.encounter.active=true;
+  planner.setDynamicObstacles({head_on});
+  EXPECT_TRUE(planner.remainingPathNeedsReplan(straight,0,0,0,2.5,5));
+
+  // 同一次会遇成功规划后不再重复消费规则触发；若缓存路径本身没有进入
+  // 硬碰撞域，关闭规则复查应保持执行，防止匀速目标导致每秒重搜。
+  head_on.state.y=4.0;planner.setDynamicObstacles({head_on});
+  EXPECT_TRUE(planner.remainingPathNeedsReplan(straight,0,0,0,2.0,5,true));
+  EXPECT_FALSE(planner.remainingPathNeedsReplan(straight,0,0,0,2.0,5,false));
+  head_on.state.y=0.0;planner.setDynamicObstacles({head_on});
+
+  // 已规划到右舷且净空足够的路径继续交给DWA执行，不重复搜索。
+  std::vector<geometry_msgs::msg::Pose> starboard;
+  for(int x=0;x<=50;++x) {
+    geometry_msgs::msg::Pose pose;pose.position.x=x;
+    pose.position.y=-0.25*std::min(x,48);pose.orientation.w=1;
+    starboard.push_back(pose);
+  }
+  EXPECT_FALSE(planner.remainingPathNeedsReplan(starboard,0,0,0,2.5,5));
+
+  // 地图中新出现的硬障碍落在剩余路径上时，即使没有目标船也要重规划。
+  planner.setDynamicObstacles({});
+  map->data[40*100+20]=100;planner.setCostmap(map);
+  EXPECT_TRUE(planner.remainingPathNeedsReplan(straight,0,0,0,2.5,5));
+}
+
+TEST(EventDrivenPlanning, RenewedCollisionCancelsRecoveryImmediately) {
+  Policy policy;policy.locked=true;policy.recovering=true;
+  policy.type=EncounterType::HEAD_ON;policy.level=Risk::ACTION;
+  policy.reference=0;policy.speed=4;
+  policy.update(1,0,0,0,4,{25,0,-2,0,0.5});
+  EXPECT_FALSE(policy.recovering);
 }
 // 回归：预测减速时间与无等待的软连续性风险门控。
 // 行为恢复必须独立于会遇记录的解除滞回。
 TEST(RecoveryCompletion, DoesNotWaitForHistoricalReleaseTimer) {
   Policy p;p.locked=true;p.type=EncounterType::CROSSING_STARBOARD;
   p.level=Risk::EMERGENCY;p.reference=0;p.metric={10,-0.1,8};
-  // 船尾净空满足7.5m，但尚未满足12m/-2s/两次观测的历史解锁条件。
+  // 船尾净空满足7.5m，但尚未满足TCPA<-2s且连续两次的历史解锁条件。
   EXPECT_TRUE(p.safeToRecover(0,0,{0,10,0,2,2},7.5,false));
   EXPECT_FALSE(p.safeToRecover(0,0,{0,10,0,2,2},7.5,true));
   EXPECT_FALSE(p.safeToRecover(0,0,{10,-1,0,2,2},7.5,false));
@@ -71,6 +129,57 @@ TEST(RecoveryContinuity, RiskGateClearsWithoutWaitingForPolicyUnlock) {
   EXPECT_TRUE(headingAllowed(o.policy,0,1,0,-25*deg));
 }
 
+// 连续规划的近场参考应抑制左右换边，但不得覆盖动态碰撞硬约束。
+TEST(TemporalStability, NearFieldPrefersPreviousSafeSide) {
+  HybridAStarPlanner planner;
+  auto map=std::make_shared<nav_msgs::msg::OccupancyGrid>();
+  map->info.width=130;map->info.height=80;map->info.resolution=1;
+  map->info.origin.position.x=-40;map->info.origin.position.y=-40;
+  map->info.origin.orientation.w=1;map->data.assign(130*80,0);
+  planner.setCostmap(map);planner.setParams(2,9,5,0.5,0.10,250000,88);
+  planner.setDynamicParams(4,1.5,4,60,1.2,9,8,12,0.05,9);
+  planner.setStabilityParams(0.5,12,1,1);
+  planner.setNearFieldStabilityParams(12,45,3);
+  std::vector<geometry_msgs::msg::Pose> previous;
+  for(int x=-30;x<=50;++x) {
+    geometry_msgs::msg::Pose pose;pose.position.x=x;
+    pose.position.y=3.0*std::sin(M_PI*(x+30)/80.0);pose.orientation.w=1;
+    previous.push_back(pose);
+  }
+  planner.setReferencePath(previous);
+  const auto path=planner.search(-30,0,0,50,0,0);
+  ASSERT_FALSE(path.empty());
+  double near_sum=0;int near_count=0;
+  for(const auto &pose:path) if(pose.position.x>-20 && pose.position.x<10) {
+    near_sum+=pose.position.y;++near_count;
+  }
+  ASSERT_GT(near_count,5);
+  EXPECT_GT(near_sum/near_count,0.4);
+}
+
+TEST(TemporalStability, DynamicSafetyOverridesPreviousPath) {
+  HybridAStarPlanner planner;
+  auto map=std::make_shared<nav_msgs::msg::OccupancyGrid>();
+  map->info.width=130;map->info.height=100;map->info.resolution=1;
+  map->info.origin.position.x=-40;map->info.origin.position.y=-50;
+  map->info.origin.orientation.w=1;map->data.assign(130*100,0);
+  planner.setCostmap(map);planner.setParams(2,9,5,0.5,0.10,250000,88);
+  planner.setDynamicParams(4,0.5,1,60,3,6,8,12,0.05,3);
+  planner.setNearFieldStabilityParams(12,45,3);
+  std::vector<geometry_msgs::msg::Pose> previous;
+  for(int x=-30;x<=50;++x) {geometry_msgs::msg::Pose p;p.position.x=x;p.orientation.w=1;previous.push_back(p);}
+  planner.setReferencePath(previous);
+  DynamicObstacle obstacle;obstacle.state={0,0,0,0,0.5};
+  obstacle.policy.locked=true;obstacle.policy.type=EncounterType::HEAD_ON;
+  obstacle.encounter.active=true;
+  planner.setDynamicObstacles({obstacle});
+  const auto path=planner.search(-30,0,0,50,0,0);
+  ASSERT_FALSE(path.empty());
+  EXPECT_TRUE(planner.referenceSoftConflictActive());
+  for(const auto &pose:path)
+    EXPECT_GE(std::hypot(pose.position.x,pose.position.y),1.99);
+}
+
 TEST(FourMetrePerSecondPlanning, SmallerVesselsStillAvoidAllEncounterTypes) {
   for(const auto type:{EncounterType::HEAD_ON,EncounterType::CROSSING_STARBOARD,
       EncounterType::CROSSING_PORT,EncounterType::OVERTAKING}) {
@@ -81,16 +190,16 @@ TEST(FourMetrePerSecondPlanning, SmallerVesselsStillAvoidAllEncounterTypes) {
     map->info.origin.position.x=-50;map->info.origin.position.y=-90;
     map->info.origin.orientation.w=1;map->data.assign(220*180,0);
     planner.setCostmap(map);planner.setParams(2,9,5,0.5,0.10,250000,88);
-    planner.setDynamicParams(4,1.5,4,60,1.2,9,8,8,0.05,9);
+    planner.setDynamicParams(4,0.5,1,60,3,6,8,8,0.05,3);
     planner.setStabilityParams(0.5,12,1,1);
     DynamicObstacle obstacle;
     obstacle.policy.type=type;obstacle.policy.locked=true;
     obstacle.policy.level=Risk::ACTION;obstacle.policy.speed=4;
     obstacle.policy.takeover=type==EncounterType::CROSSING_PORT;
-    if(type==EncounterType::HEAD_ON) obstacle.state={60,0,-2,0,2};
-    if(type==EncounterType::CROSSING_STARBOARD) obstacle.state={0,-20,0,2,2};
-    if(type==EncounterType::CROSSING_PORT) obstacle.state={0,20,0,-2,2};
-    if(type==EncounterType::OVERTAKING) obstacle.state={-10,0,2,0,2};
+    if(type==EncounterType::HEAD_ON) obstacle.state={60,0,-2,0,0.5};
+    if(type==EncounterType::CROSSING_STARBOARD) obstacle.state={0,-20,0,2,0.5};
+    if(type==EncounterType::CROSSING_PORT) obstacle.state={0,20,0,-2,0.5};
+    if(type==EncounterType::OVERTAKING) obstacle.state={-10,0,2,0,0.5};
     planner.setDynamicObstacles({obstacle});
     auto path=planner.search(-40,0,0,55,0,0);
     ASSERT_GT(path.size(),20U);
@@ -108,7 +217,7 @@ TEST(FourMetrePerSecondPlanning, SmallerVesselsStillAvoidAllEncounterTypes) {
         const double y=path[i-1].position.y+fraction*dy;
         EXPECT_GE(std::hypot(x-obstacle.state.x-obstacle.state.vx*time,
           y-obstacle.state.y-obstacle.state.vy*time),
-          type==EncounterType::OVERTAKING ? 8.99 : 7.49);
+          type==EncounterType::OVERTAKING ? 2.99 : 1.99);
       }
       distance+=length;
     }
@@ -335,6 +444,17 @@ protected:
       minimum=std::min(minimum,std::hypot(path[i].position.x-t.x-t.vx*time,
                                         path[i].position.y-t.y-t.vy*time));
       EXPECT_TRUE(headingAllowed(o.policy,tf2::getYaw(path[i].orientation),time,0,0));
+      if(type==EncounterType::HEAD_ON) {
+        const double target_x=t.x+t.vx*time;
+        const double forward=target_x-path[i].position.x;
+        if(forward>=-8.0) {
+          EXPECT_LE(normalizeAngle(tf2::getYaw(path[i].orientation)),2.01*deg);
+          if(forward<=0.0) {
+            const double target_y=t.y+t.vy*time;
+            EXPECT_LE(path[i].position.y-target_y,0.251);
+          }
+        }
+      }
     }
     EXPECT_GE(minimum,type==EncounterType::OVERTAKING?14.99:7.99);
     EXPECT_LT(std::hypot(path.back().position.x-55,path.back().position.y),0.6);
@@ -342,6 +462,7 @@ protected:
   }
 };
 TEST_F(PlannerV4, HeadOn) {check(EncounterType::HEAD_ON,{25,0,-0.6,0,4});}
+TEST_F(PlannerV4, HeadOnInitiallyOffset) {check(EncounterType::HEAD_ON,{25,-2,-0.6,0,4});}
 TEST_F(PlannerV4, StarboardCrossing) {check(EncounterType::CROSSING_STARBOARD,{0,-30,0,0.8,4});}
 TEST_F(PlannerV4, PortRule17Takeover) {check(EncounterType::CROSSING_PORT,{0,30,0,-0.8,4},true);}
 TEST_F(PlannerV4, PortCooperative) {check(EncounterType::CROSSING_PORT,{0,30,-0.8,0,4});}

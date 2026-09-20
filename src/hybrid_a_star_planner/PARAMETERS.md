@@ -11,7 +11,15 @@
 
 | 参数 | 当前YAML值 | 作用、关联及调大/调小影响 |
 |---|---|---|
-| `planner_frequency` | `1.0` | Hybrid持续局部搜索频率(Hz)。增大：动态响应快但搜索算力增加；减小：响应迟、须防DWA路径3s过期；不同于全局A*事件触发。 |
+| `planner_frequency` | `1.0` | 事件安全监测与缓存路径刷新频率(Hz)，不是固定搜索频率。增大可更快发现新风险；只有触发条件成立才运行Hybrid A*。 |
+| `event_driven.enabled` | `true` | true：新目标、预测碰撞/规则冲突、静态阻断或明显偏航时才搜索；false：每个timer周期搜索。 |
+| `event_driven.collision_trigger_distance` | `2.0` | 同一会遇已成功规划后，剩余路径重新进入2m预测硬域才再次搜索；首次会遇由DCPA/TCPA提前触发。 |
+| `event_driven.cross_track_limit` | `8.0` | 本船偏离缓存路径超过此值时重规划。增大更愿继续旧路；减小则偏航后更快改线。 |
+| `event_driven.target_course_change` | `0.0873` | 目标船相对上次成功规划航向变化超过5度时视为新机动并重新规划。 |
+| `event_driven.target_speed_change` | `0.3` | 目标船相对上次成功规划速度变化超过0.3m/s时重新规划。 |
+| `event_driven.search_attempts` | `2` | 每次事件规划生成的候选次数(1~3)，选择不绕圈且较短的安全方案；增大算力和延迟。 |
+| `event_driven.max_path_length_ratio` / `max_path_extra_distance` | `3.0` / `40.0` | 路线长度质量门槛，超过则不发布路径，等待下一次规划，避免终点附近大绕圈。 |
+| `event_driven.goal_loop_radius` / `goal_loop_min_arc` | `3.0` / `8.0` | 终点附近回到目标半径内后仍绕行超过该弧长即判为绕圈并丢弃。 |
 | `path_failure_hold_time` | `3.0` | 最近路径有效性标志保留时间(s)。增大：更晚标为无效；减小：更早失效；当前不直接清除RViz路径，停车由DWA路径过期负责。 |
 | `own_odom_timeout` | `5.0` | Hybrid船位消息时间容忍(s)。增大：容忍搜索阻塞但允许较旧船位；减小：更快失联保护、可能误判计算延迟。 |
 | `trajectory_topic` | `/hybrid_a_star_trajectory` | ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。 |
@@ -27,14 +35,17 @@
 | `max_iterations` | `250000` | Hybrid最大扩展/出队次数。增大：长路线更易完成、延迟/算力增加；减小：易搜索失败并触发DWA路径过期停车。 |
 | `lethal_cost_threshold` | `88` | 静态硬危险代价门槛。增大：允许更高代价、可能更贴岸；减小：更保守易无解；Hybrid启用channel时以分源阈值为准。 |
 | `stability.reference_path_weight` | `0.5` | 偏离上次安全路径的软代价倍率。增大：跨周期路线更稳定但可能保留绕路；减小：更追求当前短路但更易跳线；不锁死旧路线。 |
-| `stability.recovery_weight` | `2.0` | 恢复方向仍不安全时的额外近端连续性代价。增大：减少避让中跳线；减小：更灵活但易摇摆；恢复安全时门控关闭。 |
+| `stability.near_field_reference_weight` | `12.0` | 本船近前方跨周期稳定平方代价。增大：路径两侧跳变更少；减小：改线更灵活但DWA前视点更易跳动。硬碰撞与COLREG约束优先。 |
+| `stability.near_field_reference_horizon` | `45.0` | 近场稳定项从本船到前方该距离(m)线性衰减为0。增大：更长区段稳定；减小：只保护船首近段。 |
+| `stability.near_field_deviation_scale` | `3.0` | 偏离达到该米数时近场代价约等于near_field_reference_weight。增大：约束变柔；减小：小偏离就受强惩罚；不是硬走廊。 |
+| `stability.recovery_weight` | `4.0` | 恢复方向仍不安全时的额外近端连续性代价。增大：减少避让中跳线；减小：更灵活但易摇摆；恢复安全时门控关闭。 |
 | `stability.recovery_horizon` | `6.0` | 风险恢复软偏好的近端时间尺度(s)。增大：影响更长前方范围；减小：只影响船前短段；不是强制直航或解锁等待时间。 |
 | `prediction.goal_braking` | `true` | true：动态到达时间考虑终点减速；false：更接近全程巡航外推，终点附近CPA同步可能偏乐观。 |
 | `prediction.goal_deceleration` | `0.5` | 终点到达模型制动加速度(m/s²)。增大：预测可更晚减速、到达更快；减小：更早减速、到达更慢；与DWA终点制动匹配。 |
 | `prediction.goal_tolerance` | `0.4` | 动态预测终点剩余距离扣除容差(m)。增大：更早视为终点邻域；减小：更接近精确目标；与DWA goal_tolerance匹配。 |
 | `prediction.minimum_speed` | `0.3` | 预测积分的速度下限(m/s)。增大：估计到达更快；减小：估计更慢、更保守且时间更大；不是实际船速下限。 |
 | `stability.reference_path_max_distance` | `12.0` | 旧路线偏离代价饱和距离(m)。增大：远离旧路仍受约束；减小：更早饱和、允许必要大绕行更容易。 |
-| `stability.steering_change_weight` | `1.0` | 相邻基元转角改变惩罚。增大：减少左右反复短弧；减小：搜索更灵活、整体更波浪。 |
+| `stability.steering_change_weight` | `1.5` | 相邻基元转角改变惩罚。增大：减少左右反复短弧；减小：搜索更灵活、整体更波浪。 |
 | `stability.steering_magnitude_weight` | `1.0` | 大转角平方惩罚。增大：减少大S弯、转向更温和；减小：急转更容易；硬避障仍优先。 |
 | `smoothing.enabled` | `true` | true：搜索后重采样/平滑并安全复查；false：输出原搜索轨迹，安全检查仍在搜索中执行。 |
 | `smoothing.resample_spacing` | `1.0` | 后处理弧长采样间距(m)，代码至少0.25m。增大：点少/计算少但曲线细节粗；减小：更细、每轮安全检查更贵。 |
@@ -59,34 +70,35 @@
 | `channel.obstacle_inflation_weight` | `5.0` | 独立障碍软膨胀代价倍率。增大：提前更宽避让；减小：更靠近障碍但不得越硬阈值。 |
 | `channel.analytic_expansion_distance` | `18.0` | 允许近端Dubins尾连接的目标距离(m)。增大：更早连接/更快结束、可能少累计航道软代价；减小：更多正常搜索/算力增加。 |
 | `cruise_speed` | `4.0` | 动态时间同步典型航速(m/s)。增大：预测到达更早；减小：更晚；不是独立控制指令，应与DWA/仿真4m/s一致。 |
-| `own_ship_radius` | `1.5` | 本船规划圆形半径(m)。增大：硬净空更大、绕行更宽；减小：更贴近且碰撞裕度减小；Hybrid/DWA须一致。 |
-| `safety_buffer` | `4.0` | 两船半径之外的安全冗余(m)。增大：提前/更宽绕行、可行空间减少；减小：更靠近目标、抗跟踪误差更差；两级须一致。 |
-| `overtaking_safe_distance` | `9.0` | 追越最小中心净空(m)，实际取其与半径和+buffer的较大值。增大：侧向更宽；减小到7.5m以下也不会降低基本硬净空。 |
+| `own_ship_radius` | `0.5` | 本船规划圆形半径(m)。增大：硬净空更大、绕行更宽；减小：更贴近且碰撞裕度减小；Hybrid/DWA须一致。 |
+| `safety_buffer` | `1.0` | 两船半径之外的安全冗余(m)。增大：提前/更宽绕行、可行空间减少；减小：更靠近目标、抗跟踪误差更差；两级须一致。 |
+| `overtaking_safe_distance` | `3.0` | 追越中心硬净空(m)；普通硬净空为2m，调到2m以下不再降低普通净空。 |
 | `dynamic_prediction_horizon` | `60.0` | 动态软代价累计时域(s)。增大：更关注远期目标轨迹、绕行可能更早；减小：远期软影响弱；超时仍做硬碰撞。 |
-| `dynamic_soft_distance_factor` | `1.2` | 软避让距离相对硬净空倍率，至少1。增大：更大软域；减小：更紧绕行；同时受avoidance_radius影响。 |
-| `avoidance_radius` | `9.0` | 动态软避让域半径及RViz青圈(m)。增大：更远提前绕行；减小：更贴近，硬净空不会因此减小。 |
-| `dynamic_cost_weight` | `8.0` | 目标船软邻近代价权重。增大：更宽/更早绕行；减小：更偏短路径；硬安全仍独立。 |
+| `dynamic_hard_distance` | `3.0` | 动态目标中心距小于该值禁止进入；这是独立于船体半径的最低硬禁入距离。 |
+| `dynamic_soft_distance_factor` | `3.5` | 软避让距离相对基础硬净空的倍率，与avoidance_radius共同形成7m软域。 |
+| `avoidance_radius` | `7.0` | 有实际会遇风险时的动态软避让域及RViz青圈(m)，3m硬域外到7m逐渐增加代价。 |
+| `dynamic_cost_weight` | `16.0` | 目标船软邻近代价权重，只对有效会遇累加；提高后更早完成绕行，硬安全仍独立。 |
 | `target_state_timeout` | `2.0` | 目标消息有效时间(s)。增大：容忍通信抖动但预测更旧；减小：更快失联停车、也更易误停。 |
 | `require_target_states` | `false` | true：配置目标从未出现也使输入失效；false：允许无虚拟船的静态河道规划；已出现目标失联仍需保护。 |
 | `target_odom_topics` | `[/target_boat/odom]` | ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。 |
-| `target_ship_radii` | `[2.0]` | 与目标话题对应的规划半径数组(m)。增大：目标硬域更大；减小：裕度减少；显示长宽不会自动更新它。 |
+| `target_ship_radii` | `[0.5]` | 与目标话题对应的规划半径数组(m)。增大：目标硬域更大；减小：裕度减少；显示长宽不会自动更新它。 |
 | `risk.monitor_dcpa` | `10.0` | 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。 |
-| `risk.action_dcpa` | `9.0` | 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。 |
-| `risk.emergency_dcpa` | `8.0` | 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。 |
-| `risk.monitor_range` | `80.0` | 对应风险层当前中心距离上限(m)，还需满足DCPA门槛。增大：更远触发/圈更大；减小：更近触发；与TCPA是OR，非感知半径；目标2m/s×40/24/10s给80/48/20m。 |
-| `risk.action_range` | `48.0` | 对应风险层当前中心距离上限(m)，还需满足DCPA门槛。增大：更远触发/圈更大；减小：更近触发；与TCPA是OR，非感知半径；目标2m/s×40/24/10s给80/48/20m。 |
-| `risk.emergency_range` | `20.0` | 对应风险层当前中心距离上限(m)，还需满足DCPA门槛。增大：更远触发/圈更大；减小：更近触发；与TCPA是OR，非感知半径；目标2m/s×40/24/10s给80/48/20m。 |
+| `risk.action_dcpa` | `5.0` | 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。 |
+| `risk.emergency_dcpa` | `2.5` | 对应风险层的DCPA上限(m)，还需满足当前距离或TCPA条件。增大：更多未来近遇算风险、提前行动；减小：预警更紧但可能更晚避让；保持监测>=行动>=紧急。 |
+| `risk.monitor_range` | `80.0` | AIS式远程监视层，保持不变；还需满足DCPA，不是感知截止或停车圈。 |
+| `risk.action_range` | `24.0` | 行动层距离，与16s TCPA为OR且还需满足DCPA。 |
+| `risk.emergency_range` | `8.0` | 紧急层距离，与6s TCPA为OR且还需满足DCPA；不是2m停车线。 |
 | `risk.monitor_tcpa` | `40.0` | 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。 |
-| `risk.action_tcpa` | `24.0` | 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。 |
-| `risk.emergency_tcpa` | `10.0` | 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。 |
+| `risk.action_tcpa` | `16.0` | 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。 |
+| `risk.emergency_tcpa` | `6.0` | 对应风险层TCPA上限(s)，还需满足DCPA门槛。增大：提前预警/行动；减小：更晚、更紧迫；负TCPA通常表示最近会遇已过去，仍有当前距离独立保护。 |
 | `risk.release_tcpa` | `-2.0` | 历史会遇释放要求TCPA小于此值(s)。数值增大接近0：更早释放；更负：更晚；安全recovering动作退出还看通过几何。 |
-| `risk.release_range` | `12.0` | 历史释放最小中心距离(m)。增大：更晚解锁；减小：更早解锁；不等于8m当前距离停车。 |
+| `risk.release_range` | `6.0` | 历史释放最小中心距离(m)。增大：更晚解锁；减小：更早解锁；不等于2m当前距离停车。 |
 | `risk.release_observations` | `2` | 满足释放条件的连续观察次数。增大：更抗抖动但记录更久；减小：解除更快；恢复动作不必等记录解除。 |
 | `risk.manoeuvre_grace` | `6.0` | 已观察到对方机动后允许DCPA改善的等待尺度(s)。增大：更容忍机动、接管可能更迟；减小：更快判定无效。 |
 | `visualization.enabled` | `true` | true：发布风险Marker；false：关闭风险显示，风险判断/安全检查仍执行。 |
 | `colregs_weight` | `8.0` | 规则转向偏好软代价。增大：更偏向规则方向；减小：规则软偏好变弱；headingAllowed等硬约束仍执行。 |
 | `colregs_heading_deadband` | `0.05` | 方向软代价死区(rad)。增大：允许更多微小相反偏转不罚；减小：小偏差也受罚，可能更敏感。 |
-| `colregs_risk_distance` | `8.0` | 兼容assessEncounter风险距离(m)。增大/减小影响兼容评估；当前主分层使用risk.*；DWA同名参数才执行8m当前距离STOP。 |
+| `colregs_risk_distance` | `2.0` | 兼容assessEncounter风险距离(m)。增大/减小影响兼容评估；当前主分层使用risk.*；DWA同名参数才执行2m当前距离STOP。 |
 | `colregs_time_horizon` | `60.0` | 兼容assessEncounter外推时域(s)。增大：更多远期会遇进入评估；减小：兼容评估更近；当前主风险使用risk.*。 |
 | `head_on_bearing` | `0.3490658504` | assessEncounter对遇相对方位范围(rad)。增大：更多侧向目标算对遇；减小：更严格；Policy首次锁定还含固定工程门槛，非全部由此项控制。 |
 | `head_on_course_tolerance` | `0.3490658504` | assessEncounter对向航向容差(rad)。增大：更多非严格对向被算对遇；减小：更严格；Policy锁定内部另有固定门槛。 |
@@ -95,9 +107,9 @@
 
 ## 跨包一致性检查
 
-- 当前本船最高速度4m/s，本船半径1.5m，目标船速度2m/s、半径2m，安全冗余4m。船体Marker外观长1m宽1.5m不等于碰撞半径。
-- 默认动态间隔7.5m与当前距离急停8m不是同一参数；追越还可能采用9m。
-- 目标船2m/s时，40/24/10s对应距离阈值80/48/20m；只改时间不会自动修改现有YAML距离值。
+- 当前本船最高速度4m/s；小型无人船等效规划半径均为0.5m、安全冗余1m，因此普通中心硬净空为2m。Marker长1m宽1.5m只是显示外形。
+- Hybrid在7m软域提前规划、3m动态硬禁入由Hybrid负责；tracking_only=true的DWA只跟踪Path，不使用目标船距离停车。
+- RViz默认仅显示黄色/橙色/红色距离预警圈、青色软代价圈和洋红色硬禁入圈；DCPA独立圈及旧STOP圈已隐藏，DCPA/TCPA仍显示在文字和预测线上。
+- AIS式远程监视保持80m/40s不变；行动层24m/16s、紧急层8m/6s。风险圈不是感知截止范围，也不等于软/硬避让域。
 - 地图尺寸、原点、分辨率与frame应一致；地图膨胀和独立障碍层不得混淆。
 - 主航道、外部、对向代价是偏好，安全硬过滤优先；降低偏好不解除危险栅格阻挡。
-

@@ -102,6 +102,11 @@ public:
     overtaking_safe_distance_ = std::max(0.0, overtaking_distance);
   }
 
+  void setDynamicHardDistance(double distance)
+  {
+    dynamic_hard_distance_ = std::max(0.0, distance);
+  }
+
   // [功能与联系] 缓存物理栅格尺寸/原点/分辨率并初始化查询状态；搜索必须已有地图。
   void setCostmap(const nav_msgs::msg::OccupancyGrid::SharedPtr & costmap)
   {
@@ -155,6 +160,20 @@ public:
     steering_magnitude_weight_ = std::max(0.0, steering_magnitude_weight);
   }
 
+  // [功能与联系] 设置跨周期近场稳定代价：越靠近本船、偏离旧路径越大，
+  // 非线性惩罚越强；它始终是软代价，primitiveIsSafe的障碍/COLREG硬约束优先。
+  void setNearFieldStabilityParams(
+    double weight, double horizon_distance, double deviation_scale)
+  {
+    near_field_reference_weight_ = std::max(0.0, weight);
+    near_field_reference_horizon_ = std::max(0.1, horizon_distance);
+    near_field_deviation_scale_ = std::max(0.1, deviation_scale);
+  }
+
+  // [功能与联系] 正常对遇搜索强制从右舷通过；仅当该约束导致完全无解时，
+  // 节点可暂时关闭并按“安全优先于规则”执行一次受控回退搜索。
+  void setHeadOnStarboardEnforced(bool enabled) {enforce_head_on_starboard_=enabled;}
+
   // [功能与联系] 提供上周期有效路径，建立近端参考距离；新目标时应清除，避免旧任务妨碍新任务。
   void setReferencePath(const std::vector<geometry_msgs::msg::Pose> & path)
   {
@@ -171,8 +190,106 @@ public:
   }
   // [功能与联系] 返回恢复方向仍有动态风险的内部标记；用于测试验证软连续性门控。
   bool recoveryContinuityActive() const {return recovery_risk_;}
+  // [功能与联系] 供回归测试确认旧路径进入目标软域时已释放稳定吸引；
+  // 避免为保持连续性而拖延首次必要避让。
+  bool referenceSoftConflictActive() const {return reference_soft_conflict_;}
   // [功能与联系] 返回search更新后的策略/目标快照；节点将恢复标志同步发布给DWA，避免两级约束不一致。
   const std::vector<DynamicObstacle> & dynamicObstacles() const {return dynamic_obstacles_;}
+
+  // [功能与联系] 轻量检查正在执行的剩余路径，而不是重新运行Hybrid A*。
+  // 只有路径被静态障碍阻断、预测进入动态碰撞触发域、违反当前COLREG动作，
+  // 或本船已经明显偏离路径时才请求事件重规划。
+  bool remainingPathNeedsReplan(
+    const std::vector<geometry_msgs::msg::Pose> & path,
+    double own_x, double own_y, double own_heading,
+    double collision_trigger_distance, double cross_track_limit,
+    bool check_colregs = true) const
+  {
+    if (path.size() < 2U) {return true;}
+    std::size_t nearest = 0U;
+    double nearest_distance = std::numeric_limits<double>::infinity();
+    for (std::size_t i = 0; i < path.size(); ++i) {
+      const double distance = std::hypot(
+        path[i].position.x - own_x, path[i].position.y - own_y);
+      if (distance < nearest_distance) {nearest_distance = distance; nearest = i;}
+    }
+    if (nearest_distance > std::max(0.1, cross_track_limit)) {return true;}
+
+    double elapsed = 0.0;
+    double previous_x = own_x;
+    double previous_y = own_y;
+    const std::size_t first = std::min(nearest + 1U, path.size() - 1U);
+    for (std::size_t i = first; i < path.size(); ++i) {
+      const double end_x = path[i].position.x;
+      const double end_y = path[i].position.y;
+      const double length = std::hypot(end_x - previous_x, end_y - previous_y);
+      if (length < 1.0e-8) {continue;}
+      const double heading = std::atan2(end_y - previous_y, end_x - previous_x);
+      const int samples = std::max(
+        1, static_cast<int>(std::ceil(length / std::max(0.25F, 0.5F * resolution_))));
+      double segment_x = previous_x;
+      double segment_y = previous_y;
+      for (int sample = 1; sample <= samples; ++sample) {
+        const double ratio = static_cast<double>(sample) / samples;
+        const double x = previous_x + ratio * (end_x - previous_x);
+        const double y = previous_y + ratio * (end_y - previous_y);
+        if (isLethal(static_cast<float>(x), static_cast<float>(y))) {return true;}
+        elapsed += estimateSegmentTime(
+          segment_x, segment_y, x, y, length / samples);
+        segment_x = x;
+        segment_y = y;
+        for (const auto & obstacle : dynamic_obstacles_) {
+          if (check_colregs && !hybrid_a_star_planner::headingAllowed(
+              obstacle.policy, heading, elapsed, 0.0, own_heading))
+          {
+            return true;
+          }
+          const double target_x = obstacle.state.x + obstacle.state.vx * elapsed;
+          const double target_y = obstacle.state.y + obstacle.state.vy * elapsed;
+          const double hard = std::max({
+            own_ship_radius_ + obstacle.state.radius + safety_buffer_, dynamic_hard_distance_,
+            obstacle.policy.type == EncounterType::OVERTAKING ?
+              overtaking_safe_distance_ : 0.0});
+          if (std::hypot(x - target_x, y - target_y) <
+            std::max(hard, collision_trigger_distance))
+          {
+            return true;
+          }
+          if (check_colregs && obstacle.policy.locked && !obstacle.policy.recovering &&
+            obstacle.policy.type == EncounterType::HEAD_ON)
+          {
+            const double dx = target_x - x;
+            const double dy = target_y - y;
+            const double forward = dx * std::cos(obstacle.policy.reference) +
+              dy * std::sin(obstacle.policy.reference);
+            const double lateral = -std::sin(obstacle.policy.reference) * (x - target_x) +
+              std::cos(obstacle.policy.reference) * (y - target_y);
+            if (forward >= -hard &&
+              (lateral > 0.25 || hybrid_a_star_planner::normalizeAngle(
+                heading - obstacle.policy.reference) > 2.0 * hybrid_a_star_planner::deg))
+            {
+              return true;
+            }
+          }
+          if (check_colregs && obstacle.policy.locked &&
+            obstacle.policy.type == EncounterType::CROSSING_STARBOARD)
+          {
+            const double speed = std::hypot(obstacle.state.vx, obstacle.state.vy);
+            if (speed > 0.05) {
+              const double along = ((x - target_x) * obstacle.state.vx +
+                (y - target_y) * obstacle.state.vy) / speed;
+              const double across = ((x - target_x) * obstacle.state.vy -
+                (y - target_y) * obstacle.state.vx) / speed;
+              if (std::abs(across) < hard && along > -hard) {return true;}
+            }
+          }
+        }
+      }
+      previous_x = end_x;
+      previous_y = end_y;
+    }
+    return false;
+  }
   // 与DWA终点速度上限一致的名义到达时间；最低预测速度避免终点除零。
   // 这是预测模型，不是强制本船速度，也不构成实船动力学保证。
   // [功能与联系] 由段长及巡航/终点制动模型估计耗时；运动基元、尾段和平滑复查使用相同时间基准。
@@ -248,14 +365,14 @@ public:
     return !isLethal(x, y);
   }
 
-  // [功能与联系] 执行时空Hybrid A*：探测恢复方向、构建启发与参考场、扩展运动基元/近端Dubins连接并回溯；每局部周期重新运行。
+  // [功能与联系] 执行一次时空Hybrid A*搜索：探测恢复方向、构建启发与参考场、扩展运动基元/近端Dubins连接并回溯；由事件调度器按需调用。
   std::vector<geometry_msgs::msg::Pose> search(
     float sx, float sy, float stheta, float gx, float gy, float gtheta)
   {
     search_heading_=stheta;
     search_start_x_=sx;search_start_y_=sy;search_goal_x_=gx;search_goal_y_=gy;
     // 当前CPA变安全不等于可以安全恢复。按恢复方向的时间同步净空
-    // 决定是否加连续性软代价；每周期重算，不计时锁航向，不复用旧路线。
+    // 决定是否加连续性软代价；每次事件搜索重算，不靠固定等待锁航向。
     recovery_risk_=false;
     const double recovery_length=std::hypot(gx-sx,gy-sy);
     const int recovery_samples=std::max(1,static_cast<int>(std::ceil(recovery_length)));
@@ -266,8 +383,8 @@ public:
       recovery_time+=estimateSegmentTime(px,py,x,y,recovery_length/recovery_samples);
       for(const auto &o:dynamic_obstacles_) {
         // 不依赖会遇是否已解锁：恢复方向仍有实际动态风险时就保持软连续性。
-        const double safe=std::max(own_ship_radius_+o.state.radius+safety_buffer_,
-          o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0);
+        const double safe=std::max({own_ship_radius_+o.state.radius+safety_buffer_, dynamic_hard_distance_,
+          o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0});
         if(std::hypot(x-o.state.x-o.state.vx*recovery_time,
           y-o.state.y-o.state.vy*recovery_time)<safe) {recovery_risk_=true;break;}
       }
@@ -275,10 +392,41 @@ public:
     }
     recovery_complete_=false;
     for(auto &o:dynamic_obstacles_) {
-      const double safe=std::max(own_ship_radius_+o.state.radius+safety_buffer_,
-        o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0);
+      const double safe=std::max({own_ship_radius_+o.state.radius+safety_buffer_, dynamic_hard_distance_,
+        o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0});
       o.policy.recovering=o.policy.safeToRecover(sx,sy,o.state,safe,recovery_risk_);
       recovery_complete_=recovery_complete_ || o.policy.recovering;
+    }
+    // 上一周期路径若已被当前目标预测软域占据，就不能继续用强稳定代价
+    // 把新搜索吸回旧路径。先释放吸引完成必要改道；新的安全路径发布后，
+    // 下一周期又会成为参考，从而稳定已经选定的避让侧。
+    reference_soft_conflict_=false;
+    if(!reference_path_.empty() && !dynamic_obstacles_.empty()) {
+      std::size_t nearest=0;
+      double nearest_distance=std::numeric_limits<double>::infinity();
+      for(std::size_t i=0;i<reference_path_.size();++i) {
+        const double d=std::hypot(reference_path_[i].position.x-sx,
+          reference_path_[i].position.y-sy);
+        if(d<nearest_distance) {nearest_distance=d;nearest=i;}
+      }
+      double reference_time=0.0,reference_length=0.0,rx=sx,ry=sy;
+      for(std::size_t i=nearest;i<reference_path_.size() && !reference_soft_conflict_;++i) {
+        const double x=reference_path_[i].position.x,y=reference_path_[i].position.y;
+        const double length=std::hypot(x-rx,y-ry);
+        reference_length+=length;
+        if(reference_length>near_field_reference_horizon_) break;
+        reference_time+=estimateSegmentTime(rx,ry,x,y,length);rx=x;ry=y;
+        for(const auto &o:dynamic_obstacles_) {
+          if(!o.policy.locked && !o.encounter.active) continue;
+          const double hard=std::max({own_ship_radius_+o.state.radius+safety_buffer_, dynamic_hard_distance_,
+            o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0});
+          const double soft=std::max({hard,avoidance_radius_,
+            (own_ship_radius_+o.state.radius+safety_buffer_)*soft_distance_factor_});
+          const double tx=o.state.x+o.state.vx*reference_time;
+          const double ty=o.state.y+o.state.vy*reference_time;
+          if(std::hypot(x-tx,y-ty)<soft) {reference_soft_conflict_=true;break;}
+        }
+      }
     }
     buildReferenceDistance();
     if (width_ == 0 || height_ == 0 || !isStartValid(sx, sy)) {
@@ -510,6 +658,31 @@ public:
 
 
 private:
+  // [功能与联系] 对遇尚未安全通过时，将候选保持在目标预测位置的右舷侧，
+  // 且不允许越过锁定原航向向左；避免达到初始转角后又从船首左侧抄近路。
+  bool headOnStarboardPassAllowed(
+    const DynamicObstacle & obstacle, double x, double y, double heading,
+    double target_x, double target_y, double safe) const
+  {
+    const auto &policy=obstacle.policy;
+    if(!enforce_head_on_starboard_ || !policy.locked || policy.recovering ||
+      policy.type!=EncounterType::HEAD_ON) return true;
+    const double dx=target_x-x,dy=target_y-y;
+    const double forward=dx*std::cos(policy.reference)+dy*std::sin(policy.reference);
+    if(forward < -safe) return true;
+    const double own_lateral=-std::sin(policy.reference)*(x-target_x)+
+      std::cos(policy.reference)*(y-target_y);
+    const double initial_lateral=-std::sin(policy.reference)*
+      (search_start_x_-obstacle.state.x)+std::cos(policy.reference)*
+      (search_start_y_-obstacle.state.y);
+    // 允许从轻微偏置的初始相对位置逐步右转，但到正横前必须进入右侧。
+    const double allowed_lateral=forward<=0.0 ? 0.25 :
+      std::max(0.25,initial_lateral+0.25);
+    if(own_lateral>allowed_lateral) return false;
+    return hybrid_a_star_planner::normalizeAngle(heading-policy.reference)<=
+      2.0*hybrid_a_star_planner::deg;
+  }
+
   // [功能与联系] 由平滑点邻域切向更新中间姿态，保留起终姿态；为headingAllowed与输出轨迹提供一致航向。
   void updatePathHeadings(
     std::vector<geometry_msgs::msg::Pose> & path,
@@ -557,10 +730,12 @@ private:
           }
           const double target_x = obstacle.state.x + obstacle.state.vx * time;
           const double target_y = obstacle.state.y + obstacle.state.vy * time;
-          const double safe = std::max(
-            own_ship_radius_ + obstacle.state.radius + safety_buffer_,
-            obstacle.policy.type == EncounterType::OVERTAKING ? overtaking_safe_distance_ : 0.0);
+          const double safe = std::max({
+            own_ship_radius_ + obstacle.state.radius + safety_buffer_, dynamic_hard_distance_,
+            obstacle.policy.type == EncounterType::OVERTAKING ? overtaking_safe_distance_ : 0.0});
           if (std::hypot(x - target_x, y - target_y) < safe) {return false;}
+          if(!headOnStarboardPassAllowed(
+              obstacle,x,y,heading,target_x,target_y,safe)) return false;
           if (obstacle.policy.locked &&
             obstacle.policy.type == EncounterType::CROSSING_STARBOARD)
           {
@@ -599,9 +774,10 @@ private:
       for(const auto &o:dynamic_obstacles_) {
         if(!hybrid_a_star_planner::headingAllowed(o.policy,heading,time,0,search_heading_))return {};
         const double tx=o.state.x+o.state.vx*time,ty=o.state.y+o.state.vy*time;
-        const double safe=std::max(own_ship_radius_+o.state.radius+safety_buffer_,
-          o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0);
+        const double safe=std::max({own_ship_radius_+o.state.radius+safety_buffer_, dynamic_hard_distance_,
+          o.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_:0.0});
         if(std::hypot(x-tx,y-ty)<safe+0.15)return {};
+        if(!headOnStarboardPassAllowed(o,x,y,heading,tx,ty,safe))return {};
         const double speed=std::hypot(o.state.vx,o.state.vy);
         if(o.policy.locked && o.policy.type==EncounterType::CROSSING_STARBOARD && speed>0.05) {
           const double along=((x-tx)*o.state.vx+(y-ty)*o.state.vy)/speed;
@@ -715,9 +891,30 @@ private:
           // 随空间距离衰减，不要求继续直航，障碍物硬检查始终优先。
           const double blend=recovery_risk_ && recovery_horizon_>0 ? std::max(0.0,
             1.0-std::hypot(x-search_start_x_,y-search_start_y_)/(cruise_speed_*recovery_horizon_)):0.0;
-          cost += ((recovery_complete_ ? 0.0 : reference_path_weight_)+recovery_weight_*blend) * std::min(
-            static_cast<double>(distance), reference_path_max_distance_) /
-            reference_path_max_distance_;
+          // buildReferenceDistance已经把栅格距离换算成米。
+          const double deviation = std::min(
+            static_cast<double>(distance), reference_path_max_distance_);
+          const double continuity_weight = reference_soft_conflict_ ? 0.0 :
+            ((recovery_complete_ ? 0.0 : reference_path_weight_)+recovery_weight_*blend);
+          cost += continuity_weight *
+            deviation / reference_path_max_distance_;
+
+          // 连续两次搜索最影响操船的是本船近前方：DWA前视点若在这里从
+          // 旧轨迹左侧跳到右侧，会直接造成反向打舵。近场项从本船位置
+          // 向外线性衰减，并对横向偏离使用平方代价；远端仍允许为后续
+          // 障碍预先调整。这里只增加搜索代价，不会放行任何不安全基元，
+          // 旧路线被动态船占据时，硬碰撞/COLREG检查会迫使搜索安全偏离。
+          const double start_distance = std::hypot(
+            x - search_start_x_, y - search_start_y_);
+          const double near_blend = std::max(
+            0.0, 1.0 - start_distance / near_field_reference_horizon_);
+          const double normalized_deviation = std::min(
+            deviation / near_field_deviation_scale_, 2.0);
+          // 安全通过后立刻放开旧避让路径，避免恢复阶段继续被旧路线拖住。
+          const double near_weight = (recovery_complete_ || reference_soft_conflict_) ?
+            0.0 : near_field_reference_weight_;
+          cost += near_weight * near_blend *
+            normalized_deviation * normalized_deviation;
         }
       }
     }
@@ -900,11 +1097,13 @@ private:
         const double target_x = obstacle.state.x + obstacle.state.vx * time;
         const double target_y = obstacle.state.y + obstacle.state.vy * time;
         const double distance = std::hypot(x - target_x, y - target_y);
-        const double safe_distance = std::max(own_ship_radius_ + obstacle.state.radius + safety_buffer_,
-          obstacle.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_ : 0.0);
+        const double safe_distance = std::max({own_ship_radius_ + obstacle.state.radius + safety_buffer_, dynamic_hard_distance_,
+          obstacle.policy.type==EncounterType::OVERTAKING ? overtaking_safe_distance_ : 0.0});
         if (distance < safe_distance) {
           return false;
         }
+        if(!headOnStarboardPassAllowed(
+            obstacle,x,y,heading,target_x,target_y,safe_distance)) return false;
         if(obstacle.policy.locked && obstacle.policy.type==EncounterType::CROSSING_STARBOARD) {
           const double speed=std::hypot(obstacle.state.vx,obstacle.state.vy);
           if(speed>0.05) {
@@ -916,7 +1115,8 @@ private:
         }
         const double soft_distance = std::max({safe_distance,avoidance_radius_,
           (own_ship_radius_ + obstacle.state.radius + safety_buffer_)*soft_distance_factor_});
-        if (distance < soft_distance && soft_distance > safe_distance) {
+        if ((obstacle.policy.locked || obstacle.encounter.active) &&
+          distance < soft_distance && soft_distance > safe_distance) {
           cost += dynamic_weight_ *
             (soft_distance - distance) / (soft_distance - safe_distance) /
             static_cast<double>(samples);
@@ -997,13 +1197,14 @@ private:
   double channel_obstacle_weight_{5.0};
   double analytic_expansion_distance_{18.0};
   double cruise_speed_{0.8};
-  double own_ship_radius_{2.0};
-  double safety_buffer_{2.0};
+  double own_ship_radius_{0.5};
+  double safety_buffer_{1.0};
+  double dynamic_hard_distance_{2.0};
   double prediction_horizon_{120.0};
-  double soft_distance_factor_{2.0};
-  double avoidance_radius_{12.0};
-  double dynamic_weight_{8.0};
-  double overtaking_safe_distance_{15.0};
+  double soft_distance_factor_{4.0};
+  double avoidance_radius_{7.0};
+  double dynamic_weight_{16.0};
+  double overtaking_safe_distance_{3.0};
   double colregs_weight_{12.0};
   std::vector<float> holonomic_cost_;
   std::vector<geometry_msgs::msg::Pose> reference_path_;
@@ -1012,6 +1213,9 @@ private:
   double reference_path_max_distance_{12.0};
   double steering_change_weight_{1.0};
   double steering_magnitude_weight_{0.0};
+  double near_field_reference_weight_{12.0};
+  double near_field_reference_horizon_{45.0};
+  double near_field_deviation_scale_{3.0};
   double colregs_deadband_{0.05};
   double search_heading_{0.0};
   double search_start_x_{0},search_start_y_{0},search_goal_x_{0},search_goal_y_{0};
@@ -1019,17 +1223,35 @@ private:
   double arrival_min_speed_{0.3},arrival_goal_tolerance_{0.4};
   bool recovery_risk_{false},arrival_braking_{false};
   bool recovery_complete_{false};
+  bool reference_soft_conflict_{false};
+  bool enforce_head_on_starboard_{true};
 };
 
 class HybridAStarNode : public rclcpp::Node
 {
 public:
-  // [功能与联系] 加载搜索/航道/动态/平滑参数，建立TF、各安全输入和风险输出，创建持续局部规划timer；与无timer全局A*分工不同。
+  // [功能与联系] 加载搜索/航道/动态/平滑参数，建立TF、各安全输入和风险输出。
+  // timer持续做安全监测，但事件模式只在路径风险变化时运行Hybrid A*搜索。
   HybridAStarNode()
   : Node("hybrid_a_star_node")
   {
     const double frequency = declare_parameter("planner_frequency", 2.0);
     path_failure_hold_time_ = declare_parameter("path_failure_hold_time", 3.0);
+    event_driven_enabled_ = declare_parameter("event_driven.enabled", true);
+    event_collision_trigger_distance_ = declare_parameter(
+      "event_driven.collision_trigger_distance", 2.0);
+    event_cross_track_limit_ = declare_parameter(
+      "event_driven.cross_track_limit", 8.0);
+    event_target_course_change_ = declare_parameter(
+      "event_driven.target_course_change", 5.0 * M_PI / 180.0);
+    event_target_speed_change_ = declare_parameter(
+      "event_driven.target_speed_change", 0.3);
+    event_search_attempts_ = std::clamp(
+      static_cast<int>(declare_parameter("event_driven.search_attempts", 2L)), 1, 3);
+    max_path_length_ratio_ = declare_parameter("event_driven.max_path_length_ratio", 3.0);
+    max_path_extra_distance_ = declare_parameter("event_driven.max_path_extra_distance", 40.0);
+    goal_loop_radius_ = declare_parameter("event_driven.goal_loop_radius", 3.0);
+    goal_loop_min_arc_ = declare_parameter("event_driven.goal_loop_min_arc", 8.0);
     const std::string trajectory_topic = declare_parameter<std::string>(
       "trajectory_topic", "/hybrid_a_star/trajectory");
     const std::string goal_topic = declare_parameter<std::string>("goal_topic", "/goal_pose");
@@ -1074,6 +1296,12 @@ public:
       "stability.steering_change_weight", 1.0);
     const double steering_magnitude_weight = declare_parameter(
       "stability.steering_magnitude_weight", 1.0);
+    const double near_field_reference_weight = declare_parameter(
+      "stability.near_field_reference_weight", 12.0);
+    const double near_field_reference_horizon = declare_parameter(
+      "stability.near_field_reference_horizon", 45.0);
+    const double near_field_deviation_scale = declare_parameter(
+      "stability.near_field_deviation_scale", 3.0);
     smoothing_enabled_ = declare_parameter("smoothing.enabled", true);
     smoothing_spacing_ = declare_parameter("smoothing.resample_spacing", 1.0);
     smoothing_iterations_ = declare_parameter("smoothing.iterations", 120);
@@ -1084,19 +1312,20 @@ public:
     smoothing_long_range_weight_ = declare_parameter("smoothing.long_range_weight", 0.12);
 
     cruise_speed_ = declare_parameter("cruise_speed", 0.8);
-    own_ship_radius_ = declare_parameter("own_ship_radius", 1.5);
-    safety_buffer_ = declare_parameter("safety_buffer", 4.0);
-    const double overtaking_distance = declare_parameter("overtaking_safe_distance", 9.0);
+    own_ship_radius_ = declare_parameter("own_ship_radius", 0.5);
+    safety_buffer_ = declare_parameter("safety_buffer", 1.0);
+    const double overtaking_distance = declare_parameter("overtaking_safe_distance", 3.0);
     prediction_horizon_ = declare_parameter("dynamic_prediction_horizon", 120.0);
-    const double soft_factor = declare_parameter("dynamic_soft_distance_factor", 2.0);
-    avoidance_radius_ = declare_parameter("avoidance_radius", 12.0);
-    const double dynamic_weight = declare_parameter("dynamic_cost_weight", 8.0);
+    const double soft_factor = declare_parameter("dynamic_soft_distance_factor", 3.5);
+    avoidance_radius_ = declare_parameter("avoidance_radius", 7.0);
+    dynamic_hard_distance_ = declare_parameter("dynamic_hard_distance", 3.0);
+    const double dynamic_weight = declare_parameter("dynamic_cost_weight", 16.0);
     const double colregs_weight = declare_parameter("colregs_weight", 12.0);
     const double colregs_deadband = declare_parameter("colregs_heading_deadband", 0.05);
     target_timeout_ = declare_parameter("target_state_timeout", 2.0);
     own_odom_timeout_ = declare_parameter("own_odom_timeout", 5.0);
     require_target_states_ = declare_parameter("require_target_states", false);
-    colregs_risk_distance_ = declare_parameter("colregs_risk_distance", 20.0);
+    colregs_risk_distance_ = declare_parameter("colregs_risk_distance", 2.0);
     colregs_time_horizon_ = declare_parameter("colregs_time_horizon", 120.0);
     head_on_bearing_ = declare_parameter("head_on_bearing", 20.0 * M_PI / 180.0);
     head_on_course_tolerance_ = declare_parameter(
@@ -1104,24 +1333,24 @@ public:
     crossing_bearing_limit_ = declare_parameter(
       "crossing_bearing_limit", 112.5 * M_PI / 180.0);
     overtaking_speed_margin_ = declare_parameter("overtaking_speed_margin", 0.2);
-    risk_thresholds_.monitor_dcpa=declare_parameter("risk.monitor_dcpa",20.0);
-    risk_thresholds_.action_dcpa=declare_parameter("risk.action_dcpa",15.0);
-    risk_thresholds_.emergency_dcpa=declare_parameter("risk.emergency_dcpa",8.0);
+    risk_thresholds_.monitor_dcpa=declare_parameter("risk.monitor_dcpa",10.0);
+    risk_thresholds_.action_dcpa=declare_parameter("risk.action_dcpa",5.0);
+    risk_thresholds_.emergency_dcpa=declare_parameter("risk.emergency_dcpa",2.5);
     risk_thresholds_.monitor_range=declare_parameter("risk.monitor_range",80.0);
-    risk_thresholds_.action_range=declare_parameter("risk.action_range",45.0);
-    risk_thresholds_.emergency_range=declare_parameter("risk.emergency_range",20.0);
-    risk_thresholds_.monitor_tcpa=declare_parameter("risk.monitor_tcpa",90.0);
-    risk_thresholds_.action_tcpa=declare_parameter("risk.action_tcpa",35.0);
-    risk_thresholds_.emergency_tcpa=declare_parameter("risk.emergency_tcpa",12.0);
-    release_tcpa_=declare_parameter("risk.release_tcpa",-5.0);
-    release_range_=declare_parameter("risk.release_range",30.0);
-    release_observations_=declare_parameter("risk.release_observations",3);
-    manoeuvre_grace_=declare_parameter("risk.manoeuvre_grace",8.0);
+    risk_thresholds_.action_range=declare_parameter("risk.action_range",24.0);
+    risk_thresholds_.emergency_range=declare_parameter("risk.emergency_range",8.0);
+    risk_thresholds_.monitor_tcpa=declare_parameter("risk.monitor_tcpa",40.0);
+    risk_thresholds_.action_tcpa=declare_parameter("risk.action_tcpa",16.0);
+    risk_thresholds_.emergency_tcpa=declare_parameter("risk.emergency_tcpa",6.0);
+    release_tcpa_=declare_parameter("risk.release_tcpa",-2.0);
+    release_range_=declare_parameter("risk.release_range",6.0);
+    release_observations_=declare_parameter("risk.release_observations",2);
+    manoeuvre_grace_=declare_parameter("risk.manoeuvre_grace",6.0);
     visualization_enabled_=declare_parameter("visualization.enabled",true);
     target_topics_ = declare_parameter<std::vector<std::string>>(
       "target_odom_topics", {"/target_boat/odom"});
     target_radii_ = declare_parameter<std::vector<double>>(
-      "target_ship_radii", {2.0});
+      "target_ship_radii", {0.5});
 
     planner_ = std::make_unique<HybridAStarPlanner>();
     planner_->setParams(
@@ -1133,6 +1362,7 @@ public:
       cruise_speed_, own_ship_radius_, safety_buffer_, prediction_horizon_, soft_factor,
       avoidance_radius_,
       dynamic_weight, colregs_weight, colregs_deadband, overtaking_distance);
+    planner_->setDynamicHardDistance(dynamic_hard_distance_);
     planner_->setChannelParams(
       channel_enabled_, shoreline_threshold, channel_obstacle_threshold,
       main_lane_max, opposite_lane_min, outside_lane_weight, opposite_lane_weight,
@@ -1141,8 +1371,11 @@ public:
     planner_->setStabilityParams(
       reference_path_weight, reference_path_max_distance, steering_change_weight,
       steering_magnitude_weight);
+    planner_->setNearFieldStabilityParams(
+      near_field_reference_weight, near_field_reference_horizon,
+      near_field_deviation_scale);
     planner_->setRecoveryParams(
-      declare_parameter("stability.recovery_weight",2.0),
+      declare_parameter("stability.recovery_weight",4.0),
       declare_parameter("stability.recovery_horizon",6.0),
       declare_parameter("prediction.goal_braking",true),
       declare_parameter("prediction.goal_deceleration",0.5),
@@ -1219,7 +1452,50 @@ private:
     nav_msgs::msg::Odometry::SharedPtr message;
     rclcpp::Time receipt_time;
     hybrid_a_star_planner::Policy policy;
+    double planned_onset{-std::numeric_limits<double>::infinity()};
+    double planned_target_heading{0.0};
+    double planned_target_speed{0.0};
+    bool has_planned_snapshot{false};
   };
+
+  // [功能与联系] 同一次已成功处理的会遇不重复触发规则搜索；只有新锁定会遇
+  // 或目标船相对规划快照发生明显机动，才生成新的规则规划事件。
+  bool encounterNeedsNewPlan(const std::vector<DynamicObstacle> &obstacles) const {
+    for(const auto &obstacle:obstacles) {
+      if(!obstacle.policy.locked || obstacle.policy.recovering) continue;
+      for(std::size_t i=0;i<target_topics_.size();++i) {
+        if(obstacle.name!=target_topics_[i]) continue;
+        const auto &track=target_tracks_[i];
+        if(!track.has_planned_snapshot ||
+          obstacle.policy.onset>track.planned_onset+1.0e-6) return true;
+        const double heading=std::atan2(obstacle.state.vy,obstacle.state.vx);
+        const double speed=std::hypot(obstacle.state.vx,obstacle.state.vy);
+        if(std::abs(hybrid_a_star_planner::normalizeAngle(
+            heading-track.planned_target_heading))>event_target_course_change_ ||
+          std::abs(speed-track.planned_target_speed)>event_target_speed_change_)
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // [功能与联系] 仅在路径成功发布后消费本次会遇事件；搜索失败不会记录，
+  // 后续监测周期仍会重试，而匀速匀向目标不会反复触发。
+  void recordPlannedEncounters(const std::vector<DynamicObstacle> &obstacles) {
+    for(const auto &obstacle:obstacles) {
+      if(!obstacle.policy.locked) continue;
+      for(std::size_t i=0;i<target_topics_.size();++i) {
+        if(obstacle.name!=target_topics_[i]) continue;
+        auto &track=target_tracks_[i];
+        track.planned_onset=obstacle.policy.onset;
+        track.planned_target_heading=std::atan2(obstacle.state.vy,obstacle.state.vx);
+        track.planned_target_speed=std::hypot(obstacle.state.vx,obstacle.state.vy);
+        track.has_planned_snapshot=true;
+      }
+    }
+  }
 
   // [功能与联系] 创建风险显示圆的Marker并设置namespace/颜色/半径；被publishRiskMarkers调用，不产生传感器感知能力。
   void addCircle(visualization_msgs::msg::MarkerArray &out,const std::string &frame,
@@ -1270,16 +1546,11 @@ private:
       addCircle(out,frame,"range_monitor",id++,o.state.x,o.state.y,r.monitor_range,0.05,1,1,0,0.35,0.16);
       addCircle(out,frame,"range_action",id++,o.state.x,o.state.y,r.action_range,0.10,1,0.5,0,0.45,0.20);
       addCircle(out,frame,"range_emergency",id++,o.state.x,o.state.y,r.emergency_range,0.15,1,0,0,0.60,0.25);
-      const double cpa_time=std::max(0.0,o.policy.metric.tcpa);
-      const double cpa_x=o.state.x+o.state.vx*cpa_time;
-      const double cpa_y=o.state.y+o.state.vy*cpa_time;
-      // DCPA layers use the same colours but thicker, higher lines at CPA.
-      addCircle(out,frame,"dcpa_monitor",id++,cpa_x,cpa_y,r.monitor_dcpa,0.30,1,1,0,0.85,0.28);
-      addCircle(out,frame,"dcpa_action",id++,cpa_x,cpa_y,r.action_dcpa,0.36,1,0.5,0,0.90,0.32);
-      addCircle(out,frame,"dcpa_emergency",id++,cpa_x,cpa_y,r.emergency_dcpa,0.42,1,0,0,0.95,0.36);
+      // DCPA/TCPA remain in the label and prediction line; extra CPA rings are
+      // intentionally omitted because they obscured the three actionable layers.
       // 参考圈画在当前目标位置；真正的动态硬域随目标预测到达位置移动。
       const double hard_distance = std::max(
-        own_ship_radius_ + o.state.radius + safety_buffer_,
+        std::max(own_ship_radius_ + o.state.radius + safety_buffer_, dynamic_hard_distance_),
         o.policy.type == EncounterType::OVERTAKING ?
           get_parameter("overtaking_safe_distance").as_double() : 0.0);
       const double soft_distance = std::max({hard_distance, avoidance_radius_,
@@ -1289,8 +1560,6 @@ private:
         soft_distance,0.52,0,0.9,1,0.95,0.34);
       addCircle(out,frame,"hard_separation",id++,o.state.x,o.state.y,
         hard_distance,0.56,1,0,1,0.95,0.30);
-      addCircle(out,frame,"current_stop",id++,o.state.x,o.state.y,
-        colregs_risk_distance_,0.60,0.65,0.35,1,0.95,0.22);
 
       visualization_msgs::msg::Marker line;
       line.header.frame_id=frame;line.header.stamp=now();line.ns="target_prediction";line.id=id++;
@@ -1310,8 +1579,7 @@ private:
            <<"  TCPA="<<std::round(o.policy.metric.tcpa*10)/10<<"s"
            <<"  DCPA="<<std::round(o.policy.metric.dcpa*10)/10<<"m"
            <<"\ncyan soft="<<soft_distance
-           <<"m  magenta hard="<<hard_distance<<"m  violet STOP<"
-           <<colregs_risk_distance_<<"m";
+           <<"m  magenta forbidden<"<<hard_distance<<"m";
       addText(out,frame,"risk_values",id++,o.state.x,o.state.y,3.2,label.str());
     }
     risk_marker_pub_->publish(out);
@@ -1324,7 +1592,7 @@ private:
     planner_->setCostmap(message);
   }
 
-  // [功能与联系] 接收活动目标并更新局部目标状态；固定频率planningTimerCallback负责后续搜索，本回调不驱动本船。
+  // [功能与联系] 接收活动目标并使旧任务路径失效；下一次安全监测timer触发一次搜索，本回调不驱动本船。
   void goalCallback(const geometry_msgs::msg::PoseStamped::SharedPtr message)
   {
     // A repeated copy of the same active waypoint must not erase a valid path.
@@ -1362,6 +1630,9 @@ private:
     for (std::size_t i = 0; i < target_tracks_.size(); ++i) {
       auto & track = target_tracks_[i];
       if (!track.message || (now() - track.receipt_time).seconds() > target_timeout_) {
+        // 目标失联后下次重新出现必须作为新会遇重新规划，不能沿用旧事件快照。
+        track.policy = hybrid_a_star_planner::Policy{};
+        track.has_planned_snapshot = false;
         if (require_target_states_) {
           inputs_valid_=false;
         }
@@ -1387,7 +1658,11 @@ private:
         obstacle.state.radius = target_radii_.empty() ? 0.0 :
           target_radii_[std::min(i, target_radii_.size() - 1)];
         const double age=(now()-rclcpp::Time(track.message->header.stamp)).seconds();
-        if(age< -0.1 || age>target_timeout_) {inputs_valid_=false;continue;}
+        if(age< -0.1 || age>target_timeout_) {
+          track.policy = hybrid_a_star_planner::Policy{};
+          track.has_planned_snapshot = false;
+          inputs_valid_=false;continue;
+        }
         obstacle.state.x+=obstacle.state.vx*std::max(0.0,age);
         obstacle.state.y+=obstacle.state.vy*std::max(0.0,age);
         // Attach YAML policy values before every update so runtime parameters
@@ -1401,7 +1676,8 @@ private:
           own_odom_->twist.twist.linear.x,obstacle.state);
         obstacle.policy=track.policy;
         const double risk_distance = std::max(
-          colregs_risk_distance_, own_ship_radius_ + obstacle.state.radius + safety_buffer_);
+          colregs_risk_distance_,
+          std::max(own_ship_radius_ + obstacle.state.radius + safety_buffer_, dynamic_hard_distance_));
         obstacle.encounter = hybrid_a_star_planner::assessEncounter(
           own_x, own_y, reference_heading, cruise_speed_, obstacle.state,
           colregs_time_horizon_, risk_distance, head_on_bearing_,
@@ -1436,7 +1712,43 @@ private:
     return obstacles;
   }
 
-  // [功能与联系] 局部规划调度：检查全局任务epoch/输入，TF变换起终点，收集目标，搜索/必要Rule17重试/平滑，再发布路径与策略。
+  // [功能与联系] 高频更新感知/CPA/规则状态，但仅在新任务或当前剩余路径重新
+  // 变得不安全时执行搜索；安全缓存路径只刷新时间戳供DWA持续跟踪。
+  double pathLength(const std::vector<geometry_msgs::msg::Pose> & path) const
+  {
+    double length = 0.0;
+    for (std::size_t i = 1; i < path.size(); ++i) {
+      length += std::hypot(path[i].position.x - path[i-1].position.x,
+        path[i].position.y - path[i-1].position.y);
+    }
+    return length;
+  }
+
+  bool pathHasGoalLoop(const std::vector<geometry_msgs::msg::Pose> & path) const
+  {
+    if (path.size() < 4) return false;
+    const auto & goal = path.back().position;
+    for (std::size_t i = 1; i + 2 < path.size(); ++i) {
+      if (std::hypot(path[i].position.x-goal.x, path[i].position.y-goal.y) > goal_loop_radius_) continue;
+      double remaining = 0.0;
+      for (std::size_t j = i + 1; j < path.size(); ++j) {
+        remaining += std::hypot(path[j].position.x-path[j-1].position.x,
+          path[j].position.y-path[j-1].position.y);
+      }
+      if (remaining > goal_loop_min_arc_) return true;
+    }
+    return false;
+  }
+
+  bool pathQualityAcceptable(const std::vector<geometry_msgs::msg::Pose> & path,
+    double sx, double sy, double gx, double gy) const
+  {
+    if (path.size() < 2 || pathHasGoalLoop(path)) return false;
+    const double direct = std::max(1.0, std::hypot(gx-sx, gy-sy));
+    const double length = pathLength(path);
+    return length <= direct * max_path_length_ratio_ + max_path_extra_distance_;
+  }
+
   void planningTimerCallback()
   {
     if(global_route_sub_ && (!global_route_ || global_route_->poses.empty() ||
@@ -1474,14 +1786,90 @@ private:
         return;
       }
 
-      // 每个周期仍完整运行Hybrid A*；上一条轨迹仅作为可被安全与COLREG覆盖
-      // 的软参考，使相邻周期的整体航线连续，但不会直接复用旧搜索结果。
+      const bool new_encounter_event=encounterNeedsNewPlan(obstacles);
+      const bool path_requires_replan = !has_valid_path_for_goal_ || new_encounter_event ||
+        planner_->remainingPathNeedsReplan(
+          last_planning_path_, start.pose.position.x, start.pose.position.y,
+          reference_heading, event_collision_trigger_distance_, event_cross_track_limit_, false);
+      if (event_driven_enabled_ && !path_requires_replan) {
+        // 当前轨迹仍安全时不运行搜索。历史会遇锁仍可保留诊断，但目标已安全
+        // 通过时立即标记恢复，DWA不必等待release计时才继续跟踪原避让轨迹。
+        for (auto & obstacle : obstacles) {
+          const double safe = std::max({
+            own_ship_radius_ + obstacle.state.radius + safety_buffer_, dynamic_hard_distance_,
+            obstacle.policy.type == EncounterType::OVERTAKING ?
+              get_parameter("overtaking_safe_distance").as_double() : 0.0});
+          if (obstacle.policy.safeToRecover(
+              start.pose.position.x, start.pose.position.y, obstacle.state, safe, false))
+          {
+            obstacle.policy.recovering = true;
+            for (std::size_t i = 0; i < target_tracks_.size(); ++i) {
+              if (obstacle.name == target_topics_[i]) {
+                target_tracks_[i].policy.recovering = true;
+                break;
+              }
+            }
+          }
+        }
+        planner_->setDynamicObstacles(obstacles);
+        publishPolicies(planning_frame, obstacles);
+        publishAvoidanceEnvelope(planning_frame, last_planning_path_, std::any_of(
+          obstacles.begin(), obstacles.end(), [](const auto & obstacle) {
+            return obstacle.policy.locked && !obstacle.policy.recovering;
+          }));
+        refreshCachedPath();
+        RCLCPP_DEBUG_THROTTLE(
+          get_logger(), *get_clock(), 5000,
+          "Event mode: cached Hybrid A* path remains safe; search skipped");
+        return;
+      }
+
+      // 新任务、静态阻断、预测碰撞、规则冲突或明显偏航才执行完整搜索。
+      // 上一条轨迹仍只是安全可覆盖的软参考，不是不可突破的硬走廊。
       planner_->setReferencePath(last_planning_path_);
 
       auto poses = planner_->search(
         start.pose.position.x, start.pose.position.y, tf2::getYaw(start.pose.orientation),
         transformed_goal.pose.position.x, transformed_goal.pose.position.y,
         tf2::getYaw(transformed_goal.pose.orientation));
+      // 对遇首先强制右舷通过。只有地形或障碍令右侧走廊完全无解时，
+      // 才按“安全优先于规则”临时放开侧向限制执行一次回退搜索。
+      if(poses.empty() && std::any_of(obstacles.begin(),obstacles.end(),[](const auto &o){
+          return o.policy.locked && !o.policy.recovering &&
+            o.policy.type==hybrid_a_star_planner::EncounterType::HEAD_ON;})) {
+        planner_->setHeadOnStarboardEnforced(false);
+        poses=planner_->search(
+          start.pose.position.x,start.pose.position.y,tf2::getYaw(start.pose.orientation),
+          transformed_goal.pose.position.x,transformed_goal.pose.position.y,
+          tf2::getYaw(transformed_goal.pose.orientation));
+        planner_->setHeadOnStarboardEnforced(true);
+        if(!poses.empty()) RCLCPP_WARN(
+          get_logger(),"Starboard head-on corridor infeasible; safety fallback used");
+      }
+      // A single deterministic search can occasionally select a poor but valid
+      // branch.  Run up to three bounded candidates and retain the shortest
+      // non-looping one.  Later attempts deliberately remove the soft previous
+      // path reference, while all hard safety/COLREG checks remain active.
+      if (!poses.empty() && event_search_attempts_ > 1) {
+        std::vector<geometry_msgs::msg::Pose> best = poses;
+        double best_length = pathLength(best);
+        for (int attempt = 1; attempt < event_search_attempts_; ++attempt) {
+          planner_->setDynamicObstacles(obstacles);
+          planner_->setReferencePath({});
+          auto candidate = planner_->search(
+            start.pose.position.x, start.pose.position.y, tf2::getYaw(start.pose.orientation),
+            transformed_goal.pose.position.x, transformed_goal.pose.position.y,
+            tf2::getYaw(transformed_goal.pose.orientation));
+          if (!candidate.empty() && pathQualityAcceptable(candidate,
+              start.pose.position.x, start.pose.position.y,
+              transformed_goal.pose.position.x, transformed_goal.pose.position.y)) {
+            const double length = pathLength(candidate);
+            if (length < best_length) { best = std::move(candidate); best_length = length; }
+          }
+        }
+        poses = std::move(best);
+        planner_->setReferencePath(last_planning_path_);
+      }
       // If the stand-on corridor itself has no collision-free continuation,
       // waiting or stopping would be the unsafe choice.  Treat infeasibility
       // as Rule 17 intervention and immediately re-plan as the give-way vessel.
@@ -1512,9 +1900,12 @@ private:
         }
       }
       obstacles=planner_->dynamicObstacles();
+      syncRecoveryFlags(obstacles);
       publishPolicies(planning_frame,obstacles);
       if (poses.empty()) {
-        handlePlanningFailure();
+        const bool traffic_relevant=std::any_of(obstacles.begin(),obstacles.end(),[this](const auto &o){
+          return o.policy.locked || o.policy.metric.range<=risk_thresholds_.monitor_range;});
+        handlePlanningFailure(traffic_relevant);
         RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "Hybrid A* found no safe path");
         return;
       }
@@ -1523,6 +1914,15 @@ private:
           poses, smoothing_spacing_, smoothing_iterations_, smoothing_weight_,
           smoothing_data_weight_, smoothing_max_deviation_,
           smoothing_long_range_points_, smoothing_long_range_weight_);
+      }
+      if (!pathQualityAcceptable(poses, start.pose.position.x, start.pose.position.y,
+          transformed_goal.pose.position.x, transformed_goal.pose.position.y)) {
+        const bool traffic_relevant = std::any_of(obstacles.begin(), obstacles.end(),
+          [](const auto & o) { return o.policy.locked || o.encounter.active; });
+        handlePlanningFailure(traffic_relevant);
+        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
+          "Rejected looping/excessively long Hybrid A* path near goal; waiting for a safer replan");
+        return;
       }
       publishAvoidanceEnvelope(planning_frame,poses,std::any_of(
         obstacles.begin(),obstacles.end(),[](const auto &o){return o.policy.locked;}));
@@ -1545,6 +1945,7 @@ private:
       last_output_path_ = path;
       has_valid_path_for_goal_ = true;
       last_path_success_time_ = now();
+      recordPlannedEncounters(obstacles);
       RCLCPP_INFO_THROTTLE(
         get_logger(), *get_clock(), 2000, "Published V4 constrained path with %zu poses", poses.size());
     } catch (const tf2::TransformException & exception) {
@@ -1596,10 +1997,38 @@ private:
     nav_msgs::msg::Path p;p.header.frame_id=global_frame_;p.header.stamp=now();
     if(path_pub_)path_pub_->publish(p);
   }
-  // [功能与联系] 更新最近路径有效性标志而不反复清空显示；控制停车由DWA路径过期保护负责。
-  void handlePlanningFailure() {
-    // 不用空Path擦除RViz中的最后有效结果。控制安全由DWA的短路径过期时间
-    // 保证：持续无新轨迹时DWA会停车，但用户仍能检查最后一次规划结果。
+  // [功能与联系] 不重新搜索，只给同一条全局坐标路径刷新消息时间戳；
+  // 防止DWA把事件模式下仍有效的路径误判为过期，不改变任何轨迹点。
+  void refreshCachedPath() {
+    if(!has_valid_path_for_goal_ || last_output_path_.poses.size()<2U) return;
+    last_output_path_.header.stamp=now();
+    for(auto &pose:last_output_path_.poses) pose.header=last_output_path_.header;
+    path_pub_->publish(last_output_path_);
+  }
+  // [功能与联系] search内部算出的即时恢复状态写回目标轨迹状态机，确保下一次
+  // 只做轻量监测时，Hybrid和DWA仍使用同一会遇阶段。
+  void syncRecoveryFlags(const std::vector<DynamicObstacle> &obstacles) {
+    for(const auto &obstacle:obstacles) {
+      for(std::size_t i=0;i<target_topics_.size();++i) {
+        if(obstacle.name==target_topics_[i]) {
+          target_tracks_[i].policy.recovering=obstacle.policy.recovering;
+          break;
+        }
+      }
+    }
+  }
+  // [功能与联系] 区分动态交通与普通静态搜索失败：附近有船时立即撤销未经本周期
+  // 验证的旧路径并通知DWA停车；无动态交通时才短暂保留显示，避免静态搜索抖动。
+  void handlePlanningFailure(bool traffic_present) {
+    if(traffic_present) {
+      // 动态交通存在时绝不继续执行一条已无法重新验证的旧直线路径。
+      // 下一周期照常重试；本周期显式通知DWA停车，而不是等待路径超时。
+      has_valid_path_for_goal_=false;
+      last_planning_path_.clear();
+      planner_->setReferencePath({});
+      publishEmpty();
+      return;
+    }
     if (!has_valid_path_for_goal_ ||
       (now() - last_path_success_time_).seconds() > path_failure_hold_time_)
     {
@@ -1635,16 +2064,27 @@ private:
   std::vector<double> target_radii_;
   std::vector<TargetTrack> target_tracks_;
   double cruise_speed_{0.8};
-  double own_ship_radius_{2.0};
-  double safety_buffer_{2.0};
+  double own_ship_radius_{0.5};
+  double safety_buffer_{1.0};
+  double dynamic_hard_distance_{3.0};
   double prediction_horizon_{120.0};
-  double avoidance_radius_{12.0};
+  double avoidance_radius_{7.0};
   double target_timeout_{2.0};
   double own_odom_timeout_{5.0};
   double path_failure_hold_time_{3.0};
+  bool event_driven_enabled_{true};
+  double event_collision_trigger_distance_{2.0};
+  double event_cross_track_limit_{8.0};
+  double event_target_course_change_{5.0*M_PI/180.0};
+  double event_target_speed_change_{0.3};
+  int event_search_attempts_{2};
+  double max_path_length_ratio_{3.0};
+  double max_path_extra_distance_{40.0};
+  double goal_loop_radius_{3.0};
+  double goal_loop_min_arc_{8.0};
   bool has_valid_path_for_goal_{false};
   rclcpp::Time last_path_success_time_{0, 0, RCL_ROS_TIME};
-  double colregs_risk_distance_{20.0};
+  double colregs_risk_distance_{2.0};
   double colregs_time_horizon_{120.0};
   double head_on_bearing_{15.0 * M_PI / 180.0};
   double head_on_course_tolerance_{30.0 * M_PI / 180.0};

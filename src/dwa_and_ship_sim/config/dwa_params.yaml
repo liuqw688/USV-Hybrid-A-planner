@@ -13,6 +13,11 @@ dwa_planner:
     # [作用与调节] 坐标系/TF frame名称。修改须与消息头、TF及接收节点一致；不是数值大小参数，缺失或失配会拒绝输入。
     control_frame: odom
 
+    # true：DWA只跟踪Hybrid A*路径，不订阅/执行目标船距离停车和COLREG策略；
+    # 动态避碰、规则及是否撤销路径全部由Hybrid A*统一决定。
+    # false：恢复旧的DWA双重动态安全检查，仅用于兼容对比。
+    tracking_only: true
+
     # [作用与调节] DWA控制频率(Hz)。增大：响应更快、动态窗口单步更小、算力更高；减小：控制粗、保护响应更迟；与本船20Hz仿真配套。
     control_frequency: 20.0
 
@@ -62,21 +67,21 @@ dwa_planner:
     # [作用与调节] 转弯限速公式的最低前进参考(m/s)。增大：急弯保持更多前进；减小：更慢转弯；不能绕过安全STOP。
     min_cruise_speed: 0.12
 
-    # Must match Hybrid A*: extra 1 m absorbs tracking/discretisation error.
+    # 与Hybrid一致的小型无人船等效规划半径；不是RViz船体外形尺寸。
     # [作用与调节] 本船规划圆形半径(m)。增大：硬净空更大、绕行更宽；减小：更贴近且碰撞裕度减小；Hybrid/DWA须一致。
-    own_ship_radius: 1.5
+    own_ship_radius: 0.5
     # [作用与调节] 两船半径之外的安全冗余(m)。增大：提前/更宽绕行、可行空间减少；减小：更靠近目标、抗跟踪误差更差；两级须一致。
-    safety_buffer: 0.5
-    # 当前两船中心间距小于8m，独立于DCPA/TCPA立即发布零速度命令。
+    safety_buffer: 1.0
+    # 当前两船中心间距小于2m，独立于DCPA/TCPA立即发布零速度命令。
     # [作用与调节] 当前两船中心距离STOP半径(m)。增大：更早停车；减小：更接近才停车；独立于CPA，零指令不代表船体瞬停。
-    colregs_risk_distance: 3.0
+    colregs_risk_distance: 2.0
     # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
     target_odom_topics: [/target_boat/odom]
     # [作用与调节] 目标消息有效时间(s)。增大：容忍通信抖动但预测更旧；减小：更快失联停车、也更易误停。
     target_state_timeout: 2.0
-    # 追越采用稍大的中心间距；不能小于半径之和+buffer（7.5m）。
-    # [作用与调节] 追越最小中心净空(m)，实际取其与半径和+buffer的较大值。增大：侧向更宽；减小到7.5m以下也不会降低基本硬净空。
-    overtaking_safe_distance: 4.0
+    # 追越采用3m中心间距；普通硬净空为半径之和+buffer=2m。
+    # [作用与调节] 追越最小中心净空(m)，普通硬净空为2m；增大使追越更宽，减小到2m以下不再降低普通净空。
+    overtaking_safe_distance: 3.0
 
     # 航道外岸边膨胀达到 88 即淘汰，避免贴近高风险区域。
     # [作用与调节] 静态硬危险代价门槛。增大：允许更高代价、可能更贴岸；减小：更保守易无解；Hybrid启用channel时以分源阈值为准。
