@@ -23,7 +23,7 @@
 class DwaPlanner : public rclcpp::Node
 {
 public:
-  // [功能与联系] 读取控制/动态窗口/风险/航道参数，订阅Hybrid路径和策略，建立控制timer与RViz输出；不负责生成稀疏全局航点。
+  // [功能与联系] 读取控制/动态窗口/航道参数，订阅Hybrid路径，建立控制timer与RViz输出；默认不负责动态会遇决策或生成稀疏全局航点。
   DwaPlanner()
   : Node("dwa_planner")
   {
@@ -38,6 +38,9 @@ public:
       "cmd_vel_topic", "/cmd_vel");
     control_frame_ = declare_parameter<std::string>(
       "control_frame", "odom");
+    // 跟踪专用模式：动态船、COLREG和是否停车由Hybrid A*统一决定。
+    // DWA只围绕输入路径生成可执行速度，不再建立第二套会遇状态机。
+    tracking_only_ = declare_parameter<bool>("tracking_only", true);
     channel_enabled_ = declare_parameter<bool>("channel.enabled", true);
     const std::string lane_costmap_topic = declare_parameter<std::string>(
       "channel.lane_costmap_topic", "/channel/lane_costmap");
@@ -83,19 +86,21 @@ public:
       "goal_tolerance", 0.4);
     min_cruise_speed_ = declare_parameter<double>(
       "min_cruise_speed", 0.12);
-    own_ship_radius_ = declare_parameter<double>("own_ship_radius", 1.5);
-    safety_buffer_ = declare_parameter<double>("safety_buffer", 4.0);
-    stop_distance_ = declare_parameter<double>("colregs_risk_distance", 8.0);
+    own_ship_radius_ = declare_parameter<double>("own_ship_radius", 0.5);
+    safety_buffer_ = declare_parameter<double>("safety_buffer", 1.0);
+    stop_distance_ = declare_parameter<double>("colregs_risk_distance", 2.0);
     target_state_timeout_ = declare_parameter<double>("target_state_timeout", 2.0);
-    overtaking_safe_distance_ = declare_parameter<double>("overtaking_safe_distance", 9.0);
+    overtaking_safe_distance_ = declare_parameter<double>("overtaking_safe_distance", 3.0);
     const auto target_topics = declare_parameter<std::vector<std::string>>(
       "target_odom_topics", {"/target_boat/odom"});
-    target_messages_.resize(target_topics.size());
-    for (std::size_t i = 0; i < target_topics.size(); ++i) {
-      target_subs_.push_back(create_subscription<nav_msgs::msg::Odometry>(
-        target_topics[i], 20, [this, i](nav_msgs::msg::Odometry::SharedPtr message) {
-          target_messages_[i] = message;
-        }));
+    if(!tracking_only_) {
+      target_messages_.resize(target_topics.size());
+      for (std::size_t i = 0; i < target_topics.size(); ++i) {
+        target_subs_.push_back(create_subscription<nav_msgs::msg::Odometry>(
+          target_topics[i], 20, [this, i](nav_msgs::msg::Odometry::SharedPtr message) {
+            target_messages_[i] = message;
+          }));
+      }
     }
 
     // 代价地图参数：100 为硬障碍物，99 为膨胀区
@@ -119,10 +124,13 @@ public:
       "smooth_weight", 0.45);
     target_weight_ = declare_parameter<double>(
       "target_weight", 1.5);
-    policy_sub_=create_subscription<hybrid_a_star_planner::msg::EncounterArray>("/colregs/policies",10,
-      [this](hybrid_a_star_planner::msg::EncounterArray::SharedPtr m){policies_=m;});
+    if(!tracking_only_) {
+      policy_sub_=create_subscription<hybrid_a_star_planner::msg::EncounterArray>(
+        "/colregs/policies",10,
+        [this](hybrid_a_star_planner::msg::EncounterArray::SharedPtr m){policies_=m;});
+    }
 
-    // Input freshness limits; exceeding either limit commands a stop.
+    // Path/map/odom freshness limits；tracking_only下不包含目标船策略时效。
     path_stale_timeout_ = declare_parameter<double>(
       "path_stale_timeout", 30.0);
     costmap_stale_timeout_ = declare_parameter<double>(
@@ -254,7 +262,7 @@ private:
     std::vector<Pose2D> trajectory;
   };
 
-  // [功能与联系] 接收Hybrid连续路径；少于两点立即清除可跟踪路径并发布STOP，正常路径更新接收时间。
+  // [功能与联系] 接收Hybrid连续路径；少于两点表示Hybrid没有可跟踪轨迹，正常路径仅更新接收时间。
   void pathCallback(
     const nav_msgs::msg::Path::SharedPtr msg)
   {
@@ -316,12 +324,16 @@ private:
     has_odom_ = true;
   }
 
-  // [功能与联系] 先做输入过期/当前距离保护，再投影路径与前视、建立动态窗口、生成评分候选，安全最佳候选输出Twist，否则STOP。
+  // [功能与联系] tracking_only下只验证跟踪所需输入，再投影Hybrid路径、建立动态窗口并输出最佳Twist；动态会遇由Hybrid统一处理。
   void controlLoop()
   {
-    if(!policies_ || !policies_->valid || policies_->header.frame_id!=control_frame_ ||
-      (now()-rclcpp::Time(policies_->header.stamp)).seconds()>2.5 ||
-      (has_odom_ && (now()-odom_receive_time_).seconds()>1.0)) {publishStop();return;}
+    if((!tracking_only_ && (!policies_ || !policies_->valid ||
+        policies_->header.frame_id!=control_frame_ ||
+        (now()-rclcpp::Time(policies_->header.stamp)).seconds()>2.5)) ||
+      (has_odom_ && (now()-odom_receive_time_).seconds()>1.0))
+    {
+      publishStop();return;
+    }
     nav_msgs::msg::Path path;
     nav_msgs::msg::OccupancyGrid costmap;
     Pose2D robot;
@@ -381,24 +393,23 @@ private:
       last_cmd_w_=measured_w_;
     }
 
-    // 独立20Hz距离停车，直接读取目标odom，不等待1Hz Hybrid A*风险分级。
-    // 从未发布的虚拟船不影响静态航道测试；已有目标失联则停车。
-    for (const auto & target : target_messages_) {
-      if (!target) {continue;}
-      const double age = (now() - rclcpp::Time(target->header.stamp)).seconds();
-      if (target->header.frame_id != control_frame_ || age < -0.1 ||
-        age > target_state_timeout_) {publishStop();return;}
-      const double target_yaw = tf2::getYaw(target->pose.pose.orientation);
-      const double vx = target->twist.twist.linear.x * std::cos(target_yaw) -
-        target->twist.twist.linear.y * std::sin(target_yaw);
-      const double vy = target->twist.twist.linear.x * std::sin(target_yaw) +
-        target->twist.twist.linear.y * std::cos(target_yaw);
-      if (hybrid_a_star_planner::insideStopDistance(robot.x, robot.y,
-          target->pose.pose.position.x + vx * std::max(0.0, age),
-          target->pose.pose.position.y + vy * std::max(0.0, age), stop_distance_)) {
-        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
-          "Target inside %.1fm current-distance stop circle; commanding STOP", stop_distance_);
-        publishStop();return;
+    if(!tracking_only_) {
+      // 兼容旧模式：DWA自行执行目标船消息失效和当前距离停车。
+      for (const auto & target : target_messages_) {
+        if (!target) {continue;}
+        const double age = (now() - rclcpp::Time(target->header.stamp)).seconds();
+        if (target->header.frame_id != control_frame_ || age < -0.1 ||
+          age > target_state_timeout_) {publishStop();return;}
+        const double target_yaw = tf2::getYaw(target->pose.pose.orientation);
+        const double vx = target->twist.twist.linear.x * std::cos(target_yaw) -
+          target->twist.twist.linear.y * std::sin(target_yaw);
+        const double vy = target->twist.twist.linear.x * std::sin(target_yaw) +
+          target->twist.twist.linear.y * std::cos(target_yaw);
+        if (hybrid_a_star_planner::insideStopDistance(robot.x, robot.y,
+            target->pose.pose.position.x + vx * std::max(0.0, age),
+            target->pose.pose.position.y + vy * std::max(0.0, age), stop_distance_)) {
+          publishStop();return;
+        }
       }
     }
 
@@ -649,8 +660,8 @@ private:
     return trajectory;
   }
 
-  // 对候选轨迹评分：路径、进度、方向、避障、速度、平滑性
-  // [功能与联系] 先用COLREG、同步目标净空和地图淘汰危险候选，再累计路径/进度/朝向/避障/速度/连续性评分，选择分数最大的候选。
+  // 对候选轨迹评分：路径、进度、方向、静态地图、速度、平滑性。
+  // [功能与联系] tracking_only下动态船/COLREG由Hybrid处理，此处只评价输入路径的可跟踪性。
   double scoreCandidate(
     Candidate & candidate,
     const nav_msgs::msg::Path & path,
@@ -661,8 +672,9 @@ private:
     if (candidate.trajectory.empty()) {
       return -std::numeric_limits<double>::infinity();
     }
-    const double policy_age=(now()-rclcpp::Time(policies_->header.stamp)).seconds();
-    for(const auto &e:policies_->encounters) {
+    const double policy_age=(!tracking_only_ && policies_) ?
+      (now()-rclcpp::Time(policies_->header.stamp)).seconds() : 0.0;
+    if(!tracking_only_ && policies_) for(const auto &e:policies_->encounters) {
       hybrid_a_star_planner::Policy p;
       p.type=static_cast<hybrid_a_star_planner::EncounterType>(e.type);
       p.level=static_cast<hybrid_a_star_planner::Risk>(e.risk);
@@ -683,7 +695,7 @@ private:
       }
       // 追越后立即到达终点时，减速会使后船重新追上。
       // 将近终点候选的动态检查延长至10秒，提前保留侧向净空；
-      // 不改变普通DWA显示/静态轨迹时域，也不绕过8m当前距离停车保护。
+      // 仅兼容tracking_only=false；默认模式不会进入此动态策略分支。
       const Point goal = pathPoint(path, path.poses.size()-1);
       if(p.locked && p.type==hybrid_a_star_planner::EncounterType::OVERTAKING &&
         distance(Point{candidate.trajectory.front().x,candidate.trajectory.front().y},goal)<20.0) {
@@ -1326,13 +1338,14 @@ private:
   double max_lookahead_distance_{10.0};
   double goal_tolerance_{0.4};
   double min_cruise_speed_{0.12};
-  double own_ship_radius_{2.0};
-  double safety_buffer_{3.0};
-  double stop_distance_{8.0};
+  double own_ship_radius_{0.5};
+  double safety_buffer_{1.0};
+  double stop_distance_{2.0};
   double target_state_timeout_{2.0};
-  double overtaking_safe_distance_{9.0};
+  double overtaking_safe_distance_{3.0};
   std::vector<nav_msgs::msg::Odometry::SharedPtr> target_messages_;
   std::vector<rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr> target_subs_;
+  bool tracking_only_{true};
 
   int lethal_cost_threshold_{100};
   bool unknown_is_obstacle_{true};

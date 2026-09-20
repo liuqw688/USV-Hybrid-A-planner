@@ -1,6 +1,6 @@
 # DWA 与本船仿真说明
 
-注意：源码文件夹叫 dwa_and_ship_sim，ROS 包名是 **dwa_deep**。运行命令要使用 ROS 包名。参数见 PARAMETERS.md。本轮仅补注释与文档，没有调整 DWA 控制行为。
+注意：源码文件夹叫 dwa_and_ship_sim，ROS 包名是 **dwa_deep**。运行命令要使用 ROS 包名。默认 `tracking_only=true`，动态避碰由Hybrid A*统一处理。
 
 ## 1. 节点与接口
 
@@ -11,7 +11,7 @@ DwaPlanner 在 dwa_planner.cpp 中负责跟踪 Hybrid 路径并选择短时可�
 | DWA输入 | /hybrid_a_star_trajectory | Hybrid 连续提供避障航线 |
 | DWA输入 | /local_costmap、/channel/lane_costmap | 静态安全与航道代价 |
 | DWA输入 | /channel/obstacle_costmap（可选） | 独立障碍层，当前需外部生产者 |
-| DWA输入 | /odom、/colregs/policies、目标船Odometry | 实际速度窗口、会遇约束与独立急停 |
+| DWA输入 | /odom、Hybrid Path、local_costmap | 实际速度窗口和路径跟踪；动态船/COLREG由Hybrid统一处理 |
 | DWA输出 | /cmd_vel / Twist | 仿真线速度、角速度命令 |
 | DWA输出 | /optimal_trajectory | 选中的短时预测轨迹 |
 | DWA输出 | /candidate_trajectories | 候选轨迹调试显示 |
@@ -27,16 +27,16 @@ Twist.linear.x 是m/s，angular.z 是rad/s。里程计线速度在船体坐标�
 
 ```mermaid
 flowchart TD
- A[构造DWA 读取参数 建立订阅] --> B[缓存路径 地图 状态和策略]
+ A[构造DWA 读取参数 建立订阅] --> B[缓存路径 地图和本船状态]
  B --> C[控制定时器 默认20Hz]
  C --> D{输入有效且未超时?}
  D -- 否 --> Z[输出停止]
- D -- 是 --> E{目标船过近或终点已到?}
+ D -- 是 --> E{Hybrid Path终点已到?}
  E -- 是 --> Z
  E -- 否 --> F[路径投影与前视目标]
  F --> G[依据实测速度建立动态窗口]
  G --> H[采样速度 预测候选轨迹]
- H --> I[硬安全与会遇规则过滤]
+ H --> I[静态地图可行性过滤]
  I --> J[综合评分选最优]
  J --> K[命令变化率限制与发布]
  K --> C
@@ -58,7 +58,7 @@ flowchart LR
 
 ## 3. 失效保护和边界
 
-路径超时默认3秒、策略超时和里程计时效也会阻止控制。目标船从未出现可以正常静态运行；曾经出现后数据丢失会触发保守处理。当前距离小于8米独立停止，不依赖DCPA是否变好。
+默认 `tracking_only=true`。DWA只跟踪Hybrid A*发布的Path，动态船距离、DCPA/TCPA、COLREG方向和会遇恢复均不在DWA中二次判定。事件规划模式会持续重发同一条安全路径的时间戳，因此“只搜索一次”不会造成DWA路径过期。DWA只在没有可跟踪Path、输入失效、静态候选全部不可行或到达Path终点时停止；动态风险下由Hybrid发布空Path，DWA再执行停车。
 
 航道语义允许忽略岸边膨胀，因此航道内真实障碍必须进入独立障碍层，不能仅混在岸线层里。DWA没有独立订阅河图原始陆地核心的完整防护链；不能把“在航道内清岸线代价”解释为对所有地图错误都安全。本轮只记录边界，没有改功能。
 
@@ -95,11 +95,11 @@ flowchart TD
 
 | 函数 | 主要职责、调用联系与作用 |
 |---|---|
-| `DwaPlanner` | 读取控制/动态窗口/风险/航道参数，订阅Hybrid路径和策略，建立控制timer与RViz输出；不负责生成稀疏全局航点。 |
+| `DwaPlanner` | 读取控制/动态窗口/航道参数，订阅Hybrid路径并建立控制timer与RViz输出；默认不订阅目标船/策略，不负责生成稀疏全局航点。 |
 | `pathCallback` | 接收Hybrid连续路径；少于两点立即清除可跟踪路径并发布STOP，正常路径更新接收时间。 |
 | `costmapCallback` | 缓存物理地图及其网格元数据；航道节点用于对齐语义图，规划/控制节点用于碰撞和数据就绪检查。 |
 | `odomCallback` | 缓存里程计和接收时间供controlLoop使用；实测速率用于动态窗口及失联保护。 |
-| `controlLoop` | 先做输入过期/当前距离保护，再投影路径与前视、建立动态窗口、生成评分候选，安全最佳候选输出Twist，否则STOP。 |
+| `controlLoop` | 先做跟踪输入有效性检查，再投影Hybrid路径与前视、建立动态窗口、生成评分候选并输出Twist；默认不执行动态船停车。 |
 | `generateTrajectory` | 按候选常速度/角速度预测sim_time内姿态；scoreCandidate逐点检查静态/动态安全。 |
 | `scoreCandidate` | 先用COLREG、同步目标净空和地图淘汰危险候选，再累计路径/进度/朝向/避障/速度/连续性评分，选择分数最大的候选。 |
 | `projectToPath` | 把船或候选终点投影到最近路径段，得到横向距离与弧长进度；控制前视和评分共用。 |
