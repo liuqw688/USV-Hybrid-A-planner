@@ -7,7 +7,7 @@
 
 src/virtual_boat_simulator.cpp包含VirtualBoatSimulator。构造内部名称virtual_boat_simulator，launch覆盖为virtual_boat_node以匹配YAML根。
 运动直接使用cmd_v/cmd_w，默认2m/s、零角速度匀速前进；没有本船加速度惯性，也没有命令过期停车。
-显示长1m宽1.5m，规划碰撞半径2m来自Hybrid target_ship_radii，不由显示长宽自动推导。
+显示长1m宽1.5m；按当前小型无人船测试假设，规划等效半径0.5m来自Hybrid target_ship_radii，不由显示长宽自动推导。该等效圆小于显示外接圆，只适用于用户指定的仿真假设。
 msg/BoatStatus.msg用于身份和COG诊断，不是规划器主要目标输入。
 
 ## 2. 包间接口
@@ -16,7 +16,7 @@ msg/BoatStatus.msg用于身份和COG诊断，不是规划器主要目标输入�
 |---|---|---|
 | 输入 | /target_boat/command / Twist | 改变目标船速率，与本船/cmd_vel分离 |
 | 输入 | /initialpose / PoseWithCovarianceStamped | RViz 2D Pose Estimate重设目标位置/航向 |
-| 输出 | /target_boat/odom / Odometry | Hybrid预测目标、DWA独立8m保护 |
+| 输出 | /target_boat/odom / Odometry | Hybrid预测目标、DWA独立2m最终保护 |
 | 输出 | /target_boat/status / BoatStatus | 身份、显示尺寸、速度和航海COG诊断 |
 | 输出 | /target_boat/markers / MarkerArray | RViz船体、黄色速度箭头和名称 |
 | 输出 | /tf: odom→target_boat/base_link | 定位目标模型，不能复用本船base_link |
