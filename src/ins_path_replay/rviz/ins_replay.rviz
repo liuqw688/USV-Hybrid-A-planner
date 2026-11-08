@@ -1,0 +1,110 @@
+Panels:
+- Class: rviz_common/Displays
+  Name: Displays
+  Property Tree Widget:
+    Expanded:
+    - /COLREGs risk layers
+    Splitter Ratio: 0.55
+- Class: rviz_common/Selection
+  Name: Selection
+- Class: rviz_common/Tool Properties
+  Name: Tool Properties
+Visualization Manager:
+  Class: ''
+  Global Options:
+    Background Color: 20; 28; 38
+    Fixed Frame: odom
+    Frame Rate: 30
+  Displays:
+  - Class: rviz_default_plugins/Grid
+    Name: Water grid
+    Enabled: true
+    Plane Cell Count: 180
+    Cell Size: 5
+    Color: 80; 100; 120
+    Alpha: 0.35
+  - Class: rviz_default_plugins/Path
+    Name: Hybrid A* local path
+    Enabled: true
+    Topic:
+      Value: /hybrid_a_star_trajectory
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+    Line Style: Lines
+    Line Width: 0.18
+    Color: 30; 255; 80
+  - Class: rviz_default_plugins/Marker
+    Name: Own ship
+    Enabled: true
+    Marker Topic:
+      Value: /sim_boat_marker
+      Reliability Policy: Reliable
+  - Class: rviz_default_plugins/Path
+    Name: Recorded INS path
+    Enabled: true
+    Topic:
+      Value: /ins_replay/source_path
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+    Line Style: Lines
+    Line Width: 0.65
+    Color: 160; 170; 180
+  - Class: rviz_default_plugins/Path
+    Name: 30-point reference
+    Enabled: true
+    Topic:
+      Value: /astar_channel_waypoints
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+    Line Style: Lines
+    Line Width: 0.4
+    Color: 255; 155; 30
+  - Class: rviz_default_plugins/Path
+    Name: MPC measured track
+    Enabled: true
+    Topic:
+      Value: /ins_replay/tracked_path
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+    Line Style: Lines
+    Line Width: 0.7
+    Color: 40; 140; 255
+  - Class: rviz_default_plugins/MarkerArray
+    Name: 30 numbered heading targets
+    Enabled: true
+    Marker Topic:
+      Value: /ins_replay/waypoint_markers
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+  - Class: rviz_default_plugins/Pose
+    Name: Active Hybrid goal
+    Enabled: true
+    Topic:
+      Value: /goal_pose_from_astar
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+    Color: 255; 230; 0
+    Shape: Arrow
+    Shaft Length: 6.0
+    Shaft Radius: 0.5
+    Head Length: 2.0
+    Head Radius: 1.0
+  Tools:
+  - Class: rviz_default_plugins/Interact
+  - Class: rviz_default_plugins/MoveCamera
+  - Class: rviz_default_plugins/Select
+  - Class: rviz_default_plugins/FocusCamera
+  - Class: rviz_default_plugins/Measure
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Top view
+      Scale: 1.8
+      Angle: 0
+      X: 50
+      Y: -185
+Window Geometry:
+  Width: 1500
+  Height: 900
+  X: 60
+  Y: 40

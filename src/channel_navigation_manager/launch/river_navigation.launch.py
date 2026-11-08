@@ -1,4 +1,4 @@
-"""一键启动实际河道、C++ 航道策略、Hybrid A*、DWA 和无人船仿真。"""
+"""一键启动实际河道、C++ 航道策略、Hybrid A*、MPC 和无人船仿真。"""
 
 import fcntl
 import os
@@ -35,8 +35,6 @@ def _acquire_single_instance_lock():
     lock_file.flush()
     _launch_lock = lock_file
 
-
-# [功能与联系] 组装节点、参数与条件启动动作；launch只负责接线，不直接执行规划或控制。
 def generate_launch_description():
     _acquire_single_instance_lock()
     manager_share = get_package_share_directory("channel_navigation_manager")
@@ -44,7 +42,7 @@ def generate_launch_description():
     local_share = get_package_share_directory("local_costmap_generator")
     hybrid_share = get_package_share_directory("hybrid_a_star_planner")
     astar_share = get_package_share_directory("channel_astar_global_planner")
-    dwa_share = get_package_share_directory("dwa_deep")
+    control_share = get_package_share_directory("usv_mpc_control")
     target_share = get_package_share_directory("virtual_boat_simulator")
 
     use_rviz = LaunchConfiguration("use_rviz")
@@ -65,7 +63,7 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(
                 os.path.join(chart_share, "launch", "river_chart.launch.py")
             ),
-            # 海图和规划、仿真使用同一数值坐标；map->odom 静态 TF 供 RViz 使用。
+            # 海图、规划和仿真使用同一数值坐标；map->odom 桥接供地图点选与路径显示。
             launch_arguments={"rviz": "false", "frame_id": "odom"}.items(),
         ),
         IncludeLaunchDescription(
@@ -81,11 +79,11 @@ def generate_launch_description():
             parameters=[os.path.join(manager_share, "config", "channel_navigation.yaml")],
         ),
         Node(
-            package="dwa_deep",
+            package="usv_mpc_control",
             executable="boat_simulator",
             name="boat_simulator",
             output="screen",
-            parameters=[os.path.join(dwa_share, "config", "sim_params.yaml")],
+            parameters=[os.path.join(control_share, "config", "sim_params.yaml")],
         ),
         Node(
             package="channel_astar_global_planner",
@@ -103,11 +101,11 @@ def generate_launch_description():
                         {"global_route_topic": "/astar_channel_waypoints"}],
         ),
         Node(
-            package="dwa_deep",
-            executable="dwa_planner",
-            name="dwa_planner",
+            package="usv_mpc_control",
+            executable="mpc_controller",
+            name="mpc_controller",
             output="screen",
-            parameters=[os.path.join(dwa_share, "config", "dwa_params.yaml")],
+            parameters=[os.path.join(control_share, "config", "mpc_params.yaml")],
         ),
         Node(
             package="virtual_boat_simulator",

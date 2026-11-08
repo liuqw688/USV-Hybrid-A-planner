@@ -11,8 +11,6 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 from std_srvs.srv import Trigger
 from tf2_ros import StaticTransformBroadcaster
 
-
-# [功能与联系] 执行此场景的输入构造和断言核验；用于回归验证，不参与正常航行控制。具体通过条件以函数内断言为准。
 def test_fixed_mission(tmp_path):
     pkg = 'channel_astar_global_planner'
     command = [get_package_prefix(pkg) + '/lib/' + pkg + '/channel_astar_node',
@@ -54,7 +52,6 @@ def test_fixed_mission(tmp_path):
         transform.transform.translation.x, transform.transform.translation.y = 100.0, -20.0
         transform.transform.rotation.w = 1.0
 
-        # [功能与联系] 执行此场景的输入构造和断言核验；用于回归验证，不参与正常航行控制。具体通过条件以函数内断言为准。
         def spin_for(seconds, condition=None):
             deadline = time.monotonic() + seconds
             while time.monotonic() < deadline:
@@ -68,9 +65,8 @@ def test_fixed_mission(tmp_path):
                 if condition and condition(): return
             if condition: assert condition(), (tmp_path / 'node.log').read_text()
 
-        # [功能与联系] 执行此场景的输入构造和断言核验；用于回归验证，不参与正常航行控制。具体通过条件以函数内断言为准。
         def nonempty(): return [p for p in paths if p.poses]
-        # [功能与联系] 执行此场景的输入构造和断言核验；用于回归验证，不参与正常航行控制。具体通过条件以函数内断言为准。
+
         def current_x(): return active[-1].pose.position.x if active else None
 
         try:

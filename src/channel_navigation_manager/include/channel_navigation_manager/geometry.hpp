@@ -99,6 +99,108 @@ inline double polygonDistance(
   return distance;
 }
 
+// A neutral polygon graph determines mission progress before any lane has a
+// MAIN/OPPOSITE role. This breaks the A* classification feedback loop.
+struct MissionDirection {
+  double yaw{0};
+  bool connected{false};
+  bool topology_progress{false};
+  std::vector<int> corridor_lane_ids;
+};
+inline Point2D laneCenter(const Lane &lane) {
+  Point2D p;std::size_t n=lane.points.size();
+  if(n>1 && lane.points.front().x==lane.points.back().x && lane.points.front().y==lane.points.back().y) --n;
+  for(std::size_t i=0;i<n;++i){p.x+=lane.points[i].x;p.y+=lane.points[i].y;}
+  if(n){p.x/=n;p.y/=n;}return p;
+}
+inline Point2D laneConnectionPoint(const Lane &from,const Lane &to,const Point2D anchor) {
+  Point2D best=laneCenter(from);double gap=std::numeric_limits<double>::infinity(),near=gap;
+  const auto consider=[&](Point2D point,double d){
+    const double n=std::hypot(point.x-anchor.x,point.y-anchor.y);
+    if(d<gap-1e-8 || (std::abs(d-gap)<1e-8 && n<near)){gap=d;near=n;best=point;}
+  };
+  for(auto p:from.points)consider(p,pointPolygonDistance(p.x,p.y,to.points));
+  for(auto p:to.points) {
+    if(pointInPolygon(p.x,p.y,from.points)){consider(p,0);continue;}
+    for(std::size_t i=0;i<from.points.size();++i) {
+      const auto a=from.points[i],b=from.points[(i+1)%from.points.size()];
+      const double dx=b.x-a.x,dy=b.y-a.y,n=dx*dx+dy*dy;
+      const double f=n>1e-12 ? std::clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/n,0.0,1.0):0;
+      Point2D q{a.x+f*dx,a.y+f*dy};consider(q,std::hypot(p.x-q.x,p.y-q.y));
+    }
+  }
+  return best;
+}
+inline MissionDirection missionRouteDirection(
+  const std::vector<Lane> &lanes,double sx,double sy,double gx,double gy,
+  double fallback_yaw,double connection_gap)
+{
+  MissionDirection result;result.yaw=fallback_yaw;
+  if(lanes.empty()) return result;
+  const auto nearest=[&](double x,double y) {
+    std::size_t selected=lanes.size();double best=std::numeric_limits<double>::infinity();
+    for(std::size_t i=0;i<lanes.size();++i) {
+      if(lanes[i].points.empty()) continue;
+      const double d=pointPolygonDistance(x,y,lanes[i].points);
+      if(d<best-1e-8 || (std::abs(d-best)<1e-8 &&
+        (selected==lanes.size() || lanes[i].lane_id<lanes[selected].lane_id))) {best=d;selected=i;}
+    }
+    return selected;
+  };
+  const auto source=nearest(sx,sy),goal=nearest(gx,gy);
+  if(source==lanes.size() || goal==lanes.size()) return result;
+  std::vector<Point2D> centers;for(const auto &l:lanes) centers.push_back(laneCenter(l));
+  std::vector<double> distance(lanes.size(),std::numeric_limits<double>::infinity());
+  std::vector<std::size_t> parent(lanes.size(),lanes.size());
+  using Entry=std::pair<double,std::size_t>;
+  std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry>> queue;
+  distance[source]=0;queue.push({0,source});
+  while(!queue.empty()) {
+    auto [cost,i]=queue.top();queue.pop();if(cost>distance[i]+1e-8) continue;
+    if(i==goal) break;
+    for(std::size_t j=0;j<lanes.size();++j) {
+      if(i==j || polygonDistance(lanes[i].points,lanes[j].points)>connection_gap) continue;
+      const double next=cost+std::max(.001,std::hypot(centers[j].x-centers[i].x,centers[j].y-centers[i].y));
+      if(next<distance[j]-1e-8){distance[j]=next;parent[j]=i;queue.push({next,j});}
+    }
+  }
+  if(!std::isfinite(distance[goal])) return result;
+  result.connected=true;std::vector<std::size_t> path;
+  for(auto i=goal;;i=parent[i]){path.push_back(i);if(i==source) break;}
+  std::reverse(path.begin(),path.end());
+  for(auto i:path)result.corridor_lane_ids.push_back(lanes[i].lane_id);
+  const double axis=s57OrientationToYaw(lanes[source].orient_deg);
+  const double ux=std::cos(axis),uy=std::sin(axis);
+  const auto interval=[&](const Lane &l){
+    double low=std::numeric_limits<double>::infinity(),high=-low;
+    for(auto p:l.points){double d=p.x*ux+p.y*uy;low=std::min(low,d);high=std::max(high,d);}return std::pair<double,double>{low,high};
+  };
+  const auto start_interval=interval(lanes[source]);
+  for(std::size_t k=1;k<path.size();++k) {
+    const auto i=path[k];const auto range=interval(lanes[i]);
+    const double overlap=std::max(0.0,std::min(start_interval.second,range.second)-std::max(start_interval.first,range.first));
+    const double span=std::min(start_interval.second-start_interval.first,range.second-range.first);
+    const bool peer=std::abs(normalizeAngle(s57OrientationToYaw(lanes[i].orient_deg)-axis))>M_PI*5/6 &&
+      span>1e-6 && overlap>.5*span;
+    if(peer) continue; // crossing to an adjacent peer is not river progress
+    const auto connection=laneConnectionPoint(lanes[source],lanes[i],{sx,sy});
+    const double dx=connection.x-sx,dy=connection.y-sy;
+    const double along=dx*ux+dy*uy;
+    if(std::abs(along)<std::max(1e-6,.1*std::hypot(dx,dy))) continue;
+    result.yaw=normalizeAngle(axis+(along<0 ? M_PI:0));result.topology_progress=true;return result;
+  }
+  // Same-section progress uses its local axis, not a nearly transverse chord.
+  const double dx=gx-sx,dy=gy-sy,along=dx*ux+dy*uy;
+  if(std::abs(along)>.15*std::hypot(dx,dy) && std::hypot(dx,dy)>1e-6) {
+    result.yaw=normalizeAngle(axis+(along<0 ? M_PI:0));result.topology_progress=true;
+  } else {
+    // Pure crossing / coincident pose has no unique longitudinal direction.
+    // Destination's chart flow is the explicit deterministic fallback.
+    result.yaw=s57OrientationToYaw(lanes[goal].orient_deg);
+  }
+  return result;
+}
+
 // Follow locally continuous S-57 ORIENT values from the lane nearest the
 // vessel. Comparing every polygon with one initial heading fails after a large
 // accumulated bend; local propagation preserves the same traffic stream.
@@ -106,7 +208,7 @@ inline double polygonDistance(
 inline std::vector<bool> continuousMainLaneMask(
   const std::vector<Lane> & lanes, const double policy_yaw,
   const double own_x, const double own_y, const double adjacency_distance,
-  const double continuity_angle)
+  const double continuity_angle, std::size_t mission_seed=std::numeric_limits<std::size_t>::max())
 {
   std::vector<bool> main(lanes.size(), false);
   if (lanes.empty()) {return main;}
@@ -121,16 +223,12 @@ inline std::vector<bool> continuousMainLaneMask(
       seed_distance = distance;
     }
   }
-  if (seed == lanes.size()) {
-    for (std::size_t index = 0; index < lanes.size(); ++index) {
-      const double distance = pointPolygonDistance(own_x, own_y, lanes[index].points);
-      if (distance < seed_distance) {
-        seed = index;
-        seed_distance = distance;
-      }
-    }
-  }
+  if(seed==lanes.size()) return main; // no legal matching traffic stream
 
+  // ORIENT is the prescribed traffic flow. Position within the pair must not
+  // turn a counterflow lane into the mission lane, including short maneuvers.
+  if(mission_seed<lanes.size() && isSameNavigationDirection(policy_yaw,lanes[mission_seed].orient_deg))
+    seed=mission_seed;
   std::queue<std::size_t> pending;
   main[seed] = true;
   pending.push(seed);
@@ -150,6 +248,21 @@ inline std::vector<bool> continuousMainLaneMask(
     }
   }
   return main;
+}
+
+// Select only an unambiguous common physical lane for a compact mission.
+// Boundary/overlap and inter-lane goals retain the normal directional policy.
+inline std::size_t compactMissionLaneSeed(
+  const std::vector<Lane> &lanes,double sx,double sy,double gx,double gy,double range)
+{
+  const auto none=std::numeric_limits<std::size_t>::max();
+  if(range<=0 || std::hypot(gx-sx,gy-sy)>range) {return none;}
+  std::size_t own=none,goal=none;
+  for(std::size_t i=0;i<lanes.size();++i) {
+    if(pointInPolygon(sx,sy,lanes[i].points)) {if(own!=none) return none;own=i;}
+    if(pointInPolygon(gx,gy,lanes[i].points)) {if(goal!=none) return none;goal=i;}
+  }
+  return own==goal ? own:none;
 }
 
 // [功能与联系] 由两点求方位与中心距离；反向任务判定调用它，要求坐标系一致。

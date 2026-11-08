@@ -15,7 +15,7 @@
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>hybrid_a_star_planner</exec_depend>
-  <exec_depend>dwa_deep</exec_depend>
+  <exec_depend>usv_mpc_control</exec_depend>
   <exec_depend>virtual_boat_simulator</exec_depend>
 
   <export>

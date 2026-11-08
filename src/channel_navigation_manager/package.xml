@@ -13,6 +13,7 @@
   <depend>std_msgs</depend>
   <depend>tf2</depend>
   <depend>tf2_geometry_msgs</depend>
+  <depend>tf2_ros</depend>
   <depend>visualization_msgs</depend>
   <exec_depend>channel_astar_global_planner</exec_depend>
   <exec_depend>launch</exec_depend>
@@ -20,7 +21,7 @@
   <exec_depend>river_chart</exec_depend>
   <exec_depend>local_costmap_generator</exec_depend>
   <exec_depend>hybrid_a_star_planner</exec_depend>
-  <exec_depend>dwa_deep</exec_depend>
+  <exec_depend>usv_mpc_control</exec_depend>
   <test_depend>ament_cmake_gtest</test_depend>
   <export><build_type>ament_cmake</build_type></export>
 </package>

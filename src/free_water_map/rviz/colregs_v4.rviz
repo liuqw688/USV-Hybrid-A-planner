@@ -2,7 +2,7 @@ Panels:
   - Class: rviz_common/Displays
     Name: Displays
     Property Tree Widget:
-      Expanded: ["/COLREGs risk layers", "/DWA candidates"]
+      Expanded: ["/COLREGs risk layers"]
       Splitter Ratio: 0.55
   - Class: rviz_common/Selection
     Name: Selection
@@ -51,18 +51,6 @@ Visualization Manager:
       Enabled: true
       Marker Topic:
         Value: /colregs/avoidance_envelope
-        Reliability Policy: Reliable
-    - Class: rviz_default_plugins/Marker
-      Name: DWA selected trajectory
-      Enabled: true
-      Marker Topic:
-        Value: /optimal_trajectory
-        Reliability Policy: Reliable
-    - Class: rviz_default_plugins/MarkerArray
-      Name: DWA candidates
-      Enabled: true
-      Marker Topic:
-        Value: /candidate_trajectories
         Reliability Policy: Reliable
     - Class: rviz_default_plugins/Marker
       Name: Own ship

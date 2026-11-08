@@ -1,9 +1,11 @@
-# free_water_map
+# 开阔水域演示
 
-## 详细功能与参数文档
+提供独立地图和会遇初始条件；演示入口同样只启动MPC和力控制船模。
 
-- [FUNCTIONAL_GUIDE.md](FUNCTIONAL_GUIDE.md)：节点启动、功能/函数流程图、话题与包间关系、逐函数职责、当前实现边界。
-- [PARAMETERS.md](PARAMETERS.md)：配置值、参数作用及增大/减小的影响。
-- [工作空间总索引](../../PACKAGE_DOCUMENTATION_INDEX.md)：整条运行链、操作与验证。
+入口、模块关系和当前运行方式见[项目说明](/home/l/work_ws/README.md)。
 
+核心实现：src/free_water_costmap.py：地图；src/demo_goal_publisher.py：一次性目标；launch/colregs_demo.launch.py：会遇场景。
 
+主要消息关系：`/local_costmap、/goal_pose、目标船状态`。
+
+参数说明见[PARAMETERS.md](PARAMETERS.md)，代码导航见[FUNCTIONAL_GUIDE.md](FUNCTIONAL_GUIDE.md)。历史修复与测试资料保存在`/home/l/work_ws/docs/history/free_water_map/`。

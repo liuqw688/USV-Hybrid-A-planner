@@ -6,7 +6,6 @@ find_package(ament_cmake REQUIRED)
 install(PROGRAMS
   src/free_water_costmap.py
   src/demo_goal_publisher.py
-  test/v4_closed_loop.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

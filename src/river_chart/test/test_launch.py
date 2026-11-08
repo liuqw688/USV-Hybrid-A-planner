@@ -1,12 +1,11 @@
 """@brief ROS 2 启动文件测试。
 
-
+@author susheng
 @date 2026-08-28
 """
 
 import importlib.util
 from pathlib import Path
-
 
 def test_launch_description_loads() -> None:
     launch_file = Path(__file__).parents[1] / "launch" / "river_chart.launch.py"

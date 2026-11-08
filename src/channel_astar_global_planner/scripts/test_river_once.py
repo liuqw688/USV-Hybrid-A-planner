@@ -11,12 +11,10 @@ import subprocess
 import time
 
 import rclpy
-from geometry_msgs.msg import PoseStamped, Twist
+from geometry_msgs.msg import PoseStamped, Wrench
 from nav_msgs.msg import OccupancyGrid, Odometry, Path
 from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 
-
-# [功能与联系] 初始化ROS上下文、创建本文件节点并进入回调调度；退出时释放节点与通信资源，是launch启动可执行程序后的入口。
 def main():
     rclpy.init()
     node = rclpy.create_node('river_fixed_route_probe')
@@ -32,7 +30,7 @@ def main():
                              lambda m: state.update(lane=m), qos)
     node.create_subscription(OccupancyGrid, '/local_costmap',
                              lambda m: state.update(safety=m), qos)
-    node.create_subscription(Twist, '/cmd_vel', commands.append, 10)
+    node.create_subscription(Wrench, '/cmd_wrench', commands.append, 10)
     pub = node.create_publisher(PoseStamped, '/goal_pose', 10)
     child = None
 
@@ -113,7 +111,7 @@ def main():
             spin(0.5)
             commands.clear()
             spin(1)
-            assert commands and all(abs(m.linear.x) < 1e-9 and abs(m.angular.z) < 1e-9
+            assert commands and all(m.force.x <= 0.0
                                     for m in commands), 'old mission still commands movement'
             report = dict(passed=True, global_publications=1, waypoint_count=len(route.poses),
                           left_goal=os.environ.get('RIVER_TEST_LEFT_GOAL') == '1',

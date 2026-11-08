@@ -15,13 +15,14 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
 add_executable(channel_navigation_node src/channel_navigation_node.cpp)
 target_include_directories(channel_navigation_node PRIVATE include)
 target_link_libraries(channel_navigation_node nlohmann_json::nlohmann_json)
 ament_target_dependencies(channel_navigation_node
-  geometry_msgs nav_msgs rclcpp std_msgs tf2 tf2_geometry_msgs visualization_msgs)
+  geometry_msgs nav_msgs rclcpp std_msgs tf2 tf2_geometry_msgs tf2_ros visualization_msgs)
 
 install(TARGETS channel_navigation_node DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY config launch rviz DESTINATION share/${PROJECT_NAME})

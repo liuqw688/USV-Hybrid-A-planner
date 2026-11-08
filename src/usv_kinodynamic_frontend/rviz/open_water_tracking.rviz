@@ -1,0 +1,92 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Frontend trajectory1
+      Splitter Ratio: 0.55
+  - Class: rviz_common/Tool Properties
+    Name: Tool Properties
+Visualization Manager:
+  Class: ''
+  Global Options:
+    Background Color: 12; 22; 32
+    Fixed Frame: odom
+    Frame Rate: 30
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Metre grid
+      Enabled: true
+      Plane Cell Count: 80
+      Cell Size: 1
+      Color: 65; 98; 115
+      Alpha: 0.45
+    - Class: rviz_default_plugins/Path
+      Name: Frontend trajectory
+      Enabled: true
+      Topic:
+        Value: /hybrid_a_star_trajectory
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+        Depth: 1
+      Line Style: Billboards
+      Line Width: 0.07
+      Color: 40; 220; 255
+      Alpha: 1
+      Buffer Length: 1
+      Pose Style: None
+    - Class: rviz_default_plugins/Path
+      Name: Measured vessel track
+      Enabled: true
+      Topic:
+        Value: /usv_frontend/actual_path
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+      Line Style: Billboards
+      Line Width: 0.15
+      Color: 255; 205; 50
+      Buffer Length: 1
+    - Class: rviz_default_plugins/Marker
+      Name: Actual simulated vessel
+      Enabled: true
+      Topic:
+        Value: /sim_boat_marker
+        Reliability Policy: Reliable
+      Queue Size: 10
+    - Class: rviz_default_plugins/Marker
+      Name: MPC prediction
+      Enabled: true
+      Topic:
+        Value: /mpc/predicted_trajectory
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Goal and every reference node heading
+      Enabled: true
+      Topic:
+        Value: /usv_frontend/markers
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+        Depth: 1
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Open water top view
+      Scale: 12
+      Angle: 0
+      X: 30
+      Y: 8
+Window Geometry:
+  Width: 1450
+  Height: 900
+  X: 30
+  Y: 30

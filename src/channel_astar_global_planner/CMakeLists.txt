@@ -15,11 +15,13 @@ ament_target_dependencies(channel_astar_node rclcpp nav_msgs geometry_msgs visua
 install(TARGETS channel_astar_node DESTINATION lib/${PROJECT_NAME})
 install(PROGRAMS scripts/validate_pipeline.py scripts/test_river_once.py DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY config launch DESTINATION share/${PROJECT_NAME})
-install(FILES README.md INTEGRATED_GUIDE.md DESTINATION share/${PROJECT_NAME})
+install(FILES README.md DESTINATION share/${PROJECT_NAME})
 if(BUILD_TESTING)
   find_package(ament_cmake_pytest REQUIRED)
   ament_add_pytest_test(fixed_mission test/test_fixed_mission.py TIMEOUT 90
     ENV ROS_DOMAIN_ID=73)
+  ament_add_pytest_test(terminal_spacing test/test_terminal_spacing.py TIMEOUT 60
+    ENV ROS_DOMAIN_ID=187 ROS_LOCALHOST_ONLY=1 ROS_LOG_DIR=/tmp/usv_terminal_spacing_logs)
 endif()
 install(FILES FUNCTIONAL_GUIDE.md PARAMETERS.md DESTINATION share/${PROJECT_NAME})
 ament_package()

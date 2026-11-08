@@ -1,0 +1,116 @@
+mpc_controller:
+  ros__parameters:
+    # MPC跟踪Hybrid A*轨迹；命令发给仿真器的 /cmd_wrench，force.x=tau_y、torque.z=tau_N。
+    path_topic: /hybrid_a_star_trajectory
+    costmap_topic: /local_costmap
+    lane_costmap_topic: /channel/lane_costmap
+    static_land_topic: /chart_static_obstacles
+    channel_obstacle_topic: /channel/obstacle_costmap
+    odom_topic: /odom
+    effort_topic: /cmd_wrench
+    policy_topic: /colregs/policies
+    global_route_topic: /astar_channel_waypoints
+    active_goal_topic: /goal_pose_from_astar
+    # Hybrid发布idle/planning/tracking/blocked/cancelled；区分正常等待和无安全路径。
+    # 只影响诊断，不取消空路径或失联时的制动保护。两节点必须使用相同话题。
+    planning_status_topic: /hybrid_a_star/planning_status
+    # 规划器低速掉头回退的限速，与Hybrid话题一致；保持物理max_speed=4不变。
+    speed_limit_topic: /hybrid_a_star/speed_limit
+    # 新几何路径必须匹配同时间戳的TwistStamped限速；心跳不重复等待。
+    # 独立接入不发布限速的旧规划器时才设false；一键启动保持true。
+    require_speed_profile: true
+    # map/odom等世界坐标输入通过TF转换到此坐标系；必须存在有效的平面TF连接。
+    control_frame: odom
+
+    # 优化与滚动预测设置。节点每次只执行第一个力矩，然后用新里程计重算。
+    # 增大频率、减小步长或增加扫掠次数会提高计算量；先保持10Hz与5秒预测。
+    control_frequency: 10.0
+    prediction_step: 0.10
+    prediction_horizon: 5.0
+    control_knots: 5
+    optimization_sweeps: 2
+
+    # 物理上限，与仿真器及Hybrid A*的船模参数保持一致。
+    max_speed: 4.0
+    max_yaw_rate: 0.45
+    max_tau_y: 10.0
+    max_tau_n: 5.0
+    surge_response_time: 0.8
+    yaw_response_time: 0.8
+    model.k_u: 0.290681
+    model.k_t: 0.295742
+    model.k_turn: 2.126739
+    model.k_v: 0.425383
+    model.k_vr: -1.149012
+    model.k_vn: 0.0
+    model.k_r: 1.342561
+    model.k_r3: 0.0
+    model.k_n: 0.781688
+
+    # 河道分层静态安全检查；河道内忽略岸边膨胀，但原始陆地和独立障碍层仍不可进入。
+    channel_enabled: true
+    shoreline_cost_threshold: 88
+    channel_obstacle_threshold: 85
+    main_lane_value_max: 20
+    opposite_lane_value_min: 65
+    lethal_cost_threshold: 88
+    own_ship_radius: 0.5
+    safety_buffer: 1.0
+    map_timeout: 0.0
+    path_timeout: 3.0
+    odom_timeout: 1.0
+
+    # 动态安全与COLREG策略读取Hybrid发布的会遇数据；动态硬净空同步Hybrid配置。
+    # 目标船实际半径随 /colregs/policies 的 Encounter.radius 传入。
+    dynamic_hard_distance: 4.0
+    dynamic_soft_distance: 15.0
+    emergency_stop_distance: 2.0
+
+    # 终点速度包络。最后一个全局航点使用停车减速；普通分段点保持至少2m/s以平顺交接。
+    goal_deceleration: 0.5
+    goal_tolerance: 0.5
+    intermediate_goal_speed: 2.0
+    # 横向偏差回正角的虚拟前视距离(m)：越大回正越缓，越小回线更积极。
+    # 这只是跟踪曲率偏好，不是安全边界；地图、碰撞与COLREG硬检查仍优先。
+    cross_track_recovery_distance: 8.0
+    # 实测位置匹配只向前搜索此沿程距离(m)，并至少覆盖当前2秒航程。
+    # 不能全路径取最近点，否则近距掉头交叠时可能跳到末段，提前刹车。
+    # 增大便于重捕获但更易跳段；减小更稳定但严重偏离时恢复较慢，最小2m。
+    projection_forward_distance: 6.0
+    minimum_tracking_speed: 0.25
+    # 终点低速航向权重的平滑消退尺度(m/s)。增大：低速时更少纠艏，停车更稳；
+    # 减小：低速更积极纠正航向，过小可能放大侧滑角噪声。中间航点不消退。
+    terminal_heading_fade_speed: 0.35
+    # 偏航力矩每秒最大变化量；同时约束本周期与上次实际命令、预测内各控制结点。
+    # 增大：转向响应快、反舵更急；减小：更平稳但窄弯/避让响应变慢。紧急制动不受此限。
+    max_torque_rate: 2.0
+    # 弯道目标横向加速度尺度(m/s²)，参考速度约为sqrt(该值/前方曲率)。
+    # 减小：弯道更慢更稳；增大：过弯更快。速度下限仍为intermediate_goal_speed，
+    # 因此这是跟踪速度偏好，不是严格的物理安全约束。
+    max_lateral_acceleration: 0.6
+    # 前方曲率检查长度(m)。增大提前减速但可能影响直段速度；减小减速更晚。
+    curvature_preview_distance: 12.0
+    # 最终点附近低速停车保持半径(m)，要求船速<0.1m/s且剩余侧滑漂移不会越界；只耗散残余运动，
+    # 不反复用艏摇制造侧滑去修正微小停车误差。增大停车位置更宽松，减小更精确但易纠摆。
+    terminal_hold_radius: 0.5
+
+    # 代价权重。增大cross_track/course会更贴线；增大progress/speed会更积极前行。
+    # 增大torque_slew/reverse_turn会减小连续反舵，过大则转弯响应变迟。
+    weight.cross_track: 12.0
+    weight.course: 12.0
+    weight.progress: 1.4
+    weight.speed: 2.0
+    weight.sideslip: 3.0
+    weight.yaw_rate: 2.0
+    weight.effort: 0.01
+    weight.torque_effort: 0.008
+    weight.torque_slew: 0.6
+    weight.reverse_turn: 2.5
+    weight.terminal: 4.0
+    weight.dynamic_clearance: 12.0
+
+    # 航迹方向种子的前视时间：低速缩短，范围1..8m；4m/s保留原8m前视。
+    course_preview_time: 2.0
+
+    # 最后4m独立考虑目标船艏方向，24度以内不再罚；停车保持须在30度容差内。
+    weight.terminal_heading: 50.0

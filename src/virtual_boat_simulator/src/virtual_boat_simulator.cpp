@@ -160,7 +160,7 @@ private:
         tf_broadcaster_->sendTransform(t);
     }
 
-    // [功能与联系] 发布目标运动状态供Hybrid/DWA进行匀速预测；船体显示长宽不决定规划半径。
+    // [功能与联系] 发布目标运动状态供Hybrid/MPC进行匀速预测；船体显示长宽不决定规划半径。
     void publishOdometry()
     {
         nav_msgs::msg::Odometry odom;
@@ -306,7 +306,6 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
 };
 
-// [功能与联系] 初始化ROS上下文、创建本文件节点并进入回调调度；退出时释放节点与通信资源，是launch启动可执行程序后的入口。
 int main(int argc, char ** argv)
 {
     rclcpp::init(argc, argv);

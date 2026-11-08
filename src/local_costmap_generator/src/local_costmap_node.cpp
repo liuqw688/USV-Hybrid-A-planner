@@ -1,328 +1,90 @@
-#include <cmath>
-#include <cstdint>
-#include <functional>
-#include <limits>
-#include <memory>
-#include <queue>
-#include <string>
-#include <utility>
-#include <vector>
 #include <algorithm>
+#include <cmath>
+#include <memory>
+#include <string>
+#include <vector>
+#include <nlohmann/json.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
+#include <std_msgs/msg/string.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include "local_costmap_generator/inflation.hpp"
 
-#include "nav_msgs/msg/occupancy_grid.hpp"
-#include "rclcpp/rclcpp.hpp"
-
-class LocalCostmapNode : public rclcpp::Node
-{
+class LocalCostmapNode : public rclcpp::Node {
 public:
-  // [功能与联系] 加载膨胀阈值和距离参数，订阅原图并锁存发布/local_costmap；输入到达才构图，不靠频率反复重建。
-  LocalCostmapNode()
-  : Node("local_costmap_node")
-  {
-    input_topic_ = declare_parameter<std::string>(
-      "input_topic", "/local_obstacle_map");
-
-    output_topic_ = declare_parameter<std::string>(
-      "output_topic", "/local_costmap");
-
-    occupied_threshold_ = declare_parameter<int>(
-      "occupied_threshold", 90);
-
-    unknown_is_obstacle_ = declare_parameter<bool>(
-      "unknown_is_obstacle", true);
-
-    robot_radius_ = declare_parameter<double>(
-      "robot_radius", 5.0);
-
-    inflation_radius_ = declare_parameter<double>(
-      "inflation_radius", 70.0);
-
-    minimum_cost_ = declare_parameter<int>(
-      "minimum_cost", 1);
-
-    // 新增参数：高代价区域阈值和衰减因子
-    high_cost_threshold_ = declare_parameter<int>(
-      "high_cost_threshold", 60);
-
-    decay_factor_ = declare_parameter<double>(
-      "decay_factor", 3.0);
-
-    auto map_qos = rclcpp::QoS(rclcpp::KeepLast(1));
-    map_qos.reliable();
-    map_qos.transient_local();
-
-    map_sub_ = create_subscription<nav_msgs::msg::OccupancyGrid>(
-      input_topic_,
-      map_qos,
-      std::bind(&LocalCostmapNode::mapCallback, this, std::placeholders::_1));
-
-    costmap_pub_ = create_publisher<nav_msgs::msg::OccupancyGrid>(
-      output_topic_, map_qos);
-
-    RCLCPP_INFO(
-      get_logger(),
-      "Local costmap generator started. input=%s output=%s "
-      "robot_radius=%.2f inflation_radius=%.2f high_cost_thres=%d decay=%.2f",
-      input_topic_.c_str(),
-      output_topic_.c_str(),
-      robot_radius_,
-      inflation_radius_,
-      high_cost_threshold_,
-      decay_factor_);
+  LocalCostmapNode():Node("local_costmap_node") {
+    const auto input=declare_parameter("input_topic","/local_obstacle_map");
+    const auto output=declare_parameter("output_topic","/local_costmap");
+    const auto lanes=declare_parameter("lane_data_topic","/chart_lane_data");
+    const auto obstacles=declare_parameter("obstacle_output_topic","/channel/obstacle_costmap");
+    clip_=declare_parameter("clip_shore_soft_in_channel",true);
+    p_.occupied_threshold=declare_parameter("occupied_threshold",90);
+    p_.high_cost_threshold=declare_parameter("high_cost_threshold",60);
+    p_.robot_radius=declare_parameter("robot_radius",5.0);
+    p_.inflation_radius=declare_parameter("inflation_radius",70.0);
+    p_.minimum_cost=declare_parameter("minimum_cost",1);
+    p_.obstacle_lethal_threshold=declare_parameter("obstacle_lethal_threshold",85);
+    p_.decay_factor=declare_parameter("decay_factor",3.0);
+    if(!std::isfinite(p_.robot_radius) || !std::isfinite(p_.inflation_radius) || !std::isfinite(p_.decay_factor) || p_.robot_radius<0 || p_.inflation_radius<0 || p_.decay_factor<0 ||
+      p_.high_cost_threshold<1 || p_.occupied_threshold<=p_.high_cost_threshold || p_.occupied_threshold>100 ||
+      p_.minimum_cost<0 || p_.minimum_cost>98 || p_.obstacle_lethal_threshold<1 || p_.obstacle_lethal_threshold>99)throw std::invalid_argument("Invalid inflation parameters");
+    const auto qos=rclcpp::QoS(1).reliable().transient_local();
+    cost_pub_=create_publisher<nav_msgs::msg::OccupancyGrid>(output,qos);
+    obstacle_pub_=create_publisher<nav_msgs::msg::OccupancyGrid>(obstacles,qos);
+    map_sub_=create_subscription<nav_msgs::msg::OccupancyGrid>(input,qos,[this](nav_msgs::msg::OccupancyGrid::SharedPtr m){
+      if(!m->info.width || !m->info.height || !std::isfinite(m->info.resolution) || m->info.resolution<=0 ||
+        m->data.size()!=size_t(m->info.width)*m->info.height){RCLCPP_WARN(get_logger(),"Invalid input grid");return;}
+      map_=m;publish();});
+    lane_sub_=create_subscription<std_msgs::msg::String>(lanes,qos,[this](std_msgs::msg::String::SharedPtr m){
+      try {
+        auto j=nlohmann::json::parse(m->data);std::vector<std::vector<Point>> polygons;
+        for(const auto& l:j.at("lanes")) {std::vector<Point> poly;for(const auto& p:l.at("points")) {
+          double x=p.at(0).get<double>(),y=p.at(1).get<double>();
+          if(!std::isfinite(x)||!std::isfinite(y)) {throw std::invalid_argument("Non-finite lane point");}
+          poly.push_back({x,y});}
+          if(poly.size()>=3)polygons.push_back(std::move(poly));}
+        polygons_=std::move(polygons);lane_frame_=j.value("frame_id",std::string("map"));publish();
+      }catch(const std::exception& e){polygons_.clear();RCLCPP_WARN(get_logger(),"Invalid lane geometry: %s",e.what());publish();}});
   }
-
 private:
-  struct QueueCell
-  {
-    float distance;
-    int source_cost; // 记录起点的初始代价
-    int x;
-    int y;
-  };
-
-  struct CompareQueueCell
-  {
-    bool operator()(const QueueCell & a, const QueueCell & b) const
-    {
-      return a.distance > b.distance;
-    }
-  };
-
-  // [功能与联系] 验证输入栅格，保持坐标元数据，调用buildCostmap并发布；给航道管理器和两级规划器提供对齐底图。
-  void mapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr obstacle_map)
-  {
-    if (!isValidMap(*obstacle_map)) {
-      RCLCPP_WARN_THROTTLE(
-        get_logger(),
-        *get_clock(),
-        2000,
-        "Received invalid OccupancyGrid from %s",
-        input_topic_.c_str());
-      return;
-    }
-
-    nav_msgs::msg::OccupancyGrid costmap;
-    costmap.header = obstacle_map->header;
-    costmap.info = obstacle_map->info;
-    costmap.data.assign(obstacle_map->data.size(), 0);
-
-    buildCostmap(*obstacle_map, costmap);
-
-    costmap_pub_->publish(costmap);
-  }
-
-  // [功能与联系] 核对非零尺寸、正分辨率及data长度，避免距离变换越界；由mapCallback前置调用。
-  bool isValidMap(const nav_msgs::msg::OccupancyGrid & map) const
-  {
-    if (map.info.width == 0 || map.info.height == 0 || map.info.resolution <= 0.0) {
-      return false;
-    }
-
-    const std::size_t expected_size =
-      static_cast<std::size_t>(map.info.width) *
-      static_cast<std::size_t>(map.info.height);
-
-    return map.data.size() == expected_size;
-  }
-
-  // [功能与联系] 识别负栅格为未知；当前活动实现始终保留-1，unknown_is_obstacle参数未参与此判定。
-  bool isUnknown(const int8_t occupancy) const
-  {
-    return occupancy < 0;
-  }
-
-  // [功能与联系] 将二维格坐标变为数组下标；构图的距离场、源代价和最终输出共用。
-  std::size_t indexOf(
-    const int x,
-    const int y,
-    const std::uint32_t width) const
-  {
-    return static_cast<std::size_t>(y) * width +
-      static_cast<std::size_t>(x);
-  }
-
-  // [功能与联系] 分别为硬障碍与高代价种子执行8邻域距离传播，再按半径及指数衰减合并；输出梯度不是左右航道标签。
-  void buildCostmap(
-    const nav_msgs::msg::OccupancyGrid & obstacle_map,
-    nav_msgs::msg::OccupancyGrid & costmap)
-  {
-    const int width = static_cast<int>(obstacle_map.info.width);
-    const int height = static_cast<int>(obstacle_map.info.height);
-    const float resolution = static_cast<float>(obstacle_map.info.resolution);
-
-    const float infinity = std::numeric_limits<float>::infinity();
-    const std::size_t total_size = obstacle_map.data.size();
-
-    // 1. 初始化距离场和代价场
-    std::vector<float> obs_dist(total_size, infinity);
-    std::vector<int> obs_cost(total_size, 0);
-    std::priority_queue<QueueCell, std::vector<QueueCell>, CompareQueueCell> obs_queue;
-
-    std::vector<float> high_dist(total_size, infinity);
-    std::vector<int> high_cost(total_size, 0);
-    std::priority_queue<QueueCell, std::vector<QueueCell>, CompareQueueCell> high_queue;
-
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width; ++x) {
-        const std::size_t index = indexOf(x, y, width);
-        int8_t occ = obstacle_map.data[index];
-
-        if (isUnknown(occ)) {
-          costmap.data[index] = -1; // 未知区域强制为 -1
-        } 
-        else if (occ >= occupied_threshold_) {
-          // 物理障碍物起点
-          obs_dist[index] = 0.0F;
-          obs_cost[index] = 100;
-          obs_queue.push({0.0F, 100, x, y});
-          costmap.data[index] = 100;
-        } 
-        else if (occ >= high_cost_threshold_) {
-          // 高代价区域起点
-          high_dist[index] = 0.0F;
-          high_cost[index] = static_cast<int>(occ);
-          high_queue.push({0.0F, static_cast<int>(occ), x, y});
-          costmap.data[index] = static_cast<int8_t>(occ);
-        } 
-        else {
-          costmap.data[index] = 0;
-        }
+  struct Point {double x,y;};
+  std::vector<uint8_t> mask() {
+    if(!clip_ || polygons_.empty())return {};
+    if(lane_frame_!=map_->header.frame_id) {
+      RCLCPP_WARN(get_logger(),"Lane/map frames differ; keeping full conservative inflation (%s / %s)",lane_frame_.c_str(),map_->header.frame_id.c_str());return {};}
+    const int w=map_->info.width,h=map_->info.height;const double r=map_->info.resolution;
+    const auto& q=map_->info.origin.orientation;
+    const double yaw=std::atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z)),c=std::cos(yaw),s=std::sin(yaw);
+    std::vector<uint8_t> result(map_->data.size(),0);
+    for(const auto& world:polygons_) {
+      std::vector<Point> poly;double minx=w,miny=h,maxx=0,maxy=0;
+      for(auto p:world){double dx=p.x-map_->info.origin.position.x,dy=p.y-map_->info.origin.position.y;
+        Point a{(c*dx+s*dy)/r,(-s*dx+c*dy)/r};poly.push_back(a);
+        minx=std::min(minx,a.x);maxx=std::max(maxx,a.x);miny=std::min(miny,a.y);maxy=std::max(maxy,a.y);}
+      // Scanline fill by cell centers; work is proportional to covered rows,
+      // not all cells times the number of chart polygons.
+      for(int y=std::max(0,int(std::floor(miny)));y<std::min(h,int(std::ceil(maxy)));++y) {
+        std::vector<double> cuts;const double cy=y+.5;
+        for(size_t i=0,j=poly.size()-1;i<poly.size();j=i++) {
+          auto a=poly[j],b=poly[i];if((a.y>cy)!=(b.y>cy))cuts.push_back(a.x+(cy-a.y)*(b.x-a.x)/(b.y-a.y));}
+        std::sort(cuts.begin(),cuts.end());
+        for(size_t k=1;k<cuts.size();k+=2)for(int x=std::max(0,int(std::ceil(cuts[k-1]-.5)));x<std::min(w,int(std::ceil(cuts[k]-.5)));++x)result[y*w+x]=1;
       }
     }
-
-    // 2. 障碍物 Dijkstra 距离变换
-    constexpr int kNeighborCount = 8;
-    const int offset_x[kNeighborCount] = {-1, 0, 1, -1, 1, -1, 0, 1};
-    const int offset_y[kNeighborCount] = {-1, -1, -1, 0, 0, 1, 1, 1};
-    
-    float obs_max_dist = static_cast<float>(robot_radius_ + inflation_radius_);
-
-    while (!obs_queue.empty()) {
-      const QueueCell current = obs_queue.top();
-      obs_queue.pop();
-
-      const std::size_t current_index = indexOf(current.x, current.y, width);
-      if (current.distance > obs_dist[current_index]) continue;
-      if (current.distance > obs_max_dist) continue;
-
-      for (int i = 0; i < kNeighborCount; ++i) {
-        const int next_x = current.x + offset_x[i];
-        const int next_y = current.y + offset_y[i];
-
-        if (next_x < 0 || next_y < 0 || next_x >= width || next_y >= height) continue;
-
-        const float step_distance = ((offset_x[i] == 0 || offset_y[i] == 0) ? 1.0F : 1.41421356F) * resolution;
-        const float next_distance = current.distance + step_distance;
-
-        if (next_distance > obs_max_dist) continue;
-
-        const std::size_t next_index = indexOf(next_x, next_y, width);
-        if (next_distance < obs_dist[next_index]) {
-          obs_dist[next_index] = next_distance;
-          obs_cost[next_index] = current.source_cost;
-          obs_queue.push({next_distance, current.source_cost, next_x, next_y});
-        }
-      }
-    }
-
-    // 3. 高代价区域 Dijkstra 距离变换
-    float high_max_dist = static_cast<float>(inflation_radius_);
-
-    while (!high_queue.empty()) {
-      const QueueCell current = high_queue.top();
-      high_queue.pop();
-
-      const std::size_t current_index = indexOf(current.x, current.y, width);
-      if (current.distance > high_dist[current_index]) continue;
-      if (current.distance > high_max_dist) continue;
-
-      for (int i = 0; i < kNeighborCount; ++i) {
-        const int next_x = current.x + offset_x[i];
-        const int next_y = current.y + offset_y[i];
-
-        if (next_x < 0 || next_y < 0 || next_x >= width || next_y >= height) continue;
-
-        const float step_distance = ((offset_x[i] == 0 || offset_y[i] == 0) ? 1.0F : 1.41421356F) * resolution;
-        const float next_distance = current.distance + step_distance;
-
-        if (next_distance > high_max_dist) continue;
-
-        const std::size_t next_index = indexOf(next_x, next_y, width);
-        if (next_distance < high_dist[next_index]) {
-          high_dist[next_index] = next_distance;
-          high_cost[next_index] = current.source_cost;
-          high_queue.push({next_distance, current.source_cost, next_x, next_y});
-        }
-      }
-    }
-
-    // 4. 合并计算最终代价
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width; ++x) {
-        const std::size_t index = indexOf(x, y, width);
-        int8_t original_occ = obstacle_map.data[index];
-
-        // 未知区域强制保持为 -1
-        if (isUnknown(original_occ)) {
-          costmap.data[index] = -1;
-          continue;
-        }
-
-        int final_cost = 0;
-
-        // 计算障碍物膨胀代价
-        float d_obs = obs_dist[index];
-        if (std::isfinite(d_obs) && d_obs <= obs_max_dist) {
-          int c_obs = 0;
-          if (d_obs <= robot_radius_) {
-            c_obs = 99; // 船体半径内高代价
-          } else {
-            float dist_from_robot = d_obs - static_cast<float>(robot_radius_);
-            float norm = std::clamp(dist_from_robot / static_cast<float>(inflation_radius_), 0.0F, 1.0F);
-            float cf = static_cast<float>(minimum_cost_) + (98.0F - static_cast<float>(minimum_cost_)) * std::exp(-decay_factor_ * norm);
-            c_obs = static_cast<int>(std::round(cf));
-          }
-          final_cost = std::max(final_cost, c_obs);
-        }
-
-        // 计算高代价区域膨胀代价
-        float d_high = high_dist[index];
-        if (std::isfinite(d_high) && d_high <= high_max_dist) {
-          int base_high = high_cost[index];
-          float norm_high = std::clamp(d_high / static_cast<float>(inflation_radius_), 0.0F, 1.0F);
-          float cf_high = static_cast<float>(minimum_cost_) + 
-                          (static_cast<float>(base_high) 
-                          - static_cast<float>(minimum_cost_)) * std::exp(-decay_factor_ * norm_high);
-          int c_high = static_cast<int>(std::round(cf_high));
-          final_cost = std::max(final_cost, c_high);
-        }
-
-        costmap.data[index] = static_cast<int8_t>(std::clamp(final_cost, 0, 100));
-      }
-    }
+    return result;
   }
-
-  std::string input_topic_;
-  std::string output_topic_;
-  int occupied_threshold_{90};
-  bool unknown_is_obstacle_{true};
-  double robot_radius_{5.0};
-  double inflation_radius_{70.0};
-  int minimum_cost_{1};
-  
-  // 新增成员变量
-  int high_cost_threshold_{60};
-  double decay_factor_{3.0};
-
+  void publish() {
+    if(!map_)return;
+    auto result=local_costmap_generator::inflate(map_->data,map_->info.width,map_->info.height,map_->info.resolution,mask(),p_);
+    auto cost=*map_,obstacles=*map_;cost.data=std::move(result.cost);obstacles.data=std::move(result.obstacles);
+    cost_pub_->publish(cost);obstacle_pub_->publish(obstacles);
+    RCLCPP_INFO(get_logger(),"Inflated grid: shoreline components=%d isolated obstacles=%d; hard clearance=%.1fm",
+      result.shore_components,result.isolated_components,p_.robot_radius);
+  }
+  local_costmap_generator::InflationParams p_;bool clip_=true;
+  std::string lane_frame_;std::vector<std::vector<Point>> polygons_;
+  nav_msgs::msg::OccupancyGrid::SharedPtr map_;
   rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr map_sub_;
-  rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr costmap_pub_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr lane_sub_;
+  rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr cost_pub_,obstacle_pub_;
 };
-
-// [功能与联系] 初始化ROS上下文、创建本文件节点并进入回调调度；退出时释放节点与通信资源，是launch启动可执行程序后的入口。
-int main(int argc, char ** argv)
-{
-  rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<LocalCostmapNode>());
-  rclcpp::shutdown();
-  return 0;
-}
+int main(int argc,char** argv){rclcpp::init(argc,argv);rclcpp::spin(std::make_shared<LocalCostmapNode>());rclcpp::shutdown();}

@@ -96,8 +96,6 @@ class PipelineValidator(Node):
                 failures.append("A* final waypoint does not equal /goal_pose")
         return failures
 
-
-# [功能与联系] 初始化ROS上下文、创建本文件节点并进入回调调度；退出时释放节点与通信资源，是launch启动可执行程序后的入口。
 def main() -> int:
     rclpy.init()
     node = PipelineValidator()

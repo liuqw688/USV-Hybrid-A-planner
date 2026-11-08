@@ -1,0 +1,25 @@
+usv_open_water_frontend:
+  ros__parameters:
+    frame_id: map
+    open_water.half_extent: 40.0
+    hull_radius: 0.5
+    # Search complete trajectories in this test, not the previous 5 m local horizon.
+    search.horizon: 500.0
+    search.max_search_time: 8.0
+    search.max_nodes: 200000
+    search.output_step: 0.1
+    search.connection_range: 30.0
+    search.connection_durations: [4.0, 6.0, 8.0, 12.0, 16.0, 24.0, 36.0]
+    search.heuristic_weight: 5.0
+    goal.position_tolerance: 0.35
+    goal.heading_tolerance: 0.25
+    start.x: 0.0
+    start.y: 0.0
+    start.yaw: 0.0
+    start.surge: 0.0
+    start.sway: 0.0
+    start.yaw_rate: 0.0
+    goal.x: 2.0
+    goal.y: 1.0
+    goal.yaw: 0.5
+    preview.playback: true

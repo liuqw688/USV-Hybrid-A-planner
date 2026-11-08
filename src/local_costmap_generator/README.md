@@ -1,9 +1,11 @@
-# local_costmap_generator
+# 按来源分离的局部膨胀地图
 
-## 详细功能与参数文档
+`/chart_costmap` 与 `/chart_lane_data` 生成 `/local_costmap` 和 `/channel/obstacle_costmap`。使用静态 TSSLPT 几何裁剪岸边软膨胀，不依赖当前任务 MAIN/OPPOSITE，也不依赖船位；独立岛屿/障碍的软膨胀在所有区域保留。
 
-- [FUNCTIONAL_GUIDE.md](FUNCTIONAL_GUIDE.md)：节点启动、功能/函数流程图、话题与包间关系、逐函数职责、当前实现边界。
-- [PARAMETERS.md](PARAMETERS.md)：配置值、参数作用及增大/减小的影响。
-- [工作空间总索引](../../PACKAGE_DOCUMENTATION_INDEX.md)：整条运行链、操作与验证。
+真实占用100、未知-1与 `robot_radius` 最低硬缓冲99始终保留。航道中心偏好由 `/channel/lane_costmap` 的中心低、边沿高梯度负责，不能把安全占用层混成航道偏好。
 
+当前障碍来源判定：8邻域占用连通分量接触规划图边界视为岸陆；封闭分量视为独立岛屿/障碍。地图裁剪可能改变此判定，无法仅从占用图识别连接岸边的障碍类别。图边界上的岛屿仍保留本体与硬缓冲，但航道内的较远软膨胀可能按岸边处理；需要更细语义时应由地图/传感器提供明确的来源分类。
 
+没有航道数据、数据无效或图层坐标系不同，会保留完整膨胀。支持同坐标系下的旋转栅格原点；不假设不同坐标系为单位变换。航道数组或输入图变化时自动重建并锁存发布，无定时重复构图。
+
+参数见 [PARAMETERS.md](PARAMETERS.md)。本轮实验报告位于项目 artifacts/channel_inflation_fix_20261014。

@@ -35,6 +35,8 @@ public:
     output_topic_ = declare_parameter("output_topic", "/astar_channel_waypoints");
     active_goal_topic_ = declare_parameter("active_goal_topic", "/goal_pose_from_astar");
     spacing_ = declare_parameter("waypoint_spacing", 100.0);
+    compact_direct_distance_=declare_parameter("compact_direct_distance",30.0);
+    terminal_min_spacing_=declare_parameter("terminal_min_waypoint_spacing",20.0);
     switch_distance_ = declare_parameter("goal_switch_distance", 8.0);
     mandatory_distance_ = declare_parameter("mandatory_goal_distance", 1.5);
     via_points_ = declare_parameter<std::vector<double>>("via_points", std::vector<double>{});
@@ -44,6 +46,8 @@ public:
     main_lane_value_max_ = declare_parameter("main_lane_value_max", 20);
     max_iterations_ = declare_parameter("max_search_iterations", 200000);
     center_cost_weight_ = declare_parameter("center_cost_weight", 0.08);
+    obstacle_cost_weight_=declare_parameter("obstacle_cost_weight",0.02);
+    if(!std::isfinite(obstacle_cost_weight_) || obstacle_cost_weight_<0)throw std::invalid_argument("Invalid obstacle weight");
     right_channel_only_ = declare_parameter("right_channel_only", true);
     opposite_lane_value_=declare_parameter("opposite_lane_value",75);
     terminal_crossing_distance_=declare_parameter("terminal_crossing_distance",100.0);
@@ -59,7 +63,8 @@ public:
       !std::isfinite(outside_lane_penalty_) || outside_lane_penalty_<0 ||
       safety_threshold_<1 || safety_threshold_>100)
       throw std::invalid_argument("Invalid terminal crossing configuration");
-    if(spacing_<=0 || switch_distance_<=0 || switch_distance_>=spacing_ || mandatory_distance_<=0 ||
+    if(!std::isfinite(terminal_min_spacing_) || terminal_min_spacing_<0 ||
+      spacing_<=0 || switch_distance_<=0 || switch_distance_>=spacing_ || mandatory_distance_<=0 ||
       map_settle_time_<0 || minimum_replan_period_<0 || via_points_.size()%2!=0 ||
       std::any_of(via_points_.begin(),via_points_.end(),[](double v){return !std::isfinite(v);}))
       throw std::invalid_argument("Invalid spacing/tolerance/period or odd-length via_points");
@@ -146,6 +151,8 @@ private:
       return false;
     }
     const int id = index(x, y);
+    const int physical=safety_map_->data[static_cast<std::size_t>(id)];
+    if(physical<0 || physical>=99)return false;
     if (id == start_id || id == goal_id) {return true;}
     const int value = lane_map_->data[static_cast<std::size_t>(id)];
     if(value==outside_lane_value_ && !outsideSafe(x,y)) return false;
@@ -185,11 +192,14 @@ private:
         const int old=lane_map_->data[i],updated=message->data[i];
         const bool old_main=old>=0 && old<=main_lane_value_max_;
         const bool new_main=updated>=0 && updated<=main_lane_value_max_;
-        if((old_main && updated==opposite_lane_value_) || (old==opposite_lane_value_ && new_main)) {
+        if((old_main && updated==opposite_lane_value_) || (old==opposite_lane_value_ && new_main) || ((old<0)!=(updated<0))) {
           roles_changed=true;break;
         }
       }
     }
+    if(replan_on_lane_role_change_ && lane_map_ &&
+      (lane_map_->header.frame_id!=message->header.frame_id || (lane_map_->info.width!=message->info.width || lane_map_->info.height!=message->info.height ||
+       lane_map_->info.resolution!=message->info.resolution || lane_map_->info.origin!=message->info.origin))) roles_changed=true;
     lane_map_ = message;
     if(roles_changed && has_final_goal_) {
       // 本任务纠偏不重置已完成途经点；立即撤销旧路线，避免沿错侧航道继续走。
@@ -305,6 +315,17 @@ private:
       // 途经点及最终目标始终精确保留，不能被100m降采样丢弃。
       path.poses.push_back(pinned);mandatory.push_back(true);start=pinned;
     }
+    // 最后一个100m普通采样点距终点过近，会把Hybrid最后一段压得过短。
+    // 在发布/计算切线前删除该采样点，使上一段直接衔接最终目标；同步
+    // 删除mandatory标记，不能误删起点或用户指定的必经途经点。
+    while(path.poses.size()>=3 && !mandatory[mandatory.size()-2]) {
+      const auto &a=path.poses[path.poses.size()-2].pose.position;
+      const auto &b=path.poses.back().pose.position;
+      if(std::hypot(a.x-b.x,a.y-b.y)>=terminal_min_spacing_) {break;}
+      RCLCPP_INFO(get_logger(),"Removing terminal ordinary waypoint: %.2fm to final goal (< %.2fm)",
+        std::hypot(a.x-b.x,a.y-b.y),terminal_min_spacing_);
+      path.poses.erase(path.poses.end()-2);mandatory.erase(mandatory.end()-2);
+    }
     for(std::size_t i=0;i+1<path.poses.size();++i) {
       const auto &a=path.poses[i].pose.position;const auto &b=path.poses[i+1].pose.position;
       tf2::Quaternion q;q.setRPY(0,0,std::atan2(b.y-a.y,b.x-a.x));
@@ -317,7 +338,7 @@ private:
   }
 
   // [功能与联系] 8邻域A*累计中心与区域代价，禁止斜穿障碍角；主体走主航道，起末段允许受限非主航道连接。
-  std::vector<int> searchCells(double sx,double sy,double gx,double gy,bool final_leg)
+  std::vector<int> searchCells(double sx,double sy,double gx,double gy,bool final_leg,bool split_endpoints=true)
   {
     int start_x = 0, start_y = 0, goal_x = 0, goal_y = 0;
     if (!worldToGrid(sx,sy, start_x, start_y)) {
@@ -330,6 +351,10 @@ private:
     }
     const int start_id = index(start_x, start_y);
     const int goal_id = index(goal_x, goal_y);
+    if(safety_map_->data[start_id]<0 || safety_map_->data[start_id]>=99 ||
+      safety_map_->data[goal_id]<0 || safety_map_->data[goal_id]>=99) {
+      RCLCPP_WARN(get_logger(),"Endpoint in physical obstacle/UNKNOWN/hard clearance");return {};
+    }
     const int goal_value = lane_map_->data[static_cast<std::size_t>(goal_id)];
     terminal_crossing_=final_leg && (goal_value==opposite_lane_value_ || goal_value==outside_lane_value_);
     if(goal_value==outside_lane_value_ && !outsideSafe(goal_x,goal_y)) {
@@ -349,6 +374,35 @@ private:
       (!right_channel_only_ && (start_value>95 || goal_value<0 || goal_value>95))) {
       RCLCPP_WARN(get_logger(),"Start/destination outside allowed lane; no unsafe endpoint exemption");
       return {};
+    }
+
+    if(split_endpoints && right_channel_only_ && std::hypot(gx-sx,gy-sy)>compact_direct_distance_ &&
+      (start_value>main_lane_value_max_ || goal_value>main_lane_value_max_)) {
+      const auto main_anchor=[&](int cx,int cy) {
+        int chosen=-1;double best=std::numeric_limits<double>::infinity();
+        const int radius=static_cast<int>(std::ceil(terminal_crossing_distance_/lane_map_->info.resolution));
+        for(int y=std::max(0,cy-radius);y<std::min(int(lane_map_->info.height),cy+radius+1);++y)
+          for(int x=std::max(0,cx-radius);x<std::min(int(lane_map_->info.width),cx+radius+1);++x) {
+            const int id=index(x,y),value=lane_map_->data[id];if(value<0 || value>main_lane_value_max_ || safety_map_->data[id]<0 || safety_map_->data[id]>=99) continue;
+            const double d=std::hypot(x-cx,y-cy)*lane_map_->info.resolution;
+            if(d<=terminal_crossing_distance_ && d<best){best=d;chosen=id;}
+          }
+        return chosen;
+      };
+      const int first=start_value<=main_lane_value_max_ ? start_id:main_anchor(start_x,start_y);
+      const int last=goal_value<=main_lane_value_max_ ? goal_id:main_anchor(goal_x,goal_y);
+      if(first<0 || last<0){RCLCPP_WARN(get_logger(),"No MAIN entry/exit within connector range");return {};}
+      double ax,ay,bx,by;gridToWorld(first%int(lane_map_->info.width),first/int(lane_map_->info.width),ax,ay);
+      gridToWorld(last%int(lane_map_->info.width),last/int(lane_map_->info.width),bx,by);
+      std::vector<int> result;
+      const auto append=[&](const std::vector<int> &part){
+        if(part.empty())return false;
+        result.insert(result.end(),part.begin()+(result.empty()?0:1),part.end());return true;
+      };
+      if(!append(searchCells(sx,sy,ax,ay,false,false)) ||
+        !append(searchCells(ax,ay,bx,by,false,false)) ||
+        !append(searchCells(bx,by,gx,gy,final_leg,false)))return {};
+      return result;
     }
 
     const std::size_t cell_count = lane_map_->data.size();
@@ -385,7 +439,7 @@ private:
         const double crossing_cost=right_channel_only_ && lane_value==opposite_lane_value_ ?
           opposite_lane_penalty_*movement:lane_value==outside_lane_value_ ? outside_lane_penalty_*movement:0.0;
         const double candidate = current.g + movement + center_cost_weight_ * lane_value * movement+
-          crossing_cost;
+          crossing_cost + obstacle_cost_weight_ * std::max(0,int(safety_map_->data[next_id])) * movement;
         if (candidate >= best[static_cast<std::size_t>(next_id)]) {continue;}
         best[static_cast<std::size_t>(next_id)] = candidate;
         parent[static_cast<std::size_t>(next_id)] = current.id;
@@ -409,7 +463,7 @@ private:
   }
 
 
-  // [功能与联系] 依据船位顺序推进普通8m/必经1.5m目标，并记录完成的途经点；最终点交给DWA终点停车。
+  // [功能与联系] 依据船位顺序推进普通8m/必经1.5m目标，并记录完成的途经点；最终点交给MPC终点停车。
   void switchWaypoint()
   {
     if (!odom_ || current_path_.poses.empty() || current_index_ >= current_path_.poses.size() ||
@@ -454,6 +508,8 @@ private:
   std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
   double spacing_{100.0}, switch_distance_{8.0},mandatory_distance_{1.5},map_settle_time_{0.5};
+  double compact_direct_distance_{30.0};
+  double terminal_min_spacing_{20.0};
   std::vector<double> via_points_;
   std::vector<bool> mandatory_;
   bool planned_{false};
@@ -466,6 +522,7 @@ private:
   double terminal_crossing_distance_{100.0},opposite_lane_penalty_{4.0};
   rclcpp::Time last_input_change_{0,0,RCL_ROS_TIME};
   double minimum_replan_period_{0.5}, center_cost_weight_{0.08};
+  double obstacle_cost_weight_{0.02};
   int main_lane_value_max_{20}, max_iterations_{200000};
   bool right_channel_only_{true}, has_final_goal_{false}, replan_pending_{false};
   bool has_last_active_goal_{false};
@@ -486,7 +543,6 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub_;
 };
 
-// [功能与联系] 初始化ROS上下文、创建本文件节点并进入回调调度；退出时释放节点与通信资源，是launch启动可执行程序后的入口。
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
