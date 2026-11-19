@@ -1,0 +1,321 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_first_restore_roslogs/2026-11-12-15-02-20-636393-orangepi5plus-27009
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [27022]
+[INFO] [traj_server-2]: process started with pid [27024]
+[INFO] [static_transform_publisher-3]: process started with pid [27026]
+[INFO] [free_water_costmap.py-4]: process started with pid [27028]
+[INFO] [fast_planner_bridge.py-5]: process started with pid [27030]
+[INFO] [boat_simulator-6]: process started with pid [27032]
+[INFO] [mpc_controller-7]: process started with pid [27034]
+[static_transform_publisher-3] [WARN] [1794466940.784118480] []: Old-style arguments are deprecated; see --help for new-style arguments
+[static_transform_publisher-3] [INFO] [1794466940.836690187] [static_transform_publisher_NaTizfhgteWmNOWp]: Spinning until stopped - publishing transform
+[static_transform_publisher-3] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-3] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-3] from 'map' to 'odom'
+[boat_simulator-6] [INFO] [1794466940.840146104] [boat_simulator]: Boat simulator ready: MPC velocity-command input, Fast-Planner six-state model
+[mpc_controller-7] [INFO] [1794466940.856597074] [mpc_controller]: MPC tracker ready: 5 knots, 5.0 s horizon, 10 Hz, v_cmd/w_cmd output
+[mpc_controller-7] [WARN] [1794466940.957364373] [mpc_controller]: MPC braking: waiting for path; missing costmap; 
+[fast_planner_node-1] [INFO] [1794466941.030995037] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794466941.873850153] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794466942.149081330] [fast_planner_node]: USV global grid initialized: 290 x 180, 1.000 m/cell
+[mpc_controller-7] [WARN] [1794466944.057024206] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:     0.287699  -0.00814909 -6.48043e-05,     0.068934  -0.00221242 -1.78639e-05, start_cmd:  -0.00598698 -0.000320861            0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] open set empty, no path!
+[fast_planner_node-1] use node num: 1
+[fast_planner_node-1] iter num: 1
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: retry search success.
+[fast_planner_node-1] [INFO] [1794466947.030303670] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466947.033721963] [bspline_opt]: stop: parameter tolerance, objective evaluations: 25, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.11529
+[fast_planner_node-1] [kino replan]: source: search (search segments: 86, shot segments: 0), time: 0.150995, search: 0.147409, optimize: 0.00346788, adjust time:0.000117832
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466947.079394085] [fast_planner_bridge]: trajectory 1: 209 control points, 57.55s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794466947.185563569] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 0.07m/s, v_cmd 2.00, w_cmd 0.20
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  5.47707  2.26325 0.936382,   1.71048 -0.173102  0.161703, start_cmd:   1.7003 0.138714        0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466952.359684958] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466952.362531591] [bspline_opt]: stop: parameter tolerance, objective evaluations: 25, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.14058
+[fast_planner_node-1] [kino replan]: source: search (search segments: 84, shot segments: 0), time: 0.189991, search: 0.186982, optimize: 0.0028933, adjust time:0.000115498
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466952.419430412] [fast_planner_bridge]: trajectory 2: 207 control points, 58.17s
+[mpc_controller-7] [INFO] [1794466955.270088797] [mpc_controller]: MPC tracking: cross-track 0.20m, speed 1.87m/s, v_cmd 2.00, w_cmd -0.04
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 8.80313 7.22701 1.00495,    1.87202  -0.026441 -0.0449524, start_cmd:    1.94796 -0.0247287          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466955.594960174] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466955.600153528] [bspline_opt]: stop: parameter tolerance, objective evaluations: 46, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.06079
+[fast_planner_node-1] [kino replan]: source: search (search segments: 80, shot segments: 0), time: 0.119169, search: 0.113818, optimize: 0.00524702, adjust time:0.000104415
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466955.658636664] [fast_planner_bridge]: trajectory 3: 200 control points, 52.40s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  11.1441  10.5474 0.942824,    1.90283 -0.0148698 -0.0169836, start_cmd:     1.97896 -0.00884034           0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466957.833637356] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466957.835133588] [bspline_opt]: stop: parameter tolerance, objective evaluations: 21, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05584
+[fast_planner_node-1] [kino replan]: source: search (search segments: 79, shot segments: 0), time: 0.19439, search: 0.192761, optimize: 0.00153006, adjust time:9.9165e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466957.851226396] [fast_planner_bridge]: trajectory 4: 198 control points, 51.53s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  13.6533  13.7972 0.899196,      1.91497   -0.0098612 -0.000455628, start_cmd:     1.99147 0.000911603           0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466959.917010431] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466959.919621400] [bspline_opt]: stop: parameter tolerance, objective evaluations: 15, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.11848
+[fast_planner_node-1] [kino replan]: source: search (search segments: 85, shot segments: 0), time: 0.117456, search: 0.114671, optimize: 0.00266668, adjust time:0.00011754
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466959.939349790] [fast_planner_bridge]: trajectory 5: 212 control points, 58.61s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  16.2726   16.981 0.869658,     1.91975 -0.00544441  0.00345405, start_cmd:    1.99659 0.00257738          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466962.061462653] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466962.062697555] [bspline_opt]: stop: parameter tolerance, objective evaluations: 15, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.10402
+[fast_planner_node-1] [kino replan]: source: search (search segments: 85, shot segments: 0), time: 0.150428, search: 0.14905, optimize: 0.00126698, adjust time:0.000110248
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466962.130301291] [fast_planner_bridge]: trajectory 6: 212 control points, 57.85s
+[mpc_controller-7] [INFO] [1794466963.273845239] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 1.92m/s, v_cmd 2.00, w_cmd -0.00
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  18.8849  20.0546 0.859958,    1.92161 0.00132614 -0.0070621, start_cmd:     1.99862 -0.00560239           0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466964.158746563] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466964.161248450] [bspline_opt]: stop: parameter tolerance, objective evaluations: 16, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.07347
+[fast_planner_node-1] [kino replan]: source: search (search segments: 88, shot segments: 0), time: 0.147791, search: 0.145133, optimize: 0.0025468, adjust time:0.000110832
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466964.227236663] [fast_planner_bridge]: trajectory 7: 219 control points, 57.97s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  21.5248   23.108 0.830042,   1.92236 0.0363599 -0.070601, start_cmd:    1.99304 -0.0538597          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466966.254067204] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466966.255927140] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.2366
+[fast_planner_node-1] [kino replan]: source: search (search segments: 89, shot segments: 0), time: 0.122137, search: 0.120091, optimize: 0.00191214, adjust time:0.000132999
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466966.276543061] [fast_planner_bridge]: trajectory 8: 222 control points, 67.77s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  24.6745  26.2087 0.672289,    1.92267  0.0679503 -0.0992858, start_cmd:    1.98295 -0.0787743          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466968.577232004] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466968.577800164] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.2567
+[fast_planner_node-1] [kino replan]: source: search (search segments: 85, shot segments: 0), time: 0.155584, search: 0.154856, optimize: 0.000601118, adjust time:0.000126873
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466968.599678403] [fast_planner_bridge]: trajectory 9: 212 control points, 65.85s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  28.1676  28.7598 0.538337,   1.92279 0.0810509 -0.111169, start_cmd:    1.97742 -0.0890985          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466970.827167010] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466970.827997958] [bspline_opt]: stop: parameter tolerance, objective evaluations: 11, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.17162
+[fast_planner_node-1] [kino replan]: source: search (search segments: 84, shot segments: 0), time: 0.125804, search: 0.12483, optimize: 0.000856907, adjust time:0.000116957
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466970.893990838] [fast_planner_bridge]: trajectory 10: 210 control points, 60.69s
+[mpc_controller-7] [INFO] [1794466971.360919354] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 1.92m/s, v_cmd 2.00, w_cmd 0.04
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  32.0857  30.8064 0.398238,    1.92283  0.0579567 -0.0561962, start_cmd:    1.99184 -0.0487782          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466973.131456159] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466973.131930987] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.23242
+[fast_planner_node-1] [kino replan]: source: search (search segments: 81, shot segments: 0), time: 0.140599, search: 0.139976, optimize: 0.00049991, adjust time:0.000123374
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466973.164527848] [fast_planner_bridge]: trajectory 11: 203 control points, 61.62s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  36.1241  32.3567 0.311476,     1.92285   0.0293044 -0.00525615, start_cmd:      1.9996 -0.00997752           0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466975.380109597] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466975.380596092] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.32348
+[fast_planner_node-1] [kino replan]: source: search (search segments: 85, shot segments: 0), time: 0.128457, search: 0.127811, optimize: 0.000515078, adjust time:0.000130374
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466975.419974122] [fast_planner_bridge]: trajectory 12: 212 control points, 69.35s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  40.3377  33.6997 0.283843,    1.92286 0.00124402  0.0334431, start_cmd:    2.0001 0.0207477         0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] reach horizon
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466977.645520002] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466977.646056371] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.30856
+[fast_planner_node-1] [kino replan]: source: search (search segments: 86, shot segments: 0), time: 0.133248, search: 0.132558, optimize: 0.000564076, adjust time:0.000125999
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466977.708975996] [fast_planner_bridge]: trajectory 13: 215 control points, 69.35s
+[mpc_controller-7] [INFO] [1794466979.377991762] [mpc_controller]: MPC tracking: cross-track 0.03m, speed 1.92m/s, v_cmd 2.00, w_cmd 0.01
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:   44.283  34.9348 0.309347,    1.92286 0.00236375 0.00855329, start_cmd:    2.00005 0.00434388          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466980.432097276] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466980.432553729] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.28061
+[fast_planner_node-1] [kino replan]: source: search (search segments: 78, shot segments: 0), time: 0.772302, search: 0.771703, optimize: 0.000482411, adjust time:0.000116373
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466980.459430492] [fast_planner_bridge]: trajectory 14: 195 control points, 61.73s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  48.1283  36.1676 0.286963,    1.92286  0.0175597 -0.0235394, start_cmd:    1.99897 -0.0195346          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466982.371182114] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466982.371636817] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.32151
+[fast_planner_node-1] [kino replan]: source: search (search segments: 74, shot segments: 0), time: 0.58251, search: 0.581914, optimize: 0.000482994, adjust time:0.000112582
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466982.431749183] [fast_planner_bridge]: trajectory 15: 185 control points, 60.39s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  52.1006  37.3132 0.243656,    1.92286  0.0455982 -0.0763483, start_cmd:    1.99131 -0.0594286          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466984.316260546] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466984.316972205] [bspline_opt]: stop: parameter tolerance, objective evaluations: 11, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.2721
+[fast_planner_node-1] [kino replan]: source: search (search segments: 69, shot segments: 0), time: 0.377873, search: 0.377022, optimize: 0.000745783, adjust time:0.000104999
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466984.382742837] [fast_planner_bridge]: trajectory 16: 174 control points, 54.45s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:   56.1721   37.9968 0.0585119,    1.92286  0.0382118 -0.0251547, start_cmd:    1.9976 -0.024681         0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466986.626738789] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466986.627129909] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.27232
+[fast_planner_node-1] [kino replan]: source: search (search segments: 62, shot segments: 0), time: 0.570449, search: 0.569937, optimize: 0.000417078, adjust time:9.5082e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466986.642602933] [fast_planner_bridge]: trajectory 17: 157 control points, 49.11s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794466987.470400855] [mpc_controller]: MPC tracking: cross-track 0.01m, speed 1.92m/s, v_cmd 2.00, w_cmd -0.04
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:   60.4916   38.2469 0.0109134,    1.92286  0.0441689 -0.0486035, start_cmd:    1.99464 -0.0411073          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466989.005084722] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466989.005754089] [bspline_opt]: stop: parameter tolerance, objective evaluations: 11, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.17421
+[fast_planner_node-1] [kino replan]: source: search (search segments: 56, shot segments: 0), time: 0.690233, search: 0.689435, optimize: 0.000713117, adjust time:8.4874e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466989.019188679] [fast_planner_bridge]: trajectory 18: 143 control points, 41.10s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:    64.5277    38.1569 -0.0991417,    1.92286  0.0547307 -0.0609746, start_cmd:   1.99167 -0.051245         0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466991.029106505] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466991.029782581] [bspline_opt]: stop: parameter tolerance, objective evaluations: 14, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.14457
+[fast_planner_node-1] [kino replan]: source: search (search segments: 49, shot segments: 0), time: 0.595327, search: 0.594548, optimize: 0.000707867, adjust time:7.1457e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466991.041913144] [fast_planner_bridge]: trajectory 19: 126 control points, 35.25s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:   68.6244   37.6072 -0.183191,    1.92286  0.0387866 -0.0312857, start_cmd:    1.99697 -0.0287809          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466993.130672822] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466993.130947861] [bspline_opt]: stop: parameter tolerance, objective evaluations: 6, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.26976
+[fast_planner_node-1] [kino replan]: source: search (search segments: 42, shot segments: 0), time: 0.567093, search: 0.566732, optimize: 0.000296038, adjust time:6.5041e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466993.142112436] [fast_planner_bridge]: trajectory 20: 109 control points, 33.78s
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:   72.7599   36.7205 -0.311832,    1.92286    0.05747 -0.0575648, start_cmd:    1.99174 -0.0495715          0
+[fast_planner_node-1] goal:80  0  0, 0 0 0
+[fast_planner_node-1] near end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794466995.336516271] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794466995.337030473] [bspline_opt]: stop: parameter tolerance, objective evaluations: 14, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.12541
+[fast_planner_node-1] [kino replan]: source: search (search segments: 37, shot segments: 0), time: 0.583721, search: 0.583119, optimize: 0.000541911, adjust time:5.9499e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794466995.376001341] [fast_planner_bridge]: trajectory 21: 97 control points, 26.56s
+[mpc_controller-7] [INFO] [1794466995.472974144] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 1.92m/s, v_cmd 2.00, w_cmd -0.02
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mpc_controller-7]: sending signal 'SIGINT' to process[mpc_controller-7]
+[INFO] [boat_simulator-6]: sending signal 'SIGINT' to process[boat_simulator-6]
+[INFO] [fast_planner_bridge.py-5]: sending signal 'SIGINT' to process[fast_planner_bridge.py-5]
+[INFO] [free_water_costmap.py-4]: sending signal 'SIGINT' to process[free_water_costmap.py-4]
+[INFO] [static_transform_publisher-3]: sending signal 'SIGINT' to process[static_transform_publisher-3]
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[mpc_controller-7] [INFO] [1794466996.088490846] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[boat_simulator-6] [INFO] [1794466996.089630082] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-3] [INFO] [1794466996.094230486] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[traj_server-2] [INFO] [1794466996.095555512] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794466996.097346615] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[INFO] [static_transform_publisher-3]: process has finished cleanly [pid 27026]
+[INFO] [boat_simulator-6]: process has finished cleanly [pid 27032]
+[INFO] [mpc_controller-7]: process has finished cleanly [pid 27034]
+[INFO] [fast_planner_node-1]: process has finished cleanly [pid 27022]
+[INFO] [free_water_costmap.py-4]: process has finished cleanly [pid 27028]
+[INFO] [fast_planner_bridge.py-5]: process has finished cleanly [pid 27030]
+[ERROR] [traj_server-2]: process[traj_server-2] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [traj_server-2]: sending signal 'SIGTERM' to process[traj_server-2]
+[ERROR] [traj_server-2]: process has died [pid 27024, exit code -15, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_g5qsjkea -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

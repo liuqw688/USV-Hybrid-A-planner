@@ -1,6 +1,6 @@
 """@brief 启动海图发布节点和 RViz2。
 
-
+@author susheng
 @date 2026-08-28
 """
 
@@ -10,7 +10,6 @@ from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
 
 def generate_launch_description() -> LaunchDescription:
     # 👇 使用安装后的资源路径，而非源码绝对路径
@@ -38,7 +37,7 @@ def generate_launch_description() -> LaunchDescription:
         default_value="true",
         description="Show only channel, buoy, bridge, and berth features",
     )
-    scale = DeclareLaunchArgument("scale", default_value="15.0")
+    scale = DeclareLaunchArgument("scale", default_value="5.0")
     line_width = DeclareLaunchArgument("line_width", default_value="0.2")
     point_size = DeclareLaunchArgument("point_size", default_value="0.15")
     obstacle_inflation = DeclareLaunchArgument("obstacle_inflation", default_value="1.0")
@@ -100,7 +99,7 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
         arguments=[
             "-d",
-            # 👇 与 CMake 安装目标 share/river_chart/rviz/ 一致
+            # 👇 去掉 "src"，与 setup.py 安装目标 share/river_chart/rviz/ 一致
             PathJoinSubstitution([
                 FindPackageShare("river_chart"),
                 "rviz",

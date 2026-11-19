@@ -85,6 +85,9 @@ struct Policy {
               const VesselState &target) {
     metric=cpa(x,y,velocity*std::cos(heading),velocity*std::sin(heading),target);
     auto level_now=risk(metric,thresholds);
+    // 已完成一次会遇后若同一目标重新形成未来碰撞风险，立即退出恢复态；
+    // 事件规划器据此重新检查并在剩余路径受威胁时再次规划。
+    if(recovering && level_now!=Risk::CLEAR && metric.tcpa>=0) recovering=false;
     if(!locked && level_now!=Risk::CLEAR) {
       auto a=assessEncounter(x,y,heading,velocity,target,1e9,1e9,
                             20*deg,20*deg,112.5*deg,0.05);
@@ -94,7 +97,7 @@ struct Policy {
       target_heading=std::atan2(target.vy,target.vx);
       target_speed=std::hypot(target.vx,target.vy);
       baseline_dcpa=metric.dcpa;
-      takeover=false; ineffective_count=release_count=0; level=level_now;
+      takeover=false;recovering=false;ineffective_count=release_count=0;level=level_now;
     }
     if(!locked) return;
     const auto counterfactual=cpa(x,y,speed*std::cos(reference),speed*std::sin(reference),target);
@@ -149,5 +152,24 @@ inline bool headingAllowed(const Policy &p, double heading, double future,
   if(start<=-p.angle()+0.002) return true;
   const double wanted=std::max(-p.angle(), start-0.035*future);
   return deviation<=std::max(wanted,-p.angle())+0.002;
+}
+
+// A dynamic underactuated hull cannot jump to the COLREG course boundary at
+// t=0. Keep the same required starboard action, but let the demanded heading
+// envelope advance at the vessel's physically reachable yaw rate after its
+// yaw actuator response delay. This prevents the search from rejecting every
+// first primitive while still requiring the action angle before the encounter.
+inline bool headingAllowedDynamic(const Policy &p, double heading, double future,
+    double start_heading, double max_yaw_rate, double actuator_lag) {
+  if(!p.locked || p.recovering || future>12) return true;
+  if(p.standOn()) return headingAllowed(p,heading,future,0,start_heading);
+  if(!p.right()) return true;
+  const double deviation=normalizeAngle(heading-p.reference);
+  const double start=normalizeAngle(start_heading-p.reference);
+  if(start<=-p.angle()+0.002) return true;
+  const double reachable=std::max(0.0,future-std::max(0.0,actuator_lag)) *
+    std::max(0.01,std::abs(max_yaw_rate));
+  const double wanted=std::max(-p.angle(),start-reachable);
+  return deviation<=wanted+0.002;
 }
 } // namespace hybrid_a_star_planner

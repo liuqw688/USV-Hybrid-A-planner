@@ -1,0 +1,39 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_weight_compare_logs/2026-11-13-11-02-17-471956-orangepi5plus-12086
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [12099]
+[INFO] [traj_server-2]: process started with pid [12101]
+[fast_planner_node-1] [INFO] [1794538937.720831298] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794538938.620049729] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794538938.842713124] [fast_planner_node]: USV global grid initialized: 300 x 200, 1.000 m/cell
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal: 30  10 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794538941.827726354] [path_searching]: Shot accepted: search_segments=19 shot_segments=4 duration=48.00 yaw_start=0.086 yaw_end=0.500 total_turn=4.106
+[fast_planner_node-1] reach end (shot)
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794538941.856890621] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794538941.859146927] [bspline_opt]: stop: parameter tolerance, objective evaluations: 10, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.01602
+[fast_planner_node-1] [kino replan]: source: search+shot (search segments: 19, shot segments: 4), time: 0.187924, search: 0.185502, optimize: 0.00230939, adjust time:0.000112874
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794538942.155681666] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794538942.157821306] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[traj_server-2] Failed to delete datawriter, at ./src/publisher.cpp:48 during '__function__'
+[traj_server-2] [ERROR] [1794538942.269009109] [traj_server.rclcpp]: Error in destruction of rcl publisher handle: cannot publish data, at ./src/rmw_publish.cpp:62, at ./src/rcl/publisher.c:187
+[traj_server-2] Failed to delete datawriter, at ./src/publisher.cpp:48 during '__function__'
+[traj_server-2] [ERROR] [1794538942.269064817] [traj_server.rclcpp]: Error in destruction of rcl publisher handle: cannot publish data, at ./src/rmw_publish.cpp:62, at ./src/rcl/publisher.c:187
+[traj_server-2] cannot publish data, at ./src/rmw_publish.cpp:62 during '__function__'
+[traj_server-2] [ERROR] [1794538942.269133650] [traj_server.rclcpp]: Error in destruction of rcl subscription handle: Failed to delete datareader, at ./src/subscription.cpp:52, at ./src/rcl/subscription.c:184
+[traj_server-2] cannot publish data, at ./src/rmw_publish.cpp:62 during '__function__'
+[traj_server-2] Fail in delete datareader, at ./src/rmw_service.cpp:104 during '__function__'
+[INFO] [fast_planner_node-1]: process has finished cleanly [pid 12099]
+[ERROR] [traj_server-2]: process has died [pid 12101, exit code -11, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_o6nwe0gi -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

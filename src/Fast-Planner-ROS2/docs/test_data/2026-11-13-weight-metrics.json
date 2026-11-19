@@ -1,0 +1,272 @@
+{
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-before-straight.json": {
+    "available": true,
+    "duration_s": 46.08365332562197,
+    "length_m": 50.7063618140847,
+    "start": [
+      -1.738791676212944e-05,
+      -1.3348323645524507e-05,
+      2.118929701464265e-05
+    ],
+    "end": [
+      50.00814390955076,
+      -3.0765912643742923,
+      -0.0562169022416504
+    ],
+    "end_goal_distance_m": 30.14924286873953,
+    "end_heading_error_rad": -0.0562169022416504,
+    "start_end_chord_m": 50.10270978726659,
+    "curvature_rms_per_m": 0.08210455092929836,
+    "curvature_max_per_m": 0.9587333225929208,
+    "curvature_valid_length_fraction": 0.9930154887020383,
+    "max_yaw_rate_rad_s": 0.16808773831219884,
+    "max_yaw_acc_rad_s2": 0.10097192553528969,
+    "yaw_jerk_rms_rad_s3": 0.10494832881170889,
+    "total_yaw_variation_rad": 2.4888431214600453,
+    "vcmd_min_est": -0.03410390642764015,
+    "vcmd_max_est": 2.1649334927949266,
+    "wcmd_abs_max_est": 0.2213675886510554,
+    "sway_dynamics_rms_m_s2": 0.00805346701760273,
+    "first_spline_latency_s": 0.19704141699912725
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-before-diagonal.json": {
+    "available": true,
+    "duration_s": 62.50370632399391,
+    "length_m": 34.327754160487146,
+    "start": [
+      -1.624157519372477e-05,
+      -1.2994288679580177e-05,
+      2.0440464065174598e-05
+    ],
+    "end": [
+      29.533894090995428,
+      11.707834508347668,
+      0.5001204341605291
+    ],
+    "end_goal_distance_m": 1.7702975530435836,
+    "end_heading_error_rad": 0.00012043416052909262,
+    "start_end_chord_m": 31.76988436676013,
+    "curvature_rms_per_m": 0.1211846023136427,
+    "curvature_max_per_m": 0.8047565588489435,
+    "curvature_valid_length_fraction": 0.9512986915274892,
+    "max_yaw_rate_rad_s": 0.21170015609693374,
+    "max_yaw_acc_rad_s2": 0.10281430977074994,
+    "yaw_jerk_rms_rad_s3": 0.07500738834867296,
+    "total_yaw_variation_rad": 2.5259864305989232,
+    "vcmd_min_est": -0.7699705023090967,
+    "vcmd_max_est": 1.6648708902852638,
+    "wcmd_abs_max_est": 0.23879932347090485,
+    "sway_dynamics_rms_m_s2": 0.005471948296480349,
+    "first_spline_latency_s": 0.33604246199865884
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-before-turn.json": {
+    "available": true,
+    "duration_s": 17.19776025055641,
+    "length_m": 10.31851914035069,
+    "start": [
+      -1.1943077143853172e-06,
+      -1.1957523612667342e-05,
+      8.270339662639393e-06
+    ],
+    "end": [
+      9.277226568116518,
+      0.24658759574872166,
+      1.7467469783544072
+    ],
+    "end_goal_distance_m": 0.7636798257213302,
+    "end_heading_error_rad": -1.394845675235386,
+    "start_end_chord_m": 9.280504635824986,
+    "curvature_rms_per_m": 0.23767621725932808,
+    "curvature_max_per_m": 1.1976724839753417,
+    "curvature_valid_length_fraction": 0.9542988897018801,
+    "max_yaw_rate_rad_s": 0.2932835310416615,
+    "max_yaw_acc_rad_s2": 0.1002995746021308,
+    "yaw_jerk_rms_rad_s3": 0.06244507672960108,
+    "total_yaw_variation_rad": 2.885297781366824,
+    "vcmd_min_est": -0.2836356671691015,
+    "vcmd_max_est": 1.2149694978517314,
+    "wcmd_abs_max_est": 0.2837597134134894,
+    "sway_dynamics_rms_m_s2": 0.05273134143084593,
+    "first_spline_latency_s": 15.195954660999632
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-searchonly-straight.json": {
+    "available": true,
+    "duration_s": 47.05079103972192,
+    "length_m": 50.89283042055191,
+    "start": [
+      -1.5873850322927734e-05,
+      -1.3088917737299796e-05,
+      2.062275334861876e-05
+    ],
+    "end": [
+      49.810479853829754,
+      -6.903056443885279,
+      -0.011888850140871375
+    ],
+    "end_goal_distance_m": 30.96868280898439,
+    "end_heading_error_rad": -0.011888850140871376,
+    "start_end_chord_m": 50.286553791225316,
+    "curvature_rms_per_m": 0.09907672545315309,
+    "curvature_max_per_m": 0.8858067382240825,
+    "curvature_valid_length_fraction": 0.9937915893553679,
+    "max_yaw_rate_rad_s": 0.17156318145029056,
+    "max_yaw_acc_rad_s2": 0.10017962462196636,
+    "yaw_jerk_rms_rad_s3": 0.09069141259039344,
+    "total_yaw_variation_rad": 2.443552246284667,
+    "vcmd_min_est": -0.04024535101729793,
+    "vcmd_max_est": 2.302930007676373,
+    "wcmd_abs_max_est": 0.22458659328928546,
+    "sway_dynamics_rms_m_s2": 0.006549139786055896,
+    "first_spline_latency_s": 0.3643572820001282
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-searchonly-diagonal.json": {
+    "available": true,
+    "duration_s": 59.843854863749286,
+    "length_m": 40.70132200551607,
+    "start": [
+      -1.5631834655833963e-05,
+      -1.281468979093613e-05,
+      2.006171222012016e-05
+    ],
+    "end": [
+      30.719990969689324,
+      9.188294423091882,
+      0.49984197794805424
+    ],
+    "end_goal_distance_m": 1.0850128755078958,
+    "end_heading_error_rad": -0.0001580220519457609,
+    "start_end_chord_m": 32.064681434462244,
+    "curvature_rms_per_m": 0.14664434644716026,
+    "curvature_max_per_m": 1.1034426848773513,
+    "curvature_valid_length_fraction": 0.9612619238466776,
+    "max_yaw_rate_rad_s": 0.20371645354797324,
+    "max_yaw_acc_rad_s2": 0.10005429922205067,
+    "yaw_jerk_rms_rad_s3": 0.06523901532215548,
+    "total_yaw_variation_rad": 5.155780147025893,
+    "vcmd_min_est": -0.051750911724797684,
+    "vcmd_max_est": 1.954254975787961,
+    "wcmd_abs_max_est": 0.19742641348714324,
+    "sway_dynamics_rms_m_s2": 0.005932189002425085,
+    "first_spline_latency_s": 0.24532245000045805
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-searchonly-turn.json": {
+    "available": true,
+    "duration_s": 16.316743300961544,
+    "length_m": 10.11843560803711,
+    "start": [
+      -1.2963657715169982e-06,
+      -7.80421469427618e-06,
+      -6.878885522894994e-07
+    ],
+    "end": [
+      9.148500451970321,
+      0.12392937483635506,
+      1.5716496321868274
+    ],
+    "end_goal_distance_m": 0.8604707840723457,
+    "end_heading_error_rad": -1.5699430214029657,
+    "start_end_chord_m": 9.14934121473561,
+    "curvature_rms_per_m": 0.21698036066859322,
+    "curvature_max_per_m": 0.8264787192835736,
+    "curvature_valid_length_fraction": 0.9617445975595239,
+    "max_yaw_rate_rad_s": 0.26160069251694773,
+    "max_yaw_acc_rad_s2": 0.10023851892993127,
+    "yaw_jerk_rms_rad_s3": 0.054814412655346124,
+    "total_yaw_variation_rad": 2.673501799329649,
+    "vcmd_min_est": -0.3646788272068955,
+    "vcmd_max_est": 1.2406229511190614,
+    "wcmd_abs_max_est": 0.2921527276637682,
+    "sway_dynamics_rms_m_s2": 0.03895370448827881,
+    "first_spline_latency_s": 15.55788280699926
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-after-straight.json": {
+    "available": true,
+    "duration_s": 46.98171349500398,
+    "length_m": 50.89265899679667,
+    "start": [
+      -1.5873850322927724e-05,
+      -1.3088917737299798e-05,
+      2.062275334861876e-05
+    ],
+    "end": [
+      49.81013274036024,
+      -6.902970261590957,
+      -0.012083773958445211
+    ],
+    "end_goal_distance_m": 30.96900197919006,
+    "end_heading_error_rad": -0.012083773958445213,
+    "start_end_chord_m": 50.286198133260214,
+    "curvature_rms_per_m": 0.09939263277263945,
+    "curvature_max_per_m": 0.9201853842364782,
+    "curvature_valid_length_fraction": 0.9939110020969051,
+    "max_yaw_rate_rad_s": 0.1727699000132155,
+    "max_yaw_acc_rad_s2": 0.10155279027826443,
+    "yaw_jerk_rms_rad_s3": 0.09056057499386717,
+    "total_yaw_variation_rad": 2.4399767350909394,
+    "vcmd_min_est": -0.07769814747505352,
+    "vcmd_max_est": 2.307123090484641,
+    "wcmd_abs_max_est": 0.22022740868729782,
+    "sway_dynamics_rms_m_s2": 0.00877264842568881,
+    "first_spline_latency_s": 0.40784104699923773
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-after-diagonal.json": {
+    "available": true,
+    "duration_s": 60.04359078199669,
+    "length_m": 40.70143301214017,
+    "start": [
+      -1.563183465583393e-05,
+      -1.2814689790936131e-05,
+      2.0061712220120164e-05
+    ],
+    "end": [
+      30.719990969689324,
+      9.188294423091882,
+      0.49984197794805424
+    ],
+    "end_goal_distance_m": 1.0850128755078958,
+    "end_heading_error_rad": -0.0001580220519457609,
+    "start_end_chord_m": 32.064681434462244,
+    "curvature_rms_per_m": 0.14228020539808578,
+    "curvature_max_per_m": 0.7697544635953157,
+    "curvature_valid_length_fraction": 0.9601362857919934,
+    "max_yaw_rate_rad_s": 0.2037166536486072,
+    "max_yaw_acc_rad_s2": 0.10572563607711265,
+    "yaw_jerk_rms_rad_s3": 0.07393594462937057,
+    "total_yaw_variation_rad": 5.158813889530315,
+    "vcmd_min_est": -0.07959730481895007,
+    "vcmd_max_est": 2.1211919635940544,
+    "wcmd_abs_max_est": 0.2039193217852617,
+    "sway_dynamics_rms_m_s2": 0.006655672921230601,
+    "first_spline_latency_s": 0.25910156200006895
+  },
+  "src/Fast-Planner-ROS2/docs/test_data/2026-11-13-weight-after-turn.json": {
+    "available": true,
+    "duration_s": 16.28101677633963,
+    "length_m": 10.120641174452576,
+    "start": [
+      -1.2963657715169982e-06,
+      -7.80421469427618e-06,
+      -6.878885522894994e-07
+    ],
+    "end": [
+      9.143801830202962,
+      0.11953223385391358,
+      1.577022965534106
+    ],
+    "end_goal_distance_m": 0.8645017414059406,
+    "end_heading_error_rad": -1.5645696880556872,
+    "start_end_chord_m": 9.14458448690533,
+    "curvature_rms_per_m": 0.23325365162783265,
+    "curvature_max_per_m": 0.9987879030324225,
+    "curvature_valid_length_fraction": 0.961764715488438,
+    "max_yaw_rate_rad_s": 0.27010995502146756,
+    "max_yaw_acc_rad_s2": 0.10009078811031953,
+    "yaw_jerk_rms_rad_s3": 0.05261283021168046,
+    "total_yaw_variation_rad": 2.6162166560065625,
+    "vcmd_min_est": -0.4007215563300916,
+    "vcmd_max_est": 1.2107847154864353,
+    "wcmd_abs_max_est": 0.29830238041280854,
+    "sway_dynamics_rms_m_s2": 0.04463453151438881,
+    "first_spline_latency_s": 15.288622822999969
+  }
+}

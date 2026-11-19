@@ -1,0 +1,179 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_three_shot_roslogs/2026-11-12-17-33-31-220052-orangepi5plus-32859
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [32872]
+[INFO] [traj_server-2]: process started with pid [32874]
+[fast_planner_node-1] [INFO] [1794476011.480341702] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794476012.375064361] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794476012.595698459] [fast_planner_node]: USV global grid initialized: 300 x 200, 1.000 m/cell
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476015.404868870] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476015.406487600] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476015.408251578] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476016.126150272] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476016.126677015] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476016.127061427] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476016.846995929] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476017.354699439] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476017.355168141] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476017.355632761] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476018.068046437] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476018.068556265] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476018.068935427] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [FSM]: state: GEN_NEW_TRAJ
+[fast_planner_node-1] [WARN] [1794476018.793469456] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476019.296860435] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476019.298706370] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476019.300670721] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476020.051401931] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476020.051910008] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476020.052288295] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476020.772409461] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476021.277037675] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476021.278907527] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476021.280888503] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476022.043541441] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476022.044054477] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476022.044433931] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476022.772339293] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476023.275153071] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476023.275998894] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476023.276881758] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476023.990330548] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476023.991407951] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476023.992121942] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476024.723303265] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [FSM]: state: GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476025.229285671] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476025.233940614] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476025.238620057] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476026.013351640] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476026.013911341] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476026.014326086] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476026.743071439] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476027.247414115] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476027.249283383] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476027.251279817] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476028.025774570] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476028.026291105] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476028.026709058] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476028.757142849] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476029.266888875] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476029.268794602] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476029.270796577] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476030.028177997] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476030.028698032] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476030.029078653] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [FSM]: state: GEN_NEW_TRAJ
+[fast_planner_node-1] [WARN] [1794476030.748941405] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476031.254416900] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476031.254895811] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476031.255363639] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476031.963939904] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476031.964995725] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476031.965742091] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476032.685003142] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476033.196789644] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476033.198639663] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476033.200623264] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476033.970491948] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476033.971007025] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476033.971413603] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476034.707519949] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794476035.216775981] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476035.218635625] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476035.220611351] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794476035.965763920] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794476035.966267914] [path_searching]: Shot failed 2/3 at distance 9.96 m; continuing search
+[fast_planner_node-1] [INFO] [1794476035.966649118] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794476036.631550000] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794476036.632937150] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794476036.686492329] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] des manager
+[INFO] [fast_planner_node-1]: process has finished cleanly [pid 32872]
+[ERROR] [traj_server-2]: process[traj_server-2] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [traj_server-2]: sending signal 'SIGTERM' to process[traj_server-2]
+[ERROR] [traj_server-2]: process has died [pid 32874, exit code -15, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_1fkv3bwv -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

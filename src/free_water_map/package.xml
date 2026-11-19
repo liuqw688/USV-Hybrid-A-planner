@@ -8,14 +8,19 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <exec_depend>rclpy</exec_depend>
+  <exec_depend>interactive_water_obstacles</exec_depend>
+  <exec_depend>plan_manage</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>hybrid_a_star_planner</exec_depend>
-  <exec_depend>dwa_deep</exec_depend>
+  <exec_depend>usv_mpc_control</exec_depend>
   <exec_depend>virtual_boat_simulator</exec_depend>
 
   <export>

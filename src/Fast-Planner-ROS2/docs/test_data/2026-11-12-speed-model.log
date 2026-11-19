@@ -1,0 +1,49 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_speed_model_roslogs/2026-11-12-13-11-07-702592-orangepi5plus-23377
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [23389]
+[ERROR] [fast_planner_node-1]: process has died [pid 23389, exit code 127, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/fast_planner_node --ros-args -r __node:=fast_planner_node --params-file /tmp/launch_params_ruu6l_zz -r /odom_world:=/planner/odom -r /sdf_map/odom:=/planner/odom -r /sdf_map/cloud:=/pcl_render_node/cloud -r /sdf_map/pose:=/pcl_render_node/camera_pose -r /sdf_map/depth:=/pcl_render_node/depth'].
+[INFO] [traj_server-2]: process started with pid [23391]
+[INFO] [static_transform_publisher-3]: process started with pid [23393]
+[INFO] [free_water_costmap.py-4]: process started with pid [23395]
+[INFO] [fast_planner_bridge.py-5]: process started with pid [23397]
+[INFO] [boat_simulator-6]: process started with pid [23399]
+[INFO] [mpc_controller-7]: process started with pid [23401]
+[fast_planner_node-1] /home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/fast_planner_node: error while loading shared libraries: libnlopt.so.0: cannot open shared object file: No such file or directory
+[static_transform_publisher-3] [WARN] [1794460267.938176856] []: Old-style arguments are deprecated; see --help for new-style arguments
+[static_transform_publisher-3] [INFO] [1794460267.967556104] [static_transform_publisher_Eb2G58Cn1X9IOn1K]: Spinning until stopped - publishing transform
+[static_transform_publisher-3] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-3] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-3] from 'map' to 'odom'
+[boat_simulator-6] [INFO] [1794460267.971521850] [boat_simulator]: Boat simulator ready: MPC velocity-command input, Fast-Planner six-state model
+[mpc_controller-7] [INFO] [1794460268.065012489] [mpc_controller]: MPC tracker ready: 5 knots, 5.0 s horizon, 10 Hz, v_cmd/w_cmd output
+[mpc_controller-7] [WARN] [1794460268.165481465] [mpc_controller]: MPC braking: waiting for path; missing costmap; 
+[traj_server-2] [WARN] [1794460268.995014354] [traj_server]: [Traj server]: ready.
+[mpc_controller-7] [WARN] [1794460271.265603178] [mpc_controller]: MPC braking: waiting for path; 
+[mpc_controller-7] [WARN] [1794460274.365449228] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[mpc_controller-7] [WARN] [1794460277.465377443] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[mpc_controller-7] [WARN] [1794460280.565298034] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mpc_controller-7]: sending signal 'SIGINT' to process[mpc_controller-7]
+[INFO] [boat_simulator-6]: sending signal 'SIGINT' to process[boat_simulator-6]
+[INFO] [fast_planner_bridge.py-5]: sending signal 'SIGINT' to process[fast_planner_bridge.py-5]
+[INFO] [free_water_costmap.py-4]: sending signal 'SIGINT' to process[free_water_costmap.py-4]
+[INFO] [static_transform_publisher-3]: sending signal 'SIGINT' to process[static_transform_publisher-3]
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[mpc_controller-7] [INFO] [1794460280.609205323] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[boat_simulator-6] [INFO] [1794460280.611905542] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-3] [INFO] [1794460280.619790077] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[traj_server-2] [INFO] [1794460280.621916886] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[traj_server-2] Failed to delete datawriter, at ./src/publisher.cpp:48 during '__function__'
+[traj_server-2] [ERROR] [1794460280.735744043] [traj_server.rclcpp]: Error in destruction of rcl publisher handle: cannot publish data, at ./src/rmw_publish.cpp:62, at ./src/rcl/publisher.c:187
+[traj_server-2] Failed to delete datawriter, at ./src/publisher.cpp:48 during '__function__'
+[traj_server-2] [ERROR] [1794460280.735777001] [traj_server.rclcpp]: Error in destruction of rcl publisher handle: cannot publish data, at ./src/rmw_publish.cpp:62, at ./src/rcl/publisher.c:187
+[traj_server-2] cannot publish data, at ./src/rmw_publish.cpp:62 during '__function__'
+[traj_server-2] [ERROR] [1794460280.735819292] [traj_server.rclcpp]: Error in destruction of rcl subscription handle: Failed to delete datareader, at ./src/subscription.cpp:52, at ./src/rcl/subscription.c:184
+[traj_server-2] cannot publish data, at ./src/rmw_publish.cpp:62 during '__function__'
+[traj_server-2] Fail in delete datareader, at ./src/rmw_service.cpp:104 during '__function__'
+[INFO] [static_transform_publisher-3]: process has finished cleanly [pid 23393]
+[INFO] [boat_simulator-6]: process has finished cleanly [pid 23399]
+[INFO] [mpc_controller-7]: process has finished cleanly [pid 23401]
+[INFO] [free_water_costmap.py-4]: process has finished cleanly [pid 23395]
+[INFO] [fast_planner_bridge.py-5]: process has finished cleanly [pid 23397]
+[ERROR] [traj_server-2]: process has died [pid 23391, exit code -11, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_xrla7wxi -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

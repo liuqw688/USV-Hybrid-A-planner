@@ -1,0 +1,35 @@
+[INFO] [launch]: All log files can be found below /home/orangepi/.ros/log/2026-11-12-12-20-40-050744-orangepi5plus-20845
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [20849]
+[INFO] [traj_server-2]: process started with pid [20853]
+[fast_planner_node-1] [INFO] [1794457240.292001113] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794457241.198281283] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794457241.413320929] [fast_planner_node]: USV global grid initialized: 300 x 200, 1.000 m/cell
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794457244.489470293] [path_searching]: Shot accepted: search_segments=70 shot_segments=4 duration=36.00 yaw_start=0.422 yaw_end=0.500 total_turn=0.225
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794457244.530058150] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794457244.532089293] [bspline_opt]: iter num: 11
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05974
+[fast_planner_node-1] [kino replan]: time: 0.289478, search: 0.287247, optimize: 0.00207139, adjust time:0.000158665
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794457244.790023478] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794457244.790047103] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [traj_server-2]: process has died [pid 20853, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_8ij6isfm -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].
+[ERROR] [fast_planner_node-1]: process has died [pid 20849, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/fast_planner_node --ros-args -r __node:=fast_planner_node --params-file /tmp/launch_params_4xlyu8nn -r /odom_world:=/planner/odom -r /sdf_map/odom:=/planner/odom -r /sdf_map/cloud:=/pcl_render_node/cloud -r /sdf_map/pose:=/pcl_render_node/camera_pose -r /sdf_map/depth:=/pcl_render_node/depth'].

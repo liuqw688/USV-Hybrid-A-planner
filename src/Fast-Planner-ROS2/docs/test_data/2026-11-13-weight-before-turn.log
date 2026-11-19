@@ -1,0 +1,51 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_weight_compare_logs/2026-11-13-11-00-46-503163-orangepi5plus-11690
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [11701]
+[INFO] [traj_server-2]: process started with pid [11703]
+[fast_planner_node-1] [INFO] [1794538846.753122279] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794538847.651737385] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794538847.865381057] [fast_planner_node]: USV global grid initialized: 300 x 200, 1.000 m/cell
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:     10       0 3.14159,  0 -0  0
+[fast_planner_node-1] [INFO] [1794538850.945587370] [path_searching]: Shot failed 1/3 at distance 8.15 m; continuing search
+[fast_planner_node-1] [INFO] [1794538851.197390032] [path_searching]: Shot failed 2/3 at distance 8.37 m; continuing search
+[fast_planner_node-1] [INFO] [1794538851.456728393] [path_searching]: Shot failed 3/3 at distance 8.52 m; continuing search without further shots
+[fast_planner_node-1] run out of memory.
+[fast_planner_node-1] return partial search after node limit; goal distance: 0.743384
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794538865.761440608] [bspline_opt]: cost func: smooth | dist  | feasi | endpt |
+[fast_planner_node-1] [INFO] [1794538865.822078532] [bspline_opt]: stop: max time, objective evaluations: 341, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05508
+[fast_planner_node-1] [kino replan]: source: search (search segments: 28, shot segments: 0), time: 15.1678, search: 15.1071, optimize: 0.0606995, adjust time:4.3458e-05
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:     10       0 3.14159,  0 -0  0
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794538866.098733764] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794538866.099160759] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794538866.133854375] [path_searching]: Shot failed 1/3 at distance 8.15 m; continuing search
+[traj_server-2] Failed to delete datawriter, at ./src/publisher.cpp:48 during '__function__'
+[traj_server-2] [ERROR] [1794538866.207811968] [traj_server.rclcpp]: Error in destruction of rcl publisher handle: cannot publish data, at ./src/rmw_publish.cpp:62, at ./src/rcl/publisher.c:187
+[traj_server-2] Failed to delete datawriter, at ./src/publisher.cpp:48 during '__function__'
+[traj_server-2] [ERROR] [1794538866.207865051] [traj_server.rclcpp]: Error in destruction of rcl publisher handle: cannot publish data, at ./src/rmw_publish.cpp:62, at ./src/rcl/publisher.c:187
+[traj_server-2] cannot publish data, at ./src/rmw_publish.cpp:62 during '__function__'
+[traj_server-2] [ERROR] [1794538866.207931842] [traj_server.rclcpp]: Error in destruction of rcl subscription handle: Failed to delete datareader, at ./src/subscription.cpp:52, at ./src/rcl/subscription.c:184
+[traj_server-2] cannot publish data, at ./src/rmw_publish.cpp:62 during '__function__'
+[traj_server-2] Fail in delete datareader, at ./src/rmw_service.cpp:104 during '__function__'
+[ERROR] [traj_server-2]: process has died [pid 11703, exit code -11, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_i44vngka -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].
+[fast_planner_node-1] [INFO] [1794538866.386262530] [path_searching]: Shot failed 2/3 at distance 8.37 m; continuing search
+[fast_planner_node-1] [INFO] [1794538866.646204342] [path_searching]: Shot failed 3/3 at distance 8.52 m; continuing search without further shots
+[ERROR] [fast_planner_node-1]: process[fast_planner_node-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [fast_planner_node-1]: sending signal 'SIGTERM' to process[fast_planner_node-1]
+[fast_planner_node-1] [INFO] [1794538871.104844877] [rclcpp]: signal_handler(SIGINT/SIGTERM)

@@ -7,14 +7,12 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 
-
-# [功能与联系] 组装节点、参数与条件启动动作；launch只负责接线，不直接执行规划或控制。
 def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('scenario', default_value='head_on',
                               description='COLREGs test scenario name'),
         DeclareLaunchArgument('use_rviz', default_value='true',
-                              description='Start RViz with risk/DWA layers'),
+                              description='Start RViz with risk/MPC layers'),
         OpaqueFunction(function=launch_scenario),
     ])
 
@@ -40,10 +38,10 @@ def launch_scenario(context):
     planner_config = os.path.join(
         get_package_share_directory('hybrid_a_star_planner'),
         'config', 'hybrid_a_star_params.yaml')
-    dwa_config = os.path.join(
-        get_package_share_directory('dwa_deep'), 'config', 'dwa_params.yaml')
+    mpc_config = os.path.join(
+        get_package_share_directory('usv_mpc_control'), 'config', 'mpc_params.yaml')
     simulator_config = os.path.join(
-        get_package_share_directory('dwa_deep'), 'config', 'sim_params.yaml')
+        get_package_share_directory('usv_mpc_control'), 'config', 'sim_params.yaml')
     target_config = os.path.join(
         get_package_share_directory('virtual_boat_simulator'),
         'config', 'virtual_boat.yaml')
@@ -55,9 +53,9 @@ def launch_scenario(context):
             package='free_water_map', executable='free_water_costmap.py',
             name='free_water_costmap', output='screen', parameters=[map_config]),
         Node(
-            package='dwa_deep', executable='boat_simulator',
+            package='usv_mpc_control', executable='boat_simulator',
             name='boat_simulator', output='screen', parameters=[simulator_config,
-                {'static_obstacles_enabled':False,'initial_speed':4.0,
+                {'initial_speed':4.0,
                  'start_x':own_start_x,'start_y':0.0,'start_yaw':0.0}]),
         Node(
             package='virtual_boat_simulator', executable='virtual_boat_node',
@@ -69,13 +67,13 @@ def launch_scenario(context):
                 {'channel.enabled':False,'require_target_states':True,
                  'goal_topic':'/goal_pose','global_route_topic':''}]),
         Node(
-            package='dwa_deep', executable='dwa_planner',
-            name='dwa_planner', output='screen', parameters=[dwa_config,
-                {'channel.enabled':False}]),
+            package='usv_mpc_control', executable='mpc_controller',
+            name='mpc_controller', output='screen', parameters=[mpc_config,
+                {'channel_enabled':False,'global_route_topic':'','active_goal_topic':'/goal_pose'}]),
         Node(
             package='free_water_map', executable='demo_goal_publisher.py',
             name='demo_goal_publisher', output='screen'),
-        # A ready-made view exposes risk layers and both DWA trajectories.  The
+        # A ready-made view exposes risk layers and MPC prediction and the planned trajectory.  The
         # 2D Goal Pose tool publishes /goal_pose and can replace the one-shot goal.
         Node(package='rviz2',executable='rviz2',name='colregs_rviz',output='screen',
              arguments=['-d',rviz_config],condition=IfCondition(LaunchConfiguration('use_rviz'))),

@@ -1,0 +1,1669 @@
+[INFO] [launch]: All log files can be found below /home/orangepi/.ros/log/2026-11-12-12-00-31-633509-orangepi5plus-19409
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [19410]
+[INFO] [traj_server-2]: process started with pid [19412]
+[INFO] [static_transform_publisher-3]: process started with pid [19414]
+[INFO] [free_water_costmap.py-4]: process started with pid [19416]
+[INFO] [fast_planner_bridge.py-5]: process started with pid [19418]
+[INFO] [boat_simulator-6]: process started with pid [19420]
+[INFO] [mpc_controller-7]: process started with pid [19424]
+[static_transform_publisher-3] [WARN] [1794456031.749669483] []: Old-style arguments are deprecated; see --help for new-style arguments
+[static_transform_publisher-3] [INFO] [1794456031.799817466] [static_transform_publisher_mwTqXc2e92jt4qre]: Spinning until stopped - publishing transform
+[static_transform_publisher-3] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-3] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-3] from 'map' to 'odom'
+[boat_simulator-6] [INFO] [1794456031.813257889] [boat_simulator]: Boat simulator ready: MPC effort input, six-state underactuated model
+[mpc_controller-7] [INFO] [1794456031.833838226] [mpc_controller]: MPC tracker ready: 5 knots, 5.0 s horizon, 10 Hz, direct tau_y/tau_N output
+[fast_planner_node-1] [INFO] [1794456031.916305698] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[mpc_controller-7] [WARN] [1794456031.934364899] [mpc_controller]: MPC braking: waiting for path; missing odometry; missing costmap; 
+[traj_server-2] [WARN] [1794456032.775636420] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794456033.031086447] [fast_planner_node]: USV global grid initialized: 290 x 180, 1.000 m/cell
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794456035.034285279] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794456038.134157951] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794456041.234018373] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794456044.234112072] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456045.572618979] [path_searching]: Shot accepted: search_segments=70 shot_segments=4 duration=36.00 yaw_start=0.422 yaw_end=0.500 total_turn=0.225
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456045.613029787] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456045.614965264] [bspline_opt]: iter num: 11
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05974
+[fast_planner_node-1] [kino replan]: time: 0.235097, search: 0.232966, optimize: 0.00197573, adjust time:0.000155457
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456045.738625493] [fast_planner_bridge]: trajectory 1: 313 control points, 82.13s
+[mpc_controller-7] [INFO] [1794456045.864724318] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 0.00m/s, tau_y 10.00, tau_N -0.08
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456050.953154205] [mpc_controller]: MPC tracking: cross-track 0.24m, speed 2.00m/s, tau_y 2.03, tau_N 0.10
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  12.0901 0.645365 0.260952,          2  -0.130373 0.00319722, start_cmd:  2.08243 0.027189        0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456052.956248996] [path_searching]: Shot accepted: search_segments=41 shot_segments=4 duration=36.00 yaw_start=0.718 yaw_end=0.500 total_turn=1.096
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456052.980951117] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456052.981667151] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.04269
+[fast_planner_node-1] [kino replan]: time: 0.177053, search: 0.176196, optimize: 0.000739658, adjust time:0.000117832
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456053.054520987] [fast_planner_bridge]: trajectory 2: 251 control points, 64.65s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  16.0027  1.49503 0.251296,           2  -0.0488336 -0.00332042, start_cmd:    2.08387 0.00677895          0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] open set empty, no path!
+[fast_planner_node-1] use node num: 1
+[fast_planner_node-1] iter num: 1
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794456054.971730597] [path_searching]: Shot accepted: search_segments=41 shot_segments=4 duration=36.00 yaw_start=0.886 yaw_end=0.500 total_turn=1.551
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: retry search success.
+[fast_planner_node-1] [INFO] [1794456054.996060265] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456054.996621716] [bspline_opt]: iter num: 7
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.08704
+[fast_planner_node-1] [kino replan]: time: 0.18252, search: 0.181781, optimize: 0.000602577, adjust time:0.000136499
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456055.070535582] [fast_planner_bridge]: trajectory 3: 245 control points, 65.87s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456056.050277988] [mpc_controller]: MPC tracking: cross-track 0.03m, speed 1.89m/s, tau_y 2.49, tau_N 0.17
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  21.2213  2.90004 0.369005,    1.89154 -0.0998065  0.0216719, start_cmd:   1.96071 0.0331373         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456057.730131479] [path_searching]: Shot accepted: search_segments=29 shot_segments=4 duration=36.00 yaw_start=0.729 yaw_end=0.500 total_turn=1.212
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456057.750001033] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456057.750367362] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05151
+[fast_planner_node-1] [kino replan]: time: 0.120652, search: 0.120162, optimize: 0.000383245, adjust time:0.000106165
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456057.811679628] [fast_planner_bridge]: trajectory 4: 222 control points, 57.62s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [FSM]: state: REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  24.8147  4.19342 0.403675,    1.99521 -0.0689746  0.0107247, start_cmd:   2.07644 0.0199049         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456059.895666160] [path_searching]: Shot accepted: search_segments=23 shot_segments=4 duration=36.00 yaw_start=0.092 yaw_end=0.500 total_turn=0.773
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456059.913404531] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456059.913771444] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05615
+[fast_planner_node-1] [kino replan]: time: 0.155945, search: 0.155451, optimize: 0.000387912, adjust time:0.000105874
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456059.931683938] [fast_planner_bridge]: trajectory 5: 207 control points, 54.08s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456061.149869700] [mpc_controller]: MPC tracking: cross-track 0.01m, speed 2.00m/s, tau_y 1.98, tau_N 0.18
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  28.5159  5.71794 0.466348,          2 -0.0861049  0.0764685, start_cmd:   2.06702 0.0660447         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456061.873205882] [path_searching]: Shot accepted: search_segments=18 shot_segments=4 duration=36.00 yaw_start=0.140 yaw_end=0.500 total_turn=0.560
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456061.889465520] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456061.889833599] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.0104
+[fast_planner_node-1] [kino replan]: time: 0.113699, search: 0.113212, optimize: 0.000391704, adjust time:9.5665e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456061.914135850] [fast_planner_bridge]: trajectory 6: 195 control points, 48.70s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  32.1519  7.62284 0.623373,         2 -0.155369 0.0617559, start_cmd:    2.0595 0.0702176         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456063.866534081] [path_searching]: Shot accepted: search_segments=13 shot_segments=4 duration=36.00 yaw_start=0.498 yaw_end=0.500 total_turn=0.549
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456063.881501069] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456063.881828315] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.03007
+[fast_planner_node-1] [kino replan]: time: 0.0869264, search: 0.0864918, optimize: 0.000345621, adjust time:8.8957e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456063.940209366] [fast_planner_bridge]: trajectory 7: 183 control points, 46.56s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  35.3493  9.75956 0.685697,   1.81066 -0.110622 0.0186002, start_cmd:   1.87346 0.0332855         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456065.871273769] [path_searching]: Shot accepted: search_segments=9 shot_segments=4 duration=36.00 yaw_start=0.712 yaw_end=0.500 total_turn=1.076
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456065.885366350] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456065.885659472] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.02813
+[fast_planner_node-1] [kino replan]: time: 0.0706747, search: 0.070283, optimize: 0.000310913, adjust time:8.079e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456065.913992799] [fast_planner_bridge]: trajectory 8: 174 control points, 44.00s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456066.248406008] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 1.87m/s, tau_y 2.64, tau_N 0.06
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  38.7647  12.4411 0.740284,     1.99591  -0.0808082 -0.00214886, start_cmd:   2.07947 0.0138825         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456068.079346566] [path_searching]: Shot accepted: search_segments=2 shot_segments=4 duration=36.00 yaw_start=0.738 yaw_end=0.500 total_turn=1.011
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456068.091990457] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456068.092257912] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1
+[fast_planner_node-1] [kino replan]: time: 0.0496221, search: 0.0493022, optimize: 0.000289622, adjust time:3.0333e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456068.105161966] [fast_planner_bridge]: trajectory 9: 157 control points, 38.60s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  41.8036  15.0423 0.716656,    1.99984 -0.0145929 -0.0216472, start_cmd:    2.08408 -0.0119272          0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456070.136522335] [path_searching]: Shot accepted: search_segments=2 shot_segments=4 duration=36.00 yaw_start=0.695 yaw_end=0.500 total_turn=0.944
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456070.148694606] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456070.148945437] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1
+[fast_planner_node-1] [kino replan]: time: 0.0867418, search: 0.0864431, optimize: 0.000268622, adjust time:3.0041e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456070.198874381] [fast_planner_bridge]: trajectory 10: 151 control points, 37.10s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456071.347556058] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 2.00m/s, tau_y 1.98, tau_N -0.19
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  45.2913  17.8884 0.602822,    1.99985  0.0838896 -0.0637341, start_cmd:    2.06995 -0.0588224          0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456072.337550634] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=36.00 yaw_start=0.603 yaw_end=0.500 total_turn=0.777
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456072.349131120] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456072.349402367] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1
+[fast_planner_node-1] [kino replan]: time: 0.0375414, search: 0.0372168, optimize: 0.000293413, adjust time:3.1208e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456072.396362472] [fast_planner_bridge]: trajectory 11: 147 control points, 36.00s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  49.0353  20.3936 0.463734,    1.99993   0.134848 -0.0616673, start_cmd:    2.06262 -0.0675859          0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456074.591685963] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=24.00 yaw_start=0.464 yaw_end=0.500 total_turn=1.014
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456074.604815473] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456074.605094011] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00128
+[fast_planner_node-1] [kino replan]: time: 0.0429839, search: 0.0425913, optimize: 0.00030333, adjust time:8.9249e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456074.617473947] [fast_planner_bridge]: trajectory 12: 99 control points, 24.03s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456076.349741352] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 2.00m/s, tau_y 2.04, tau_N -0.14
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  52.9119  22.2907 0.268875,          2   0.203164 -0.0903183, start_cmd:    2.03764 -0.0997628          0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456076.711533316] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=24.00 yaw_start=0.269 yaw_end=0.500 total_turn=0.467
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456076.716352175] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456076.716518715] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1
+[fast_planner_node-1] [kino replan]: time: 0.0214469, search: 0.0212442, optimize: 0.00018229, adjust time:2.0416e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456076.752193788] [fast_planner_bridge]: trajectory 13: 99 control points, 24.00s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:   57.23 23.6128 0.16386,          2   0.148656 -0.0256432, start_cmd:    2.07395 -0.0469042          0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456078.950269038] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=24.00 yaw_start=0.164 yaw_end=0.500 total_turn=0.410
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456078.970103301] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456078.970324090] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1
+[fast_planner_node-1] [kino replan]: time: 0.0313911, search: 0.031121, optimize: 0.00024033, adjust time:2.975e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456078.980992254] [fast_planner_bridge]: trajectory 14: 99 control points, 24.00s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  61.8418  24.5513 0.142478,          2  0.0659803 0.00715818, start_cmd:     2.08464 -0.00918092           0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456081.339932955] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=24.00 yaw_start=0.142 yaw_end=0.500 total_turn=0.865
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456081.358407193] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456081.358707898] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00016
+[fast_planner_node-1] [kino replan]: time: 0.031238, search: 0.0308419, optimize: 0.000322871, adjust time:7.3207e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456081.373417055] [fast_planner_bridge]: trajectory 15: 99 control points, 24.00s
+[mpc_controller-7] [INFO] [1794456081.453431640] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 2.00m/s, tau_y 1.97, tau_N -0.12
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  66.9834  25.3427 0.110536,         2 0.0425866 0.0113628, start_cmd:     2.08467 -0.00180741           0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794456083.940591515] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=24.00 yaw_start=0.111 yaw_end=0.500 total_turn=0.950
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456083.962748584] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456083.963614823] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00023
+[fast_planner_node-1] [kino replan]: time: 0.0325406, search: 0.031343, optimize: 0.000939447, adjust time:0.000258122
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456084.005786402] [fast_planner_bridge]: trajectory 16: 99 control points, 24.01s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  72.1172  26.1967 0.279878,    1.9856 -0.112215 0.0861142, start_cmd:   2.04376 0.0774943         0
+[fast_planner_node-1] goal: 80  30 0.5, 0 0 0
+[mpc_controller-7] [INFO] [1794456086.546542970] [mpc_controller]: MPC tracking: cross-track 0.01m, speed 1.99m/s, tau_y 2.09, tau_N 0.19
+[fast_planner_node-1] [INFO] [1794456086.552633773] [path_searching]: Shot accepted: search_segments=0 shot_segments=4 duration=24.00 yaw_start=0.280 yaw_end=0.500 total_turn=0.830
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794456086.570553850] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794456086.571052886] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00041
+[fast_planner_node-1] [kino replan]: time: 0.0443541, search: 0.0436529, optimize: 0.000535494, adjust time:0.000165665
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794456086.606194799] [fast_planner_bridge]: trajectory 17: 99 control points, 24.01s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794456091.641373448] [mpc_controller]: MPC tracking: cross-track 0.16m, speed 0.59m/s, tau_y -1.08, tau_N -0.11
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [ARRIVED]: from EXEC_TRAJ to WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_bridge.py-5] [WARN] [1794456110.898613194] [fast_planner_bridge]: Trajectory expired; path withdrawn
+[mpc_controller-7] [WARN] [1794456110.933341237] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456114.033153368] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456117.033222859] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456120.133234904] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456123.233241033] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456126.233418856] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456129.333301612] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456132.433029577] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456135.433050027] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456138.533346819] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456141.632850496] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456144.632901987] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456147.732872367] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456150.733047398] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456153.832892071] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456156.932720702] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456159.932853317] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456162.932892017] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456166.032584733] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456169.032713848] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456172.033338499] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456175.132620720] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456178.232334644] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456181.232467926] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456184.332312265] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456187.332440130] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456190.432379968] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456193.532276682] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456196.632226020] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456199.632240262] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456202.732150683] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456205.832082230] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456208.932068817] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456211.932145725] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456215.032115604] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456218.132046068] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456221.232017905] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456224.331862661] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456227.331909152] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456230.431843615] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456233.432039605] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456236.531819028] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456239.631752991] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456242.731746871] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456245.732148649] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456248.831620118] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456251.831678192] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456254.931648780] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456258.031491161] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456261.031621443] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456264.131891319] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456267.231304288] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456270.231337529] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456273.231403854] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456276.331236360] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456279.331355642] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456282.431208814] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456285.431437470] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456288.531207810] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456291.631142940] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456294.731129694] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456297.731138061] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456300.830997275] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456303.930871114] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456307.030915450] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456310.030963233] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456313.130848989] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456316.230796910] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456319.330803914] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456322.330820614] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456325.430803743] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456328.530751498] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456331.631017124] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456334.730633257] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456337.830488638] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456340.830638045] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456343.831036740] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456346.930415127] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456349.930528117] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456353.030488330] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456356.130406877] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456359.230399672] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456362.330233053] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456365.330251628] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456368.330336161] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456371.330503359] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456374.430255532] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456377.530001206] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456380.530137488] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456383.530577183] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456386.630199150] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456389.730137780] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456392.830002869] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456395.929976831] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456399.030028418] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456402.129877465] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456405.229832178] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456408.329817558] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456411.429783104] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456414.429819762] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456417.529734767] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456420.529959506] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456423.629753137] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456426.729534144] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456429.729588510] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456432.829796387] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456435.929461811] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456439.029597731] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456442.129308738] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456445.229429699] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456448.329423411] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456451.429237959] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456454.529205714] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456457.629173968] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456460.729105765] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456463.829213809] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456466.829297216] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456469.929019140] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456473.029116268] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456476.029176301] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456479.128893017] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456482.128998549] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456485.228843055] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456488.328827267] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456491.328862009] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456494.328865001] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456497.428710006] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456500.429078202] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456503.528549254] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456506.528663078] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456509.628871621] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456512.728543796] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456515.828316969] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456518.828399418] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456521.928397672] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456525.028198220] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456528.028327794] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456531.128584628] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456534.228196429] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456537.328074851] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456540.328130800] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456543.427995556] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456546.428176337] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456549.528418797] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456552.628030347] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456555.728175349] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456558.827785358] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456561.827956973] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456564.927923560] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456568.027940648] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456571.127676655] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456574.127950518] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456577.227605610] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456580.327636238] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456583.327772354] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456586.427840524] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456589.527708946] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456592.627564202] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456595.727481332] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456598.827519418] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456601.927445132] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456605.027624842] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456608.127390474] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456611.227223105] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456614.327231109] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456617.327713095] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456620.427185605] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456623.527179734] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456626.627025907] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456629.727035744] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456632.727091860] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456635.827081323] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456638.927081660] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456642.027034664] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456645.126952753] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456648.226853758] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456651.326910636] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456654.426749142] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456657.526637689] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456660.526794304] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456663.626756684] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456666.726698147] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456669.826710567] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456672.926531907] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456675.926565398] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456679.026513653] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456682.126552990] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456685.126603439] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456688.226388404] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456691.326252035] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456694.326496107] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456697.426198865] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456700.526157286] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456703.526232735] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456706.626050200] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456709.726157661] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456712.826131332] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456715.926105128] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456718.926188119] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456722.026210289] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456725.026305446] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456728.125774790] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456731.125885239] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456734.225869326] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456737.325795456] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456740.425746794] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456743.525730757] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456746.625667720] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456749.625996416] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456752.725698465] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456755.725707290] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456758.825520338] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456761.925647508] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456765.025422764] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456768.025573463] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456771.125402094] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456774.225326432] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456777.325220854] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456780.325438510] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456783.425493305] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456786.525285770] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456789.525382219] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456792.625276099] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456795.725040731] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456798.725336302] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456801.825027685] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456804.925029189] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456808.024935402] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456811.024944311] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456814.124871691] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456817.224776946] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456820.224828979] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456823.224893386] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456826.324942348] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456829.424641606] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456832.524651276] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456835.524914765] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456838.624674439] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456841.725018980] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456844.824493324] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456847.824513857] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456850.924555694] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456854.024263451] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456857.124630159] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456860.224362250] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456863.324307005] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456866.324317913] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456869.324336238] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456872.424213368] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456875.424233735] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456878.524153282] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456881.524339021] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456884.624309984] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456887.724157115] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456890.823990912] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456893.923906042] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456896.923934117] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456900.024048328] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456903.123945375] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456906.223912463] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456909.323781843] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456912.423999595] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456915.523725519] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456918.623781522] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456921.723552612] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456924.723642686] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456927.823647732] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456930.923583278] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456934.023777780] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456937.123519579] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456940.123533279] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456943.223435367] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456946.323209749] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456949.323402780] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456952.423533116] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456955.523390372] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456958.623286502] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456961.723101342] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456964.723130416] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456967.723253740] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456970.823260911] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456973.922971668] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456977.023026398] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456980.122768994] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456983.122919881] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456986.222917143] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456989.322793995] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456992.322896059] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456995.422622788] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794456998.422820601] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457001.422900665] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457004.522929431] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457007.622528620] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457010.722520512] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457013.722692658] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457016.822399179] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457019.822682199] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457022.922471177] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457026.022239446] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457029.022269637] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457032.122184863] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457035.222095339] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457038.322405476] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457041.422006665] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457044.522042472] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457047.621896907] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457050.721961673] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457053.821974273] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457056.922047163] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457060.021883348] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457063.122122112] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457066.221784220] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457069.321590931] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457072.321652311] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794457075.321789524] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mpc_controller-7]: sending signal 'SIGINT' to process[mpc_controller-7]
+[INFO] [boat_simulator-6]: sending signal 'SIGINT' to process[boat_simulator-6]
+[INFO] [fast_planner_bridge.py-5]: sending signal 'SIGINT' to process[fast_planner_bridge.py-5]
+[INFO] [free_water_costmap.py-4]: sending signal 'SIGINT' to process[free_water_costmap.py-4]
+[INFO] [static_transform_publisher-3]: sending signal 'SIGINT' to process[static_transform_publisher-3]
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[ERROR] [static_transform_publisher-3]: process has died [pid 19414, exit code -2, cmd '/opt/ros/humble/lib/tf2_ros/static_transform_publisher 0 0 0 0 0 0 map odom --ros-args'].
+[static_transform_publisher-3] [INFO] [1794457076.887843544] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [traj_server-2]: process has died [pid 19412, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_bjgrahjc -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].
+[traj_server-2] [INFO] [1794457076.887849961] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[mpc_controller-7] [INFO] [1794457076.887878252] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794457076.887891960] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[boat_simulator-6] [INFO] [1794457076.889118988] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[mpc_controller-7] [INFO] [1794457076.900394397] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[boat_simulator-6] [INFO] [1794457076.901973462] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[fast_planner_bridge.py-5] Traceback (most recent call last):
+[fast_planner_bridge.py-5]   File "/home/orangepi/fast_planner_test/install/free_water_map/lib/free_water_map/fast_planner_bridge.py", line 156, in <module>
+[fast_planner_bridge.py-5]     main()
+[fast_planner_bridge.py-5]   File "/home/orangepi/fast_planner_test/install/free_water_map/lib/free_water_map/fast_planner_bridge.py", line 150, in main
+[fast_planner_bridge.py-5]     node.destroy_node()
+[fast_planner_bridge.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py", line 1691, in destroy_node
+[fast_planner_bridge.py-5]     self.destroy_service(self._services[0])
+[fast_planner_bridge.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py", line 1615, in destroy_service
+[fast_planner_bridge.py-5]     service.destroy()
+[fast_planner_bridge.py-5]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/service.py", line 93, in destroy
+[fast_planner_bridge.py-5]     self.__service.destroy_when_not_in_use()
+[fast_planner_bridge.py-5] KeyboardInterrupt
+[ERROR] [fast_planner_node-1]: process has died [pid 19410, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/fast_planner_node --ros-args -r __node:=fast_planner_node --params-file /tmp/launch_params_387wn8p4 -r /odom_world:=/planner/odom -r /sdf_map/odom:=/planner/odom -r /sdf_map/cloud:=/pcl_render_node/cloud -r /sdf_map/pose:=/pcl_render_node/camera_pose -r /sdf_map/depth:=/pcl_render_node/depth'].
+[INFO] [boat_simulator-6]: process has finished cleanly [pid 19420]
+[INFO] [mpc_controller-7]: process has finished cleanly [pid 19424]
+[ERROR] [fast_planner_bridge.py-5]: process has died [pid 19418, exit code -2, cmd '/home/orangepi/fast_planner_test/install/free_water_map/lib/free_water_map/fast_planner_bridge.py --ros-args'].
+[INFO] [free_water_costmap.py-4]: process has finished cleanly [pid 19416]

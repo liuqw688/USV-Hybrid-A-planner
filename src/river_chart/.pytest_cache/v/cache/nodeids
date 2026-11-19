@@ -1,0 +1,6 @@
+[
+  "test/test_node.py::test_lane_data_preserves_tsslpt_orientation",
+  "test/test_node.py::test_line_feature_drops_exporter_added_closing_vertex",
+  "test/test_node.py::test_planning_fills_lane_interior_without_erasing_land",
+  "test/test_node.py::test_point_feature_wrapped_as_polygon_publishes_rviz_points"
+]

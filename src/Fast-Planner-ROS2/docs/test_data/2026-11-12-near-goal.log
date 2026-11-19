@@ -1,0 +1,62 @@
+[INFO] [launch]: All log files can be found below /home/orangepi/.ros/log/2026-11-12-09-28-50-487425-orangepi5plus-11209
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [11210]
+[INFO] [traj_server-2]: process started with pid [11212]
+[fast_planner_node-1] [INFO] [1794446930.709747268] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794446931.619876106] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] no odom.
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] no odom.
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] no odom.
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] no odom.
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [INFO] [1794446936.420736742] [fast_planner_node]: USV global grid initialized: 100 x 100, 1.000 m/cell
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [ARRIVED]: from GEN_NEW_TRAJ to WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794446958.450534902] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [traj_server-2]: process has died [pid 11212, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_abwxnnxc -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].
+[fast_planner_node-1] [INFO] [1794446958.451046772] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [fast_planner_node-1]: process has died [pid 11210, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/fast_planner_node --ros-args -r __node:=fast_planner_node --params-file /tmp/launch_params_ym3pud4l -r /odom_world:=/planner/odom -r /sdf_map/odom:=/planner/odom -r /sdf_map/cloud:=/pcl_render_node/cloud -r /sdf_map/pose:=/pcl_render_node/camera_pose -r /sdf_map/depth:=/pcl_render_node/depth'].

@@ -73,7 +73,7 @@ inline std::string toString(EncounterType type)
 }
 
 // 实际中心间距停车，独立于CPA和目标航向；等于阈值不触发“小于”条件。
-// [功能与联系] 检测两船当前中心距离是否小于紧急停车半径；DWA独立于未来CPA快速调用。
+// [功能与联系] 检测两船当前中心距离是否小于紧急停车半径；MPC独立于未来CPA快速调用。
 inline bool insideStopDistance(double own_x, double own_y, double target_x,
   double target_y, double stop_distance)
 {

@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "first_obstacle_map_100": true,
+    "second_obstacle_map_100": true,
+    "outside_obstacle_free": true,
+    "inflated_map_center_100": true,
+    "map_updates_received": 5
+  },
+  "sent_obstacles": true,
+  "sent_goal": true,
+  "spline": {
+    "start": [
+      0.35096969642837555,
+      -0.010394526893811507,
+      0.0002126520323600712
+    ],
+    "end": [
+      59.37152642111646,
+      -0.016808002489144477,
+      -0.0002721788353145567
+    ],
+    "length_m": 64.71861834546696,
+    "min_distance_obstacle_center_m": 8.165963270023626,
+    "raw_occupied_samples": 0,
+    "inflated_occupied_samples": 0,
+    "curvature_max_speed_above_0_3": 1.7641934389229805
+  }
+}

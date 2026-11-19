@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.8)
+project(interactive_water_obstacles)
+find_package(ament_cmake REQUIRED)
+install(PROGRAMS src/circular_obstacles.py DESTINATION lib/${PROJECT_NAME})
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+install(FILES README.md DESTINATION share/${PROJECT_NAME})
+ament_package()

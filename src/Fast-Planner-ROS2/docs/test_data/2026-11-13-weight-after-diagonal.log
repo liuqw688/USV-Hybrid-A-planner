@@ -1,0 +1,33 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_weight_compare_logs/2026-11-13-11-03-01-845184-orangepi5plus-12739
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [12752]
+[INFO] [traj_server-2]: process started with pid [12754]
+[fast_planner_node-1] [INFO] [1794538982.088191512] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794538982.989701522] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794538983.203709631] [fast_planner_node]: USV global grid initialized: 300 x 200, 1.000 m/cell
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal: 30  10 0.5, 0 0 0
+[fast_planner_node-1] [INFO] [1794538986.214480233] [path_searching]: Shot accepted: search_segments=19 shot_segments=4 duration=48.00 yaw_start=0.086 yaw_end=0.500 total_turn=4.106
+[fast_planner_node-1] reach end (shot)
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794538986.243626129] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794538986.245657854] [bspline_opt]: stop: parameter tolerance, objective evaluations: 5, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.01942
+[fast_planner_node-1] [kino replan]: source: search+shot (search segments: 19, shot segments: 4), time: 0.197921, search: 0.195728, optimize: 0.00208014, adjust time:0.000113165
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794538986.532702701] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794538986.535130214] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[INFO] [fast_planner_node-1]: process has finished cleanly [pid 12752]
+[ERROR] [traj_server-2]: process[traj_server-2] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [traj_server-2]: sending signal 'SIGTERM' to process[traj_server-2]
+[ERROR] [traj_server-2]: process has died [pid 12754, exit code -15, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_qpsnw9af -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

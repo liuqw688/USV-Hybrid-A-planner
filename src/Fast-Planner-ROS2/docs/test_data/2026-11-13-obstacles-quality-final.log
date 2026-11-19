@@ -1,0 +1,81 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_obstacle_test_roslogs/2026-11-13-15-23-51-968484-orangepi5plus-20927
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [20940]
+[INFO] [traj_server-2]: process started with pid [20942]
+[INFO] [static_transform_publisher-3]: process started with pid [20944]
+[INFO] [free_water_costmap.py-4]: process started with pid [20946]
+[INFO] [circular_obstacles.py-5]: process started with pid [20948]
+[INFO] [fast_planner_bridge.py-6]: process started with pid [20952]
+[INFO] [trajectory_quality_monitor.py-7]: process started with pid [20963]
+[INFO] [boat_simulator-8]: process started with pid [20971]
+[INFO] [mpc_controller-9]: process started with pid [20976]
+[static_transform_publisher-3] [WARN] [1794554632.220764493] []: Old-style arguments are deprecated; see --help for new-style arguments
+[static_transform_publisher-3] [INFO] [1794554632.380802622] [static_transform_publisher_4XXOaZsyBNBbeW29]: Spinning until stopped - publishing transform
+[static_transform_publisher-3] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-3] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-3] from 'map' to 'odom'
+[boat_simulator-8] [INFO] [1794554632.440689209] [boat_simulator]: Boat simulator ready: MPC velocity-command input, Fast-Planner six-state model
+[fast_planner_node-1] [INFO] [1794554632.441837195] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[mpc_controller-9] [INFO] [1794554632.503723423] [mpc_controller]: MPC tracker ready: 5 knots, 5.0 s horizon, 10 Hz, v_cmd/w_cmd output
+[mpc_controller-9] [WARN] [1794554632.604618998] [mpc_controller]: MPC zero-speed command (drift possible): waiting for path; missing costmap; 
+[circular_obstacles.py-5] [INFO] [1794554633.122811744] [circular_water_obstacles]: Circular obstacles: radius 3.00 m, /free_water/base_map -> /map
+[traj_server-2] [WARN] [1794554633.296373997] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794554633.651775606] [fast_planner_node]: USV global grid initialized: 290 x 180, 1.000 m/cell
+[trajectory_quality_monitor.py-7] [INFO] [1794554633.706248927] [trajectory_quality_monitor]: Trajectory metrics run=20261113-152353-f0ac6a95, file=/home/orangepi/fast_planner_test/src/Fast-Planner-ROS2/docs/test_data/2026-11-13-quality-final.jsonl
+[mpc_controller-9] [WARN] [1794554635.703992223] [mpc_controller]: MPC zero-speed command (drift possible): waiting for path; 
+[circular_obstacles.py-5] [INFO] [1794554636.244967352] [circular_water_obstacles]: Added obstacle 1 at (25.00, 0.00), r=3.00 m
+[circular_obstacles.py-5] [INFO] [1794554636.261236024] [circular_water_obstacles]: Added obstacle 2 at (25.00, 20.00), r=3.00 m
+[fast_planner_node-1] [INFO] [1794554636.351234776] [fast_planner_node]: USV global grid initialized: 290 x 180, 1.000 m/cell
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-9] [WARN] [1794554638.704900009] [mpc_controller]: MPC zero-speed command (drift possible): waiting for path; 
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:     0.343532  -0.00997439 -7.85972e-05,   0.0705548 -0.00233569  -1.871e-05, start_cmd:  -0.00423324 -0.000296962            0
+[fast_planner_node-1] goal:60  0  0, 0 0 0
+[fast_planner_node-1] open set empty, no path!
+[fast_planner_node-1] use node num: 1
+[fast_planner_node-1] iter num: 1
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] [INFO] [1794554640.190413025] [path_searching]: Shot accepted: search_segments=51 shot_segments=4 duration=48.00 yaw_start=0.222 yaw_end=0.000 total_turn=2.351
+[fast_planner_node-1] reach end (shot)
+[fast_planner_node-1] [kino replan]: retry search success.
+[fast_planner_node-1] [INFO] [1794554640.243507947] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794554640.262580084] [bspline_opt]: stop: parameter tolerance, objective evaluations: 66, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.03884
+[fast_planner_node-1] [kino replan]: source: search+shot (search segments: 51, shot segments: 4), time: 0.966474, search: 0.94528, optimize: 0.0201679, adjust time:0.00102578
+[trajectory_quality_monitor.py-7] [INFO] [1794554640.273590363] [trajectory_quality_monitor]: traj=1 score=65.4/100 screening=needs_review length=64.09m warnings=['estimated_v_cmd_out_of_range', 'sway_model_residual_rms_over_0.05']
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-6] [INFO] [1794554640.374618353] [fast_planner_bridge]: trajectory 1: 317 control points, 81.65s
+[mpc_controller-9] [INFO] [1794554640.414331483] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 0.07m/s, v_cmd 2.00, w_cmd -0.14
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mpc_controller-9]: sending signal 'SIGINT' to process[mpc_controller-9]
+[INFO] [boat_simulator-8]: sending signal 'SIGINT' to process[boat_simulator-8]
+[INFO] [trajectory_quality_monitor.py-7]: sending signal 'SIGINT' to process[trajectory_quality_monitor.py-7]
+[INFO] [fast_planner_bridge.py-6]: sending signal 'SIGINT' to process[fast_planner_bridge.py-6]
+[INFO] [circular_obstacles.py-5]: sending signal 'SIGINT' to process[circular_obstacles.py-5]
+[INFO] [free_water_costmap.py-4]: sending signal 'SIGINT' to process[free_water_costmap.py-4]
+[INFO] [static_transform_publisher-3]: sending signal 'SIGINT' to process[static_transform_publisher-3]
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[mpc_controller-9] [INFO] [1794554640.614732567] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[boat_simulator-8] [INFO] [1794554640.618019026] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[static_transform_publisher-3] [INFO] [1794554640.660315416] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[traj_server-2] [INFO] [1794554640.691637692] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794554640.701177989] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[INFO] [boat_simulator-8]: process has finished cleanly [pid 20971]
+[INFO] [static_transform_publisher-3]: process has finished cleanly [pid 20944]
+[INFO] [mpc_controller-9]: process has finished cleanly [pid 20976]
+[INFO] [fast_planner_node-1]: process has finished cleanly [pid 20940]
+[INFO] [free_water_costmap.py-4]: process has finished cleanly [pid 20946]
+[INFO] [circular_obstacles.py-5]: process has finished cleanly [pid 20948]
+[INFO] [trajectory_quality_monitor.py-7]: process has finished cleanly [pid 20963]
+[INFO] [fast_planner_bridge.py-6]: process has finished cleanly [pid 20952]
+[ERROR] [traj_server-2]: process[traj_server-2] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [traj_server-2]: sending signal 'SIGTERM' to process[traj_server-2]
+[ERROR] [traj_server-2]: process has died [pid 20942, exit code -15, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_j7nlxwpw -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

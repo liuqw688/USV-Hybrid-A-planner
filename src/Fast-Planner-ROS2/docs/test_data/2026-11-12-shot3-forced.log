@@ -1,0 +1,35 @@
+[INFO] [launch]: All log files can be found below /tmp/usv_three_shot_roslogs/2026-11-12-17-32-40-314381-orangepi5plus-32569
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [32571]
+[INFO] [traj_server-2]: process started with pid [32573]
+[fast_planner_node-1] [INFO] [1794475960.595359218] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[traj_server-2] [WARN] [1794475961.476780290] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794475961.702190371] [fast_planner_node]: USV global grid initialized: 300 x 200, 1.000 m/cell
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:10  0  0, 0 0 0
+[fast_planner_node-1] [INFO] [1794475964.656769131] [path_searching]: Shot failed 1/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794475964.658594359] [path_searching]: Shot failed 2/3 at distance 10.00 m; continuing search
+[fast_planner_node-1] [INFO] [1794475964.660583501] [path_searching]: Shot failed 3/3 at distance 9.96 m; continuing search without further shots
+[fast_planner_node-1] reach end (search; terminal speed not constrained)
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794475964.814516872] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794475964.859646196] [bspline_opt]: stop: parameter tolerance, objective evaluations: 357, max: 600, time limit: 0.060s
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00107
+[fast_planner_node-1] [kino replan]: source: search (search segments: 20, shot segments: 0), time: 0.205002, search: 0.15864, optimize: 0.0459749, adjust time:0.000387621
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794475965.160564647] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] [INFO] [1794475965.162357500] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[INFO] [fast_planner_node-1]: process has finished cleanly [pid 32571]
+[ERROR] [traj_server-2]: process[traj_server-2] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [traj_server-2]: sending signal 'SIGTERM' to process[traj_server-2]
+[ERROR] [traj_server-2]: process has died [pid 32573, exit code -15, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_njz6oyl7 -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].

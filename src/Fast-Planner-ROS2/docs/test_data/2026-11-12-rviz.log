@@ -1,0 +1,12 @@
+libGL error: glx: failed to create dri3 screen
+libGL error: failed to load driver: rockchip
+libGL error: glx: failed to create dri2 screen
+libGL error: failed to load driver: rockchip
+libGL error: glx: failed to create dri3 screen
+libGL error: failed to load driver: rockchip
+libGL error: glx: failed to create dri2 screen
+libGL error: failed to load driver: rockchip
+[INFO] [1794444698.616720466] [rviz2]: Stereo is NOT SUPPORTED
+[INFO] [1794444698.616893129] [rviz2]: OpenGl version: 4.5 (GLSL 4.5)
+[INFO] [1794444699.439514536] [rviz2]: Stereo is NOT SUPPORTED
+[INFO] [1794444705.103294141] [rclcpp]: signal_handler(SIGINT/SIGTERM)

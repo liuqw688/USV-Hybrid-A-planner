@@ -1,0 +1,339 @@
+[INFO] [launch]: All log files can be found below /home/orangepi/.ros/log/2026-11-12-09-22-14-733068-orangepi5plus-10354
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [fast_planner_node-1]: process started with pid [10355]
+[INFO] [traj_server-2]: process started with pid [10357]
+[INFO] [static_transform_publisher-3]: process started with pid [10359]
+[INFO] [free_water_costmap.py-4]: process started with pid [10361]
+[INFO] [fast_planner_bridge.py-5]: process started with pid [10363]
+[INFO] [boat_simulator-6]: process started with pid [10365]
+[INFO] [mpc_controller-7]: process started with pid [10367]
+[static_transform_publisher-3] [WARN] [1794446534.887077369] []: Old-style arguments are deprecated; see --help for new-style arguments
+[boat_simulator-6] [INFO] [1794446534.918262459] [boat_simulator]: Boat simulator ready: MPC effort input, six-state underactuated model
+[mpc_controller-7] [INFO] [1794446534.956439563] [mpc_controller]: MPC tracker ready: 5 knots, 5.0 s horizon, 10 Hz, direct tau_y/tau_N output
+[static_transform_publisher-3] [INFO] [1794446534.967260516] [static_transform_publisher_d6fo4M7nD428EgWq]: Spinning until stopped - publishing transform
+[static_transform_publisher-3] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-3] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-3] from 'map' to 'odom'
+[fast_planner_node-1] [INFO] [1794446535.039116128] [fast_planner_node]: USV grid input: /map, planning frame: map
+[fast_planner_node-1] origin_: 0 0 0
+[fast_planner_node-1] map size: 0 0 0
+[mpc_controller-7] [WARN] [1794446535.057009011] [mpc_controller]: MPC braking: waiting for path; missing costmap; 
+[traj_server-2] [WARN] [1794446535.950285239] [traj_server]: [Traj server]: ready.
+[fast_planner_node-1] [INFO] [1794446536.178035756] [fast_planner_node]: USV global grid initialized: 290 x 180, 1.000 m/cell
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794446538.156877707] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794446541.157064106] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[mpc_controller-7] [WARN] [1794446544.256914302] [mpc_controller]: MPC braking: waiting for path; 
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] [FSM]: state: INIT
+[fast_planner_node-1] wait for goal.
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [FSM]: from INIT to WAIT_TARGET
+[fast_planner_node-1] [FSM]: from WAIT_TARGET to GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 0 0 0, 0 0 0, start_cmd:   -0.0805751 -0.000748062            0
+[fast_planner_node-1] goal:40  0  0, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446546.509841245] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446546.510973769] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00278
+[fast_planner_node-1] [kino replan]: time: 0.0385504, search: 0.0372467, optimize: 0.00116927, adjust time:0.000134456
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446546.561534551] [fast_planner_bridge]: trajectory 1: 154 control points, 38.01s
+[mpc_controller-7] [INFO] [1794446546.675887948] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 0.00m/s, tau_y 10.00, tau_N 0.00
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:    9.01627 0.00744282 0.00173618,      1.99978 -0.000620956  0.000168229, start_cmd:      2.08322 -0.000515529            0
+[fast_planner_node-1] goal:40  0  0, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446551.641015393] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446551.641521719] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00024
+[fast_planner_node-1] [kino replan]: time: 0.0097281, search: 0.00911794, optimize: 0.000534033, adjust time:7.6123e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446551.662642717] [fast_planner_bridge]: trajectory 2: 111 control points, 27.21s
+[mpc_controller-7] [INFO] [1794446551.774028787] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 2.00m/s, tau_y 1.97, tau_N -0.00
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:    13.0162  0.0132043 0.00124956,            2  0.000156366 -0.000417547, start_cmd:     2.08347 -0.00105054           0
+[fast_planner_node-1] goal:40  0  0, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446553.685771300] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446553.686386415] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00014
+[fast_planner_node-1] [kino replan]: time: 0.0209322, search: 0.0200977, optimize: 0.000667322, adjust time:0.000167123
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446553.728093213] [fast_planner_bridge]: trajectory 3: 107 control points, 26.00s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:      17.0162    0.0169408 -0.000473511,           2  0.00152396 -0.00149349, start_cmd:     2.08346 -0.00202129           0
+[fast_planner_node-1] goal:40  0  0, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446555.679261018] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446555.679517097] [bspline_opt]: iter num: 5
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00026
+[fast_planner_node-1] [kino replan]: time: 0.00844186, search: 0.00811345, optimize: 0.00027737, adjust time:5.104e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446555.717393789] [fast_planner_bridge]: trajectory 4: 99 control points, 24.01s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794446556.874945789] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 2.00m/s, tau_y 1.97, tau_N -0.00
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] Triggered!
+[fast_planner_node-1] [TRIG]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:     20.6162   0.0140281 -0.00392128,           2  0.00355543 -0.00243381, start_cmd:     2.08344 -0.00303555           0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[mpc_controller-7] [WARN] [1794446557.456572494] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446557.535447828] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446557.535818239] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.02158
+[fast_planner_node-1] [kino replan]: time: 0.0899952, search: 0.0895335, optimize: 0.000388203, adjust time:7.3499e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446557.554886812] [fast_planner_bridge]: trajectory 5: 147 control points, 36.78s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  25.0735 0.558572   0.6189,   1.70046 -0.487383       0.3, start_cmd: 1.39421 0.29096       0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446560.394415881] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446560.394681001] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.00466
+[fast_planner_node-1] [kino replan]: time: 0.0688212, search: 0.0684694, optimize: 0.000281163, adjust time:7.0582e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446560.406958224] [fast_planner_bridge]: trajectory 6: 147 control points, 36.17s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794446561.972177642] [mpc_controller]: MPC tracking: cross-track 0.06m, speed 1.96m/s, tau_y 2.73, tau_N 0.43
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 28.7563 3.71088 1.38456,         2 -0.699075  0.271409, start_cmd:  1.60963 0.314359        0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446562.784072366] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to GEN_NEW_TRAJ
+[fast_planner_bridge.py-5] [WARN] [1794446562.788171968] [fast_planner_bridge]: Planning failed; old path withdrawn for braking
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 28.7563 3.71088 1.38456,         2 -0.699075  0.271409, start_cmd:  1.60963 0.314359        0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446562.793830503] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[mpc_controller-7] [WARN] [1794446562.856476928] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 29.1881 4.30678 1.46637,  0.484417 -0.647805 0.0739264, start_cmd: 0.323976   0.1758        0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446563.303734927] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [FSM]: state: GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 29.4886 4.31493 1.48587, -5.73886e-18    -0.543375    0.0173953, start_cmd: -0.104181  0.118335         0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446563.813949055] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  29.734 4.29472 1.49046, -2.08149e-18    -0.443899   0.00409322, start_cmd: -0.0851127  0.0899566          0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446564.356733000] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446564.356938038] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.01948
+[fast_planner_node-1] [kino replan]: time: 0.0281323, search: 0.0278593, optimize: 0.000221079, adjust time:5.1916e-05
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446564.394181532] [fast_planner_bridge]: trajectory 7: 99 control points, 24.47s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794446567.083113486] [mpc_controller]: MPC tracking: cross-track 0.37m, speed 1.75m/s, tau_y 3.60, tau_N 0.52
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start:  28.142 11.3097 2.63353,         2 -0.619155  0.150136, start_cmd:  1.85132 0.219664        0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446569.274324781] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446569.274617901] [bspline_opt]: iter num: 7
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.06284
+[fast_planner_node-1] [kino replan]: time: 0.0245602, search: 0.024179, optimize: 0.000310329, adjust time:7.0874e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446569.320916043] [fast_planner_bridge]: trajectory 8: 134 control points, 34.86s
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 24.1856 14.4632 2.59079,         2 -0.143385 -0.149109, start_cmd:    2.13686 -0.0692493          0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] open set empty, no path!
+[fast_planner_node-1] use node num: 1
+[fast_planner_node-1] iter num: 1
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: retry search success.
+[fast_planner_node-1] [INFO] [1794446571.786923778] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446571.787184524] [bspline_opt]: iter num: 7
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.05665
+[fast_planner_node-1] [kino replan]: time: 0.017758, search: 0.0174193, optimize: 0.000277078, adjust time:6.1541e-05
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446571.830816583] [fast_planner_bridge]: trajectory 9: 118 control points, 30.43s
+[mpc_controller-7] [INFO] [1794446572.167706789] [mpc_controller]: MPC tracking: cross-track 0.02m, speed 1.99m/s, tau_y 2.16, tau_N -0.60
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: from EXEC_TRAJ to REPLAN_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 19.5245 20.9429 1.36241,   1.8177 0.638029     -0.3, start_cmd:   1.40819 -0.322335         0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [FSM]: from REPLAN_TRAJ to GEN_NEW_TRAJ
+[fast_planner_node-1] [WARN] [1794446576.064518820] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_bridge.py-5] [WARN] [1794446576.068666130] [fast_planner_bridge]: Planning failed; old path withdrawn for braking
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 19.5127 21.0387 1.34693,   1.8211 0.642201     -0.3, start_cmd:   1.40875 -0.323163         0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446576.073850714] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[mpc_controller-7] [WARN] [1794446576.156255409] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 19.3563 21.6708  1.2555,   0.324874   0.611503 -0.0820393, start_cmd:  0.145659 -0.175371         0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446576.583712056] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 19.0935 21.7759 1.23386, -9.6621e-19    0.516188  -0.0193043, start_cmd: -0.105461  -0.11568         0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: kinodynamic search fail!
+[fast_planner_node-1] no path
+[fast_planner_node-1] [kino replan]: Can't find path.
+[fast_planner_node-1] [WARN] [1794446577.093645021] [fast_planner_node]: generate new traj fail; old trajectory withdrawn.
+[fast_planner_node-1] [FSM]: state: GEN_NEW_TRAJ
+[fast_planner_node-1] [kino replan]: -----------------------
+[fast_planner_node-1] start: 18.8727  21.854 1.22877, 2.60114e-17     0.42243 -0.00454242, start_cmd: -0.0853672 -0.0874865          0
+[fast_planner_node-1] goal:20 25  1, 0 0 0
+[fast_planner_node-1] reach end
+[fast_planner_node-1] [kino replan]: kinodynamic search success.
+[fast_planner_node-1] [INFO] [1794446577.667681637] [bspline_opt]: cost func: smooth | dist  | feasi |
+[fast_planner_node-1] [INFO] [1794446577.668247170] [bspline_opt]: iter num: 6
+[fast_planner_node-1] [kino replan]: Reallocate ratio: 1.03032
+[fast_planner_node-1] [kino replan]: time: 0.0467898, search: 0.0460052, optimize: 0.000607824, adjust time:0.000176748
+[fast_planner_node-1] [FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+[fast_planner_bridge.py-5] [INFO] [1794446577.708181538] [fast_planner_bridge]: trajectory 10: 99 control points, 24.73s
+[mpc_controller-7] [INFO] [1794446577.779293745] [mpc_controller]: MPC tracking: cross-track 0.00m, speed 0.00m/s, tau_y 4.95, tau_N -0.19
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[mpc_controller-7] [INFO] [1794446582.873124985] [mpc_controller]: MPC tracking: cross-track 0.32m, speed 0.00m/s, tau_y -10.00, tau_N 0.31
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [FSM]: state: EXEC_TRAJ
+[fast_planner_node-1] [ARRIVED]: from EXEC_TRAJ to WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_bridge.py-5] [WARN] [1794446602.497362548] [fast_planner_bridge]: Trajectory expired; path withdrawn
+[mpc_controller-7] [WARN] [1794446602.555769790] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[mpc_controller-7] [WARN] [1794446605.556377016] [mpc_controller]: MPC braking: planner withdrew path (unknown); 
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[fast_planner_node-1] [FSM]: state: WAIT_TARGET
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mpc_controller-7]: sending signal 'SIGINT' to process[mpc_controller-7]
+[INFO] [boat_simulator-6]: sending signal 'SIGINT' to process[boat_simulator-6]
+[INFO] [fast_planner_bridge.py-5]: sending signal 'SIGINT' to process[fast_planner_bridge.py-5]
+[ERROR] [boat_simulator-6]: process has died [pid 10365, exit code -2, cmd '/home/orangepi/fast_planner_test/install/usv_mpc_control/lib/usv_mpc_control/boat_simulator --ros-args --params-file /tmp/launch_params_58vc530x'].
+[INFO] [free_water_costmap.py-4]: sending signal 'SIGINT' to process[free_water_costmap.py-4]
+[INFO] [static_transform_publisher-3]: sending signal 'SIGINT' to process[static_transform_publisher-3]
+[ERROR] [fast_planner_bridge.py-5]: process has died [pid 10363, exit code -2, cmd '/home/orangepi/fast_planner_test/install/free_water_map/lib/free_water_map/fast_planner_bridge.py --ros-args'].
+[INFO] [traj_server-2]: sending signal 'SIGINT' to process[traj_server-2]
+[INFO] [fast_planner_node-1]: sending signal 'SIGINT' to process[fast_planner_node-1]
+[traj_server-2] [INFO] [1794446608.630653408] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [static_transform_publisher-3]: process has died [pid 10359, exit code -2, cmd '/opt/ros/humble/lib/tf2_ros/static_transform_publisher 0 0 0 0 0 0 map odom --ros-args'].
+[static_transform_publisher-3] [INFO] [1794446608.630646408] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[mpc_controller-7] [INFO] [1794446608.630652533] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [traj_server-2]: process has died [pid 10357, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/traj_server --ros-args -r __node:=traj_server --params-file /tmp/launch_params_vboh9tsw -r /position_cmd:=planning/pos_cmd -r /odom_world:=/planner/odom'].
+[fast_planner_node-1] [INFO] [1794446608.630735073] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[boat_simulator-6] [INFO] [1794446608.631175192] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[mpc_controller-7] [INFO] [1794446608.653516504] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[fast_planner_node-1] des manager
+[ERROR] [fast_planner_node-1]: process has died [pid 10355, exit code -2, cmd '/home/orangepi/fast_planner_test/install/plan_manage/lib/plan_manage/fast_planner_node --ros-args -r __node:=fast_planner_node --params-file /tmp/launch_params_3bs9zwhy -r /odom_world:=/planner/odom -r /sdf_map/odom:=/planner/odom -r /sdf_map/cloud:=/pcl_render_node/cloud -r /sdf_map/pose:=/pcl_render_node/camera_pose -r /sdf_map/depth:=/pcl_render_node/depth'].
+[ERROR] [free_water_costmap.py-4]: process has died [pid 10361, exit code -2, cmd '/home/orangepi/fast_planner_test/install/free_water_map/lib/free_water_map/free_water_costmap.py --ros-args --params-file /tmp/launch_params_qez84gv6'].
+[INFO] [mpc_controller-7]: process has finished cleanly [pid 10367]
