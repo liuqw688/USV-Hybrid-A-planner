@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="usv_model_wam_v_display">
+  <!-- 文件：wam_v_display.urdf；定义 RViz 船体及传感器显示组件。 -->
+  <!-- RViz 专用船模；推进器与螺旋桨均以固定关节显示，不参与动力学仿真。
+       网格和纹理由 usv_map 包管理；FLU 模型通过正 pi/2 偏航连接 RFU 船体帧。 -->
+  <!-- 传感器显示材质。 -->
+  <material name="gps_white">
+    <color rgba="1.0 1.0 1.0 1.0" />
+  </material>
+  <material name="sensor_black">
+    <color rgba="0.0 0.0 0.0 1.0" />
+  </material>
+  <material name="imu_black">
+    <color rgba="0.0 0.0 0.0 1.0" />
+  </material>
+  <material name="lidar_blue">
+    <color rgba="0.0 0.0 1.0 1.0" />
+  </material>
+  <material name="camera_red">
+    <color rgba="1.0 0.0 0.0 1.0" />
+  </material>
+  <material name="camera_lens">
+    <color rgba="0.01 0.01 0.08 1.0" />
+  </material>
+  <!-- 船模根部采用 FLU：x 向前、y 向左；文件末尾连接 RFU 里程计帧。 -->
+  <link name="usv_model_base_link">
+    <visual name="base_visual">
+      <geometry>
+        <mesh filename="package://usv_map/meshes/wam_v/WAM-V-Base.dae" />
+      </geometry>
+    </visual>
+  </link>
+  <!-- GPS 固定安装组件。 -->
+  <link name="usv_model_gps_link">
+    <visual name="gps_base_visual">
+      <origin xyz="0 0 0.3" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.075" length="0.1" />
+      </geometry>
+      <material name="gps_white" />
+    </visual>
+  </link>
+  <joint name="usv_model_gps_joint" type="fixed">
+    <parent link="usv_model_base_link" />
+    <child link="usv_model_gps_link" />
+    <origin xyz="-0.5 0.0 1.0" rpy="0 0 0" />
+  </joint>
+  <!-- IMU 固定安装组件。 -->
+  <link name="usv_model_imu_link">
+    <visual name="imu_visual">
+      <geometry>
+        <box size="0.10 0.08 0.035" />
+      </geometry>
+      <material name="imu_black" />
+    </visual>
+  </link>
+  <joint name="usv_model_imu_joint" type="fixed">
+    <parent link="usv_model_base_link" />
+    <child link="usv_model_imu_link" />
+    <origin xyz="0 0 1.285" rpy="0 0 0" />
+  </joint>
+  <!-- 激光雷达按材质拆分为多个固定组件，便于 RViz 显示。 -->
+  <link name="usv_model_lidar_link" />
+  <joint name="usv_model_lidar_joint" type="fixed">
+    <parent link="usv_model_base_link" />
+    <child link="usv_model_lidar_link" />
+    <origin xyz="0 0 1.8" rpy="0 0 0" />
+  </joint>
+  <link name="usv_model_lidar_mount_link">
+    <visual name="lidar_mount_visual">
+      <geometry>
+        <cylinder radius="0.018" length="0.65" />
+      </geometry>
+      <material name="sensor_black" />
+    </visual>
+  </link>
+  <joint name="usv_model_lidar_mount_joint" type="fixed">
+    <parent link="usv_model_lidar_link" />
+    <child link="usv_model_lidar_mount_link" />
+    <origin xyz="0 0 -0.205" rpy="0 0 0" />
+  </joint>
+  <link name="usv_model_lidar_bottom_link">
+    <visual name="lidar_bottom_visual">
+      <geometry>
+        <cylinder radius="0.125" length="0.03" />
+      </geometry>
+      <material name="gps_white" />
+    </visual>
+  </link>
+  <joint name="usv_model_lidar_bottom_joint" type="fixed">
+    <parent link="usv_model_lidar_link" />
+    <child link="usv_model_lidar_bottom_link" />
+    <origin xyz="0 0 -0.09" rpy="0 0 0" />
+  </joint>
+  <link name="usv_model_lidar_scanner_link">
+    <visual name="lidar_scanner_visual">
+      <geometry>
+        <cylinder radius="0.115" length="0.15" />
+      </geometry>
+      <material name="lidar_blue" />
+    </visual>
+  </link>
+  <joint name="usv_model_lidar_scanner_joint" type="fixed">
+    <parent link="usv_model_lidar_link" />
+    <child link="usv_model_lidar_scanner_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+  <link name="usv_model_lidar_top_link">
+    <visual name="lidar_top_visual">
+      <geometry>
+        <cylinder radius="0.125" length="0.03" />
+      </geometry>
+      <material name="gps_white" />
+    </visual>
+  </link>
+  <joint name="usv_model_lidar_top_joint" type="fixed">
+    <parent link="usv_model_lidar_link" />
+    <child link="usv_model_lidar_top_link" />
+    <origin xyz="0 0 0.09" rpy="0 0 0" />
+  </joint>
+  <!-- 双目相机安装架：底座板连接支撑杆、顶部板及横杆，左右相机安装于横杆。 -->
+  <!-- 双目相机底座板 -->
+  <link name="usv_model_stereo_camera_mount_base_link">
+    <visual name="stereo_camera_mount_base_visual">
+      <geometry>
+        <box size="0.16 0.18 0.025" />
+      </geometry>
+      <material name="sensor_black" />
+    </visual>
+  </link>
+  <joint name="usv_model_stereo_camera_mount_base_joint" type="fixed">
+    <parent link="usv_model_base_link" />
+    <child link="usv_model_stereo_camera_mount_base_link" />
+    <origin xyz="0.50 0.0 1.305" rpy="0 0 0" />
+  </joint>
+  <!-- 双目相机竖直支撑杆 -->
+  <link name="usv_model_stereo_camera_support_link">
+    <visual name="stereo_camera_support_visual">
+      <geometry>
+        <cylinder radius="0.018" length="0.12" />
+      </geometry>
+      <material name="sensor_black" />
+    </visual>
+  </link>
+  <joint name="usv_model_stereo_camera_support_joint" type="fixed">
+    <parent link="usv_model_stereo_camera_mount_base_link" />
+    <child link="usv_model_stereo_camera_support_link" />
+    <origin xyz="0.0 0.0 0.060" rpy="0 0 0" />
+  </joint>
+  <!-- 双目相机顶部承托板 -->
+  <link name="usv_model_stereo_camera_top_plate_link">
+    <visual name="stereo_camera_top_plate_visual">
+      <geometry>
+        <box size="0.12 0.24 0.025" />
+      </geometry>
+      <material name="sensor_black" />
+    </visual>
+  </link>
+  <joint name="usv_model_stereo_camera_top_plate_joint" type="fixed">
+    <parent link="usv_model_stereo_camera_mount_base_link" />
+    <child link="usv_model_stereo_camera_top_plate_link" />
+    <origin xyz="0.0 0.0 0.120" rpy="0 0 0" />
+  </joint>
+  <!-- 双目相机横杆 -->
+  <link name="usv_model_stereo_camera_mount_link">
+    <visual name="stereo_camera_bar_visual">
+      <geometry>
+        <box size="0.06 0.80 0.04" />
+      </geometry>
+      <material name="sensor_black" />
+    </visual>
+  </link>
+  <joint name="usv_model_stereo_camera_mount_joint" type="fixed">
+    <parent link="usv_model_stereo_camera_mount_base_link" />
+    <child link="usv_model_stereo_camera_mount_link" />
+    <origin xyz="0.0 0.0 0.150" rpy="0 0 0" />
+  </joint>
+  <!-- 左相机固定于横杆的 FLU +y 方向，距中心 0.35 m。 -->
+  <link name="usv_model_stereo_left_camera_link">
+    <visual name="left_camera_body_visual">
+      <origin xyz="-0.055 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.08 0.08" />
+      </geometry>
+      <material name="camera_red" />
+    </visual>
+    <visual name="left_camera_lens_visual">
+      <origin xyz="0.05 0 0" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.028" length="0.05" />
+      </geometry>
+      <material name="camera_lens" />
+    </visual>
+    <visual name="left_camera_front_ring_visual">
+      <origin xyz="0.05 0 0" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.012" />
+      </geometry>
+      <material name="lidar_blue" />
+    </visual>
+  </link>
+  <joint name="usv_model_stereo_left_camera_joint" type="fixed">
+    <parent link="usv_model_stereo_camera_mount_link" />
+    <child link="usv_model_stereo_left_camera_link" />
+    <origin xyz="0.0 0.35 0.0" rpy="0 0 0" />
+  </joint>
+  <!-- 右相机固定于横杆的 FLU -y 方向，距中心 0.35 m。 -->
+  <link name="usv_model_stereo_right_camera_link">
+    <visual name="right_camera_body_visual">
+      <origin xyz="-0.055 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.08 0.08" />
+      </geometry>
+      <material name="camera_red" />
+    </visual>
+    <visual name="right_camera_lens_visual">
+      <origin xyz="0.05 0 0" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.028" length="0.05" />
+      </geometry>
+      <material name="camera_lens" />
+    </visual>
+    <visual name="right_camera_front_ring_visual">
+      <origin xyz="0.05 0 0" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.012" />
+      </geometry>
+      <material name="camera_red" />
+    </visual>
+  </link>
+  <joint name="usv_model_stereo_right_camera_joint" type="fixed">
+    <parent link="usv_model_stereo_camera_mount_link" />
+    <child link="usv_model_stereo_right_camera_link" />
+    <origin xyz="0.0 -0.35 0.0" rpy="0 0 0" />
+  </joint>
+  <!-- 左侧推进器通过固定关节连接船体，仅显示安装位置。 -->
+  <link name="usv_model_left_engine_link">
+    <visual name="left_engine_visual">
+      <geometry>
+        <mesh filename="package://usv_map/meshes/wam_v/engine.dae" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="usv_model_left_chasis_engine_joint" type="fixed">
+    <parent link="usv_model_base_link" />
+    <child link="usv_model_left_engine_link" />
+    <origin xyz="-2.373776 1.027135 0.318237" rpy="0 0 0" />
+  </joint>
+  <!-- 左侧螺旋桨以固定姿态显示。 -->
+  <link name="usv_model_left_propeller_link">
+    <visual name="left_propeller_visual">
+      <geometry>
+        <mesh filename="package://usv_map/meshes/wam_v/propeller.dae" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="usv_model_left_engine_propeller_joint" type="fixed">
+    <parent link="usv_model_left_engine_link" />
+    <child link="usv_model_left_propeller_link" />
+    <origin xyz="-0.278156 0 -0.509371" rpy="0 0 0" />
+  </joint>
+  <!-- 右侧推进器通过固定关节连接船体，仅显示安装位置。 -->
+  <link name="usv_model_right_engine_link">
+    <visual name="right_engine_visual">
+      <geometry>
+        <mesh filename="package://usv_map/meshes/wam_v/engine.dae" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="usv_model_right_chasis_engine_joint" type="fixed">
+    <parent link="usv_model_base_link" />
+    <child link="usv_model_right_engine_link" />
+    <origin xyz="-2.373776 -1.027135 0.318237" rpy="0 0 0" />
+  </joint>
+  <!-- 右侧螺旋桨以固定姿态显示。 -->
+  <link name="usv_model_right_propeller_link">
+    <visual name="right_propeller_visual">
+      <geometry>
+        <mesh filename="package://usv_map/meshes/wam_v/propeller.dae" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="usv_model_right_engine_propeller_joint" type="fixed">
+    <parent link="usv_model_right_engine_link" />
+    <child link="usv_model_right_propeller_link" />
+    <origin xyz="-0.278156 0 -0.509371" rpy="0 0 0" />
+  </joint>
+  <link name="usv_body_rfu" />
+  <joint name="usv_model_rfu_to_model_flu" type="fixed">
+    <parent link="usv_body_rfu" />
+    <child link="usv_model_base_link" />
+    <origin xyz="0 0 0" rpy="0 0 1.5707963267948966" />
+  </joint>
+</robot>

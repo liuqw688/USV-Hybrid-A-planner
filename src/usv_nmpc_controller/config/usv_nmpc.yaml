@@ -1,0 +1,108 @@
+# 无人船 NMPC 控制器配置。
+# 参数在节点启动时读取；修改后需要重启控制器。
+# 平面状态：x 向东、y 向北；航向北为 0、东为 -pi/2、西为 +pi/2，单位 rad。
+# 本体速度：u 向前、v 向右，r>0 表示向西转；与 /odom RFU 速度方向一致。
+# 权重是优化目标中各误差平方项的系数；增大表示更重视该项，不能直接比较不同单位的权重。
+/**:
+  ros__parameters:
+    # 一、ROS 接口与控制周期。
+
+    # 状态输入，类型 nav_msgs/msg/Odometry；位置和姿态在 ENU 坐标系中表达。
+    # 要求 header.frame_id 与 frame_id 一致，child_frame_id 为 usv_body_rfu（右、前、上）。
+    # 直接使用反馈，不追加低通滤波；此配置不控制仿真定位噪声。
+    odom_topic: "/odom"
+    # 轨迹输入，类型 usv_interfaces/msg/UsvBspline；位置控制点为 ENU 米制坐标。
+    bspline_topic: "/planning/bspline"
+    # 控制输出，类型 geometry_msgs/msg/Twist；linear.x 为前向速度指令(m/s)，angular.z 为转艏角速度指令(rad/s)。
+    cmd_topic: "/cmd"
+    # 状态、参考轨迹和预测可视化共用的坐标系名称；本节点不对输入位置执行 TF 坐标转换。
+    frame_id: "map"
+    # 任务完成信号，类型 std_msgs/msg/Bool；终点距离和合速度条件连续满足后发布 true。
+    tracking_finished_topic: "/USV_tracking_finished"
+    # 跟踪诊断输出，类型 std_msgs/msg/Float64MultiArray；包含参考、状态误差、代价和求解结果。
+    nmpc_diagnostics_topic: "/nmpc_tracking_diagnostics"
+    # 预测位置与航向，类型 nav_msgs/msg/Path；供 RViz2 显示当前 NMPC 预测轨迹。
+    predicted_path_topic: /nmpc_predicted_path
+    # 预测位姿数组，类型 geometry_msgs/msg/PoseArray；供 RViz2 用箭头显示预测朝向。
+    predicted_poses_topic: /nmpc_predicted_poses
+    # 控制定时器频率(Hz)；10 Hz 对应名义周期 0.1 s，实际频率还取决于求解耗时。
+    control_frequency: 10.0
+
+    # 超过该时长(s)未收到有效状态时发布零指令；按本机单调时钟计算接收间隔。
+    state_timeout_s: 0.5
+    # 参考轨迹接收超时(s)，按 ROS 时钟计算；允许 1 Hz 发布且可容忍一定间隔抖动。
+    # 非终端样条到达末端后，重发同一条旧消息不会继续刷新存活时间。
+    reference_stale_timeout: 2.0
+    # 新 B 样条的有效起点必须在当前 /odom 船位 2 m 内，否则拒收并保留当前参考。
+    max_reference_start_distance_m: 2.0
+
+    # 二、任务终点的完成判定。
+
+    # 到达任务终点的平面距离容差(m)；仅在样条时间到达末端后判断。
+    finish_distance_m: 2.0
+    # 终点允许的合速度上限(m/s)。
+    finish_speed_mps: 0.2
+    # 距离≤finish_distance_m 且合速度≤finish_speed_mps 连续满足的时间(s)。
+    # 任一条件越界或输入失效后重新计时。
+    finish_stable_duration_s: 1.0
+
+    # 三、样条接口。此周期只用于诊断表和路径采样；NMPC 从原样条按预测时刻直接求值。
+    reference:
+      # 诊断路径离散采样周期(s)；不改变 NMPC 预测参考的时间参数化。
+      bspline_sample_period_s: 0.1
+
+    # 四、终端状态表；按控制周期节流输出。
+    terminal_table:
+      # 是否在终端打印状态/参考/误差表；设为 false 可关闭。
+      enabled: true
+      # 刷新间隔(s)，仅影响终端输出，不改变控制频率。
+      refresh_period_s: 1.0
+
+    # 五、NMPC：预测窗口、指令约束、误差权重及求解器设置。
+    nmpc:
+      # /cmd 加速变化率上限(m/s²)；10 Hz 时每周期最多增加 0.065 m/s。
+      max_speed_command_accel_mps2: 0.65
+      # /cmd 制动变化率上限(m/s²)，与巡航加速分开；停车保护仍直接归零。
+      max_speed_command_decel_mps2: 2.5
+      # /cmd 角速度变化率上限(rad/s²)，约 6.9°/s²；10 Hz 内最多变化 0.69°/s。
+      max_yaw_rate_command_accel_radps2: 0.12
+      # 预测步数与积分步长(s)：100 × 0.1 = 10 s；不是控制发布周期。
+      horizon_steps: 100
+      dt: 0.1
+      # 实际预测 u 与参考的最大倒车速度幅值(m/s)，与指令下限分别约束。
+      max_reverse_speed_mps: 0.0
+      # 预测状态硬边界，与控制指令幅值分开设置。
+      max_surge_state_mps: 5.0
+      max_sway_state_mps: 2.0
+      max_yaw_rate_state_radps: 0.3
+
+      # 相对参考地速切线方向的 Frenet 横向位置误差权重。
+      weight_lateral: 0.5
+      # 航向误差权重；分别用实际和参考侧滑补偿船首航向。
+      weight_course: 12.0
+      # 前向速度误差 (u-u_ref) 的权重。
+      weight_u: 2.0
+      # 侧向速度误差 (v-v_ref) 的权重；保留模型计算的稳态侧滑参考。
+      weight_v: 0.5
+      # 转艏率跟踪权重；提高后更贴合平滑曲率参考，减轻实际 r 的弯道波动。
+      weight_r: 240.0
+      # 速度指令增量权重；按 max_speed_command_mps 归一化，并按 dt 缩放。
+      weight_surge_delta: 3.0
+      # 角速度指令增量权重；按 max_yaw_rate_command_radps 归一化，并按 dt 缩放。
+      weight_yaw_rate_delta: 3.0
+
+      # 实际转艏率包络：|r| <= allowance + |u| / radius。
+      # 本值是包络的速度尺度(m)，不是严格的最小几何转弯半径。
+      yaw_rate_envelope_radius_m: 15.0
+      # 包络低速角速度余量(rad/s)，为转向惯性保留空间，避免低速换舵约束冲突。
+      # 与下方 /cmd 角速度上限分别约束；过小可能导致问题不可行。
+      yaw_rate_envelope_allowance_radps: 0.28
+      # /cmd.linear.x 指令速度范围(m/s)；本船禁止倒车。
+      min_speed_command_mps: 0.0
+      max_speed_command_mps: 5.0
+      # /cmd.angular.z 对称幅值上限(rad/s)：±0.3 rad/s；正值左转、负值右转。
+      max_yaw_rate_command_radps: 0.3
+
+      # IPOPT 最大迭代次数与收敛容差；不保证在单个控制周期内求解完成。
+      solver_max_iterations: 1000
+      solver_tolerance: 0.0001

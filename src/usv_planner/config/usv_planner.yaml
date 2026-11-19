@@ -1,0 +1,147 @@
+usv_planner_node:
+  ros__parameters:
+    # 目标及输出接口。
+    "planner_node/planner": 1
+    "goal/input_mode": 1
+    "goal/pose_topic": "/goal_pose"
+    "goal/path_topic": "/path"
+    "goal/path_speed_mps": 3.0
+    "topics/odom": "/odom"
+    "topics/bspline": "/planning/bspline"
+
+    # 状态机使用的平面位置(m)和航向(rad)阈值。
+    "fsm/thresh_replan": 8.0
+    "fsm/thresh_no_replan": 5.0
+    "fsm/thresh_no_replan_yaw": 0.5235987756
+    "fsm/arrival_pos_tolerance": 4.0
+    "fsm/arrival_yaw_tolerance": 0.6981317008
+
+    # 地图几何取自 OccupancyGrid；所有地图话题须使用 map 坐标系。
+    "sdf_map/use_grid_map": true
+    "sdf_map/grid_topic": "/channel_costmap"
+    "sdf_map/grid_local_topic": "/local_map"
+    "sdf_map/grid_local_range": 60.0
+    "sdf_map/grid_distance_cap": 10.0
+    "sdf_map/grid_snapshot_period": 5.0
+    "sdf_map/grid_occupied_threshold": 75
+    "sdf_map/grid_unknown_is_occupied": true
+    "sdf_map/grid_publish_esdf": false
+    "sdf_map/grid_visualization_stride": 10
+    "sdf_map/obstacles_inflation": 3.0
+    "sdf_map/frame_id": "map"
+    "visualization/frame_id": "map"
+
+    # 全局曲线、局部搜索和动力学状态边界。
+    "manager/max_vel": 3.0
+    "manager/max_acc": 2.0
+    "manager/max_jerk": 4.0
+    "manager/max_global_vel": 3.0
+    "manager/max_yaw_rate": 0.3
+    # 对地曲率和艏摇转弯的最小半径(m)，搜索、shot、样条共用；0 关闭。
+    # 低于 0.3m/s 时正则化曲率，避免末端停车处除零；不通过放慢时间缩小几何弯曲。
+    "manager/min_turn_radius": 8.0
+    # 实际样条采样点的航道通行代价权重；0 关闭后端通行偏好。
+    "optimization/channel_weight": 2.0
+    "manager/max_global_acc": 2.0
+    # 覆盖所设状态和指令边界下约 0.5rad/s² 的船模响应，供样条时间调整使用。
+    "manager/max_yaw_acc": 0.5
+    "manager/dynamic_environment": 0
+    "manager/local_segment_length": 6.0
+    "manager/safety_replan_distance": 0.5
+    # 距输入地图的占用栅格不超过 5 m 时，对地合速度不超过 1 m/s；上游可能已膨胀。
+    # 距离从船舶定位点计算；地图分辨率产生保守余量，船体避碰仍由膨胀距离保证。
+    "manager/obstacle_slowdown_distance": 5.0
+    "manager/obstacle_max_speed": 1.0
+    "manager/clearance_threshold": 0.2
+    "manager/control_points_distance": 0.5
+    "manager/use_geometric_path": false
+    "manager/use_kinodynamic_path": true
+    "manager/use_topo_path": false
+    "manager/use_optimization": true
+
+    # 搜索状态离散、输入幅值及终端连接。
+    "search/max_tau": 0.5
+    "search/init_max_tau": 2.0
+    "search/rk4_steps": 10
+    "search/max_vel": 3.0
+    "search/max_acc": 2.0
+    "search/max_u": 3.0
+    "search/max_v": 0.5
+    "search/max_r": 0.3
+    "search/min_v_cmd": 0.0
+    # 按共享船模稳态关系 V_cmd=-au*u/bu，3m/s 对应约 2.9643。
+    "search/max_v_cmd": 2.9642976045
+    "search/max_w_cmd": 0.3
+    "search/max_ground_speed": 3.0
+    "search/max_yaw_rate": 0.3
+    # 与指令平方代价共同调节搜索速度；支持开阔直线段达到 3m/s。
+    "search/w_time": 80.0
+    "search/horizon": 60.0
+    # 终端连接最远触发距离；实际触发还取决于航向、速度和制动距离。
+    "search/shot_trigger_distance": 60.0
+    "search/shot_durations": [24.0, 36.0, 48.0, 64.0, 80.0, 100.0]
+    "search/shot_cruise_speed": 3.0
+    "search/time_limit": 0.4
+    "search/shot_integration_step": 0.1
+    "search/shot_collision_step": 0.04
+    "search/shot_pos_tolerance": 3.5
+    # 每条发布样条的终点相对目标船首航向误差小于 10°，包括滚动局部段。
+    "search/shot_yaw_tolerance": 0.17453292519943295
+    "search/shot_u_tolerance": 0.08
+    "search/shot_v_tolerance": 0.06
+    "search/shot_r_tolerance": 0.04
+    "search/shot_min_v_cmd": 0.0
+    "search/shot_max_v_cmd": 5.0
+    "search/shot_max_w_cmd": 0.3
+    "search/shot_command_scale": 0.85
+    "search/shot_max_u": 3.0
+    "search/shot_max_v": 0.5
+    "search/shot_max_r": 0.3
+    "search/shot_map_height": 0.0
+    "search/shot_fd_epsilon": 0.001
+    "search/shot_damping": 0.02
+    "search/shot_time_limit": 0.05
+    "search/shot_max_iterations": 16
+    "search/lambda_heu": 5.0
+    "search/resolution_astar": 1.0
+    "search/yaw_bins": 72
+    "search/u_resolution": 0.2
+    "search/v_resolution": 0.1
+    "search/r_resolution": 0.05
+    "search/time_resolution": 0.8
+    "search/margin": 0.2
+    "search/allocate_num": 100000
+    "search/check_num": 5
+
+    # B 样条位置、航向及障碍距离代价。
+    "optimization/yaw_bound": 0.2617993878
+    "optimization/lambda1": 10.0
+    "optimization/yaw_smoothness_weight": 4.0
+    "optimization/lambda2": 5.0
+    "optimization/lambda3": 1.0e-5
+    "optimization/yaw_rate_weight": 1975.3
+    "optimization/yaw_acc_weight": 625.0
+    "optimization/lambda4": 0.01
+    "optimization/yaw_endpoint_weight": 3.6475626111
+    "optimization/yaw_guide_weight": 3.6475626111
+    "optimization/yaw_waypoint_weight": 3.6475626111
+    "optimization/lambda7": 100.0
+    "optimization/dist0": 1.0
+    "optimization/max_vel": 3.0
+    "optimization/max_acc": 2.0
+    "optimization/algorithm1": 15
+    "optimization/algorithm2": 11
+    "optimization/max_iteration_num1": 2
+    "optimization/max_iteration_num2": 600
+    "optimization/max_iteration_num3": 200
+    "optimization/max_iteration_num4": 200
+    "optimization/max_iteration_time1": 0.0001
+    "optimization/max_iteration_time2": 0.06
+    "optimization/max_iteration_time3": 0.003
+    "optimization/max_iteration_time4": 0.003
+    "optimization/order": 3
+
+    # 最终样条分量速度和加速度边界。
+    "bspline/limit_vel": 3.0
+    "bspline/limit_acc": 2.0
+    "bspline/limit_ratio": 1.1

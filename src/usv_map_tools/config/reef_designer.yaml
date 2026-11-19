@@ -1,0 +1,9 @@
+reef_designer:
+  ros__parameters:
+    # 底图 XML；留空时按泊位图、框选图、矢量分割图的顺序选择。
+    input_chart: ""
+    # 输出 XML；已有文件会继续追加暗礁。
+    output_chart: src/usv_map/resource/generated/reservoir_test_reefs.xml
+    # 暗礁边界到面积重心的最小/最大半径，单位米；边界封闭且保持凸形。
+    min_radius_m: 3.0
+    max_radius_m: 5.0

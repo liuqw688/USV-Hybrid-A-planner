@@ -1,0 +1,9 @@
+berth_designer:
+  ros__parameters:
+    # 底图 XML；留空时优先加载最新框选图，其次加载矢量分割图。
+    input_chart: ""
+    # 输出 XML；已有文件用于恢复泊位，底图由 launch 传入 base_chart。
+    output_chart: src/usv_map/resource/generated/reservoir_test_berths.xml
+    # 泊位长、宽，单位米；长边沿 RViz2 拖动方向（船首方向）。
+    length_m: 10.0
+    width_m: 3.0

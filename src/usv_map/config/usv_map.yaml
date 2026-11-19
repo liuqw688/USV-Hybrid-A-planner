@@ -1,0 +1,48 @@
+usv_map_node:
+  ros__parameters:
+    # 输入海图 XML；留空时使用安装包内 data/suiku.xml。
+    input_path: ""
+
+    # map 坐标系原点，单位为十进制度；同时用于 /fix 和海图坐标转换。
+    origin_longitude: 106.716974974
+    origin_latitude: 29.506912001
+
+    # RViz2 矢量连接线宽和点大小，单位米；航道实际宽度由 XML 定义。
+    line_width: 0.5
+    point_size: 0.5
+
+    # true 时显示航道、泊位等导航要素及陆地、禁行区、暗礁轮廓；false 额外显示其他海图要素。
+    focus_navigation_features: true
+
+    # 代价地图栅格边长，单位米。当前水库地图使用 2 m。
+    planning_resolution: 2.0
+    # 栅格总数上限；超过上限时自动增大栅格边长，避免内存过高。
+    planning_max_cells: 20000000
+    # 代价地图裁切比例；1.0 表示完整海图，小于 1.0 从左下角裁切。
+    planning_crop_width_fraction: 1.0
+    planning_crop_height_fraction: 1.0
+    # 静态陆地和禁行区的膨胀半径，单位米；暗礁不写入静态代价地图。
+    obstacle_inflation: 4.0
+    # 航道要素沿线向两侧扩展的半径，单位米；设为 0 时仅栅格化线本身。
+    # 用于静态低代价区域；双向通行宽度仍由 XML 和航道管理器定义。
+    channel_corridor_width: 300.0
+    # 航道走廊外的默认栅格代价，范围 0～100。
+    channel_outside_cost: 60
+
+usv_odometry_node:
+  ros__parameters:
+    # 接收 /USV_state 与 /fix，输出 /odom、/USV_path 和 map -> odom -> usv_body_rfu TF。
+    # /fix 经纬度为度；状态 [6..8] 为纬度 rad、经度 rad、高度 m，转换为 ENU 米。
+    # odom 与 map 原点、轴向一致；/odom 的 pose 在 odom 系，twist 在右前上本体系。
+    # 航向 [2] 为 rad：0 指北，-pi/2 指东，+pi/2 指西；RViz2 上北下南左西右东。
+    # 里程计和船体姿态 TF 高频更新，供控制器闭环使用。
+    odom_publish_period_sec: 0.05
+    # /USV_path 低频发布，避免路径历史与 RViz 更新带来额外负载。
+    publish_period_sec: 1.0
+    # 每次路径更新时，距上一个轨迹点至少 0.5 m 才保存；位置包含测量噪声。
+    path_min_distance_m: 0.5
+    # 限制轨迹点数；原点不变时重复收到 /fix 不会清空轨迹。
+    path_max_points: 10000
+    # ENU 位置预测器的测量校正系数；使用 ENU 速度外推，再按该系数吸收位置残差。
+    # 越小越平滑；1.0 等价于直接使用原始位置，范围 (0, 1]。
+    position_measurement_alpha: 0.2

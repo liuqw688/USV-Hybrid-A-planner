@@ -1,0 +1,49 @@
+# 天地图 API 密钥：矢量制图和测试 RViz2 的卫星图层共用。
+# 不提交真实密钥时，也可通过环境变量 TIANDITU_TK 提供。
+tianditu_api_key: "66204369e059581c95e8e90f810b38e3"
+
+# 中心点纬度、经度使用弧度；radius_m 是中心点到四边的距离，单位米。
+# radius_m=2000 表示约 4 km × 4 km 的正方形下载范围。
+center_latitude_rad: 0.514992772491431
+center_longitude_rad: 1.862562462239766
+radius_m: 2000
+
+# 分割输入使用天地图矢量底图；卫星底图只由 RViz2 图层显示，不参与分割。
+# 合法 WMTS 图层通常以 _w 结尾，例如 vec_w、img_w、cia_w。
+layer: vec_w
+# RViz2 卫星图层：local 直接读取 tile_cache，online 使用天地图服务，disabled 关闭。
+rviz_satellite_mode: local
+# 本地卫星瓦片的图层前缀；当前缓存为 img_w_级别_x_y.tile。
+rviz_satellite_layer: img_w
+# 天地图 WMTS 级别；级别越大，瓦片越清晰且数量越多。
+zoom: 16
+# 相对 usv_map 包目录的瓦片缓存目录；缓存可删除，重新运行会自动下载。
+tile_cache: cache/tianditu
+# 相邻瓦片请求间隔，单位秒，用于降低服务端请求压力。
+request_delay_s: 0.15
+# 单次最多下载的瓦片数量；超出时请减小 zoom 或 radius_m。
+maximum_tiles: 128
+
+# 可选的本地底图图像；留空时从天地图下载瓦片。坐标始终不缩放。
+source_image: ""
+
+# 可选的人工校正掩膜；白色表示水体，黑色表示陆地/不可通行区域。
+# 设置后优先使用该掩膜，适合修正矢量图分割边界。
+water_mask: ""
+# HSV 阈值仅在未提供 water_mask 时用于矢量图颜色分割。
+water_hsv_lower: [85, 25, 25]
+water_hsv_upper: [140, 255, 245]
+# 形态学处理核尺寸，必须为正奇数；用于去除小噪声和填补小孔洞。
+morphology_kernel: 3
+# 小于该像素面积的水域区域会被忽略。
+minimum_water_area_px: 8
+# 小于该像素面积的连通区域不会写入 XML。
+minimum_region_area_px: 8
+# 轮廓简化误差，单位像素；数值越大 XML 点数越少。
+simplify_px: 1.5
+
+# 输出目录和文件名均相对 usv_map 包目录；扩展名由工具补为 .xml。
+output_dir: resource/generated
+output_name: reservoir_test_vec
+# 仅写入 XML 的海图比例元数据，不参与坐标缩放。
+chart_scale: 5000

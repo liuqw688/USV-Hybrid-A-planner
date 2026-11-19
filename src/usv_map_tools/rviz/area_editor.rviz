@@ -1,0 +1,219 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Tianditu satellite1
+        - /TF1
+        - /Segmented chart1
+        - /Chart costmap1
+        - /Selected areas1
+        - /GNSS path1
+        - /Clockwise route1
+        - /Bidirectional fairway1
+      Splitter Ratio: 0.5
+    Tree Height: 700
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.72
+      Blocks: 3
+      Class: rviz_satellite/AerialMap
+      Draw Behind: true
+      Enabled: true
+      Name: Tianditu satellite
+      Object URI: "https://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk={TIANDITU_TK}"
+      TF tolerance: 0.1
+      Timeout: 3
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /fix
+      Value: true
+      Zoom: 16
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Scale: 10
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree: {}
+      Update Interval: 0
+      Value: true
+    - Alpha: 1
+      Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Segmented chart
+      Queue Size: 10
+      Namespaces:
+        s57/DEPARE: true
+        s57/LNDARE: true
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /chart_markers
+    - Alpha: 0.3
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: true
+      # RViz Jazzy's indexed OccupancyGrid shader fails on some OpenGL drivers.
+      # /chart_costmap remains published for planners; vector markers show the chart here.
+      Enabled: false
+      Name: Chart costmap
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /chart_costmap
+    - Alpha: 1
+      Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Selected areas
+      Queue Size: 10
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /test_tools/no_go_regions
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 255; 220; 0
+      Enabled: true
+      Line Style: Billboards
+      Line Width: 1.5
+      Name: GNSS path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 1
+      Pose Style: None
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /test_tools/gnss_path
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 255; 255; 255
+      Enabled: true
+      Line Style: Billboards
+      Line Width: 0.8
+      Name: Clockwise route
+      Offset:
+        X: 0
+        Y: 0
+        Z: 1.5
+      Pose Style: None
+      Pose Color: 0; 255; 170
+      Shaft Length: 0.8
+      Shaft Diameter: 0.3
+      Head Length: 0.8
+      Head Diameter: 1.5
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /test_tools/clockwise_route
+    - Alpha: 1
+      Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Bidirectional fairway
+      Queue Size: 10
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /test_tools/fairway
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 13; 230; 140
+      Enabled: true
+      Line Style: Billboards
+      Line Width: 0.5
+      Name: Clockwise lane
+      Offset: {X: 0, Y: 0, Z: 1.5}
+      Pose Style: None
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /test_tools/fairway_clockwise
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 38; 115; 255
+      Enabled: true
+      Line Style: Billboards
+      Line Width: 0.5
+      Name: Counterclockwise lane
+      Offset: {X: 0, Y: 0, Z: 1.5}
+      Pose Style: None
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /test_tools/fairway_counterclockwise
+  Enabled: true
+  Global Options:
+    Background Color: 48; 50; 52
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Angle: 0
+      Enable Stereo Rendering: false
+      Invert Z Axis: false
+      Name: TopDownOrtho
+      Near Clip Distance: 0.01
+      Scale: 1
+      Target Frame: <Fixed Frame>
+      Value: true
+      X: 0
+      Y: 0
+      Z: 0
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1400
+  X: 80
+  Y: 40

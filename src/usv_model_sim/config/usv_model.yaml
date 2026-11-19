@@ -1,0 +1,39 @@
+usv_model_node:
+  ros__parameters:
+    # /cmd: geometry_msgs/Twist，linear.x 为前向速度 u，angular.z 为偏航角速度。
+    cmd_topic: /cmd
+    # /USV_state: Float64MultiArray，严格按融合节点的 19 字段发布。
+    # 测量/真值位置均为 [纬度 rad, 经度 rad, 高程 m]；机体速度为 [v_right, u, 0]。
+    # [2] 为带噪声航向，[6..8] 为带噪声位置，[13..15]、[16] 为位置/航向真值，[17] 恒为 4。
+    # 航向 [2]、[16]：[-pi, pi] rad；0 指北，-pi/2 指东，+pi/2 指西，±pi 指南。
+    state_topic: /USV_state
+    # 地图节点发布的 NavSatFix 原点。
+    origin_topic: /fix
+    # [6..8] 的 ENU 各轴独立零均值高斯白噪声标准差，单位米；0 表示关闭。
+    position_noise_stddev_m: 0.25
+    # [2] 的独立零均值高斯白噪声标准差，单位度；0 表示关闭。发布时换算为 rad。
+    heading_noise_stddev_deg: 1.0
+    # 固定随机种子用于可重复的仿真对照；-1 表示每次启动随机播种。
+    noise_seed: -1
+
+    # 动力学约束。最大转弯角速度为 15 度/秒，内部换算为 rad/s。
+    max_speed_mps: 5.0
+    max_yaw_rate_deg_s: 15.0
+    # 仿真初始 ENU 位置，单位 m；测试偏置起点时覆盖。
+    initial_east_m: 0.0
+    initial_north_m: 0.0
+    # 初始船艏罗经角，顺时针从北计；90 度指东，内部 psi 对应 -90 度。
+    initial_heading_deg: 90.0
+    # 超过该时间没有新控制命令时，将速度和角速度命令归零。
+    command_timeout_sec: 0.5
+    # 动力学积分和 /USV_state 发布频率，单位 Hz；收到原点后才发布状态。
+    update_rate_hz: 20.0
+
+usv_keyboard_control:
+  ros__parameters:
+    # 初始速度档位，单位 m/s；1 增加、2 减小；上限复用模型的 max_speed_mps。
+    speed_mps: 0.5
+    speed_step_mps: 0.1
+    # 初始转弯角速度档位，单位度/秒；3 增加、4 减小；上限复用 max_yaw_rate_deg_s。
+    yaw_rate_deg_s: 5.0
+    yaw_rate_step_deg_s: 1.0

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>usv_planner</name>
+  <version>0.1.0</version>
+  <description>Kinodynamic USV path planning and B-spline generation.</description>
+  <maintainer email="sus@example.com">sus</maintainer>
+  <license>LGPL-3.0-or-later</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>eigen3_cmake_module</build_depend>
+  <build_export_depend>eigen3_cmake_module</build_export_depend>
+  <depend>eigen</depend>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>map_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>message_filters</depend>
+  <depend>pcl_conversions</depend>
+  <depend>usv_interfaces</depend>
+  <depend>usv_model_sim</depend>
+  <depend>libpcl-all-dev</depend>
+  <depend>libopencv-dev</depend>
+  <depend>libnlopt-cxx-dev</depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_index_python</test_depend>
+  <test_depend>python3-scipy</test_depend>
+  <test_depend>usv_nmpc_controller</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

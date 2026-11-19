@@ -1,0 +1,6 @@
+no_go_area_editor:
+  ros__parameters:
+    # 留空时由 area_editor.launch.py 选择最新矢量海图。
+    input_chart: ""
+    # 新增 LNDARE 不可通行区域的输出；相对工作空间根目录。
+    output_chart: src/usv_map/resource/generated/reservoir_test_blocked.xml

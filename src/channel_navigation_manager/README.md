@@ -1,239 +1,124 @@
-# 实际河道动态航道规划使用说明
+# channel_navigation_manager
 
-## 详细功能与参数文档
+维护者：susheng（963338707@qq.com）  
+文档更新：2026-11-15
 
-- [FUNCTIONAL_GUIDE.md](FUNCTIONAL_GUIDE.md)：节点启动、功能/函数流程图、话题与包间关系、逐函数职责、当前实现边界。
-- [PARAMETERS.md](PARAMETERS.md)：配置值、参数作用及增大/减小的影响。
-- [工作空间总索引](../../PACKAGE_DOCUMENTATION_INDEX.md)：整条运行链、操作与验证。
+## 功能
 
+本包把静态海图和航道方向转换为动态航道代价地图，并把感知障碍物单独叠加：
 
+- 复用 `/chart_costmap` 的尺寸、分辨率和原点；
+- 同向航道代价从中心 0 递增到侧边 8，航道外水域代价 20，对向航道为 20～28；
+- 接收 `/path` 航点时由首个有效航段选择 CW/CCW，并保持该通行方向；收到新 `/goal_pose` 后切回单点目标方向判断。
+- 陆地和静态障碍代价 100；
+- 仿真感知以本船为中心 60 m 探测暗礁；
+- 感知障碍按“消息半径 + 2 m”生成不可通行圆，代价为 100；
+- 感知消息为空或超时后，恢复航道/水域的基础代价；
+- 用 RViz2 Marker 显示感知圆和方向箭头。
 
-`channel_navigation_manager` 当前为 C++17、`ament_cmake` 功能包。节点、几何
-算法和测试均为 C++；仅一键启动入口使用 ROS 2 Python launch。
+感知节点只发布标签、方位、距离和大小，不发布障碍物点集。未来接入真实传感器时，
+只需让传感器适配器发布 `usv_interfaces/msg/ObstacleDetectionArray`。
 
-## 1. 功能与优先原则
+## 目录
 
-该包把静态海图和动态航道角色分开，整体决策顺序为：
-
-1. 安全：陆地、地图外、动态船硬碰撞和航道障碍物优先处理；
-2. COLREG：有目标船时遵守避碰方向与责任；
-3. 右行：通常选择与本船实际航行方向一致的 TSSLPT 分道；
-4. 效率：在安全且合规的候选中选择较短、较平滑的路径。
-
-主航道、航道外、对向航道始终同时参与 Hybrid A* 搜索。默认软代价为
-主航道 0、航道外 0.65/m、对向航道 1.10/m，因此通常保持右行，但当对向
-路径明显更短且安全时仍可被选择。
-
-主航道内部还带有中心软梯度：几何中心区域代价最低，接近左右边沿时逐渐
-升高到 20，再由 Hybrid A* 的 `channel.main_center_weight` 转换为路径代价。
-它不是硬约束，避障、COLREG 或终点需要时仍可驶近边沿。
-
-## 2. 地图和障碍物如何融合
-
-- `/chart_lane_data`：`river_chart` 一次发布的 TSSLPT 多边形和 ORIENT；
-- `/channel/lane_costmap`：根据 `/odom` 航迹向动态生成；主航道中心到边沿默认
-  为 0–20 的软梯度，45=航道外，75=对向；
-- `/local_costmap`：河岸和航道外安全代价；
-- `/chart_static_obstacles`：实际陆地核心，任何时候都不可通行；
-- `/channel/obstacle_costmap`：为后续感知障碍物预留的独立膨胀层。
-
-TSSLPT 内只忽略 `/local_costmap` 中侵入航道的岸边软膨胀，不会忽略
-`/channel/obstacle_costmap`。未来在航道中加入障碍物时，应把其膨胀结果发布到
-`/channel/obstacle_costmap`，数值 1–84 为软代价，默认大于等于 85 为硬碰撞风险。
-
-## 3. 航向切换与后方目标
-
-正常情况下，主航道角色跟随 `/odom` 的实际航迹向 COG。设置新目标时会额外
-检查一次任务意图：
-
-- 北航时目标在东北或西北等前半平面，不翻转航道角色；
-- 目标明确位于后方超过 `reverse_enter_angle` 时，在 Hybrid A* 搜索前就按
-  目标方向预选反向主航道；
-- 因此南向目标会优先朝西侧的新主航道掉头，不再先向东再横跨；
-- 实际航迹向接近新方向后结束预选，继续按 COG 动态分类。
-
-这一判断使用线速度方向和目标任务方向，不使用角速度或累计转向角。
-
-## 4. 轨迹稳定与大惯性控制
-
-Hybrid A* 保持固定频率持续搜索和发布，不直接复用上一条规划结果：
-
-- 上一条有效航线只生成软参考距离层，让相邻周期避免无意义的大幅跳变；
-- 相邻运动基元增加舵角变化代价，减少左右交替的小圆弧；
-- 对持续大舵角增加平方软代价，减少尺度较大的 S 弯，必要避障转向仍可覆盖；
-- 搜索结果统一按 1 m 间距重采样，再以原路径约束进行整体平滑，消除因
-  2 m 搜索基元和 0.15 m Dubins 尾段密度不同造成的曲折；
-- 每轮平滑都重新检查河岸、航道障碍物、动态船预测安全域和 COLREG 航向，
-  不安全时退回原始安全路线或上一轮安全平滑结果，因此不会为了外观平滑牺牲避碰能力；
-- 障碍物或目标船出现时仍在下一个规划周期重新搜索，连续性代价可以被安全规则覆盖。
-
-平滑功能仅修改Hybrid A*；本次速度/安全联调另对DWA加入8m停车和终点制动限制。
-平滑相关参数位于 `hybrid_a_star_params.yaml` 的
-`stability.*` 和 `smoothing.*` 段。
-
-一键启动带有进程级单实例锁。若旧的 `river_navigation.launch.py` 尚未退出，
-再次启动会直接提示先结束旧实例，不会再产生两套 `/odom`、`base_link`、规划器
-和控制器。RViz 默认关闭 TF 坐标轴，只用 `/sim_boat_marker` 显示一艘本船；需要
-排查坐标变换时可在 Displays 中手动开启 TF。
-
-## 5. 编译
-
-```bash
-cd /home/l/work_ws
-source /opt/ros/$ROS_DISTRO/setup.bash
-colcon build --symlink-install
-source install/setup.bash
+```text
+channel_navigation_manager/
+├── config/channel_navigation.yaml
+├── launch/river_navigation.launch.py
+├── include/channel_navigation_manager/ # 航道和感知几何接口
+├── src/
+│   ├── channel_navigation_node.cpp     # 代价地图节点
+│   └── obstacle_perception_sim_node.cpp # 仿真感知节点
+└── test/                                # 几何和感知流水线测试
 ```
 
-## 6. 一键启动
-
-当前默认不启动虚拟船，也不发布固定目标：
+## 启动
 
 ```bash
 ros2 launch channel_navigation_manager river_navigation.launch.py
 ```
 
-不打开 RViz：
+默认同时启动：
+
+- `channel_navigation_node`：生成 `/channel_costmap`；
+- `obstacle_perception_sim_node`：读取海图暗礁真值，模拟传感器探测。
+
+接入真实感知时关闭仿真节点：
 
 ```bash
-ros2 launch channel_navigation_manager river_navigation.launch.py use_rviz:=false
+ros2 launch channel_navigation_manager river_navigation.launch.py simulate_perception:=false
 ```
 
-需要恢复虚拟船做 COLREG 联调：
+地图、里程计和航道管理器通常由 `ros2 launch usv_map usv_map.launch.py` 一起启动。
 
-```bash
-ros2 launch channel_navigation_manager river_navigation.launch.py use_virtual_boat:=true
+## 配置
+
+配置文件：[config/channel_navigation.yaml](config/channel_navigation.yaml)
+
+| 参数 | 默认值 | 说明 |
+| --- | ---: | --- |
+| `same_direction_cost` | 0 | 同向航道 |
+| `opposite_direction_cost` | 20 | 对向航道 |
+| `lane_center_cost` | 8 | 航道中心至两侧边缘的附加代价，0 关闭居中偏好 |
+| `open_water_cost` | 20 | 航道外水域，与对向航道基础代价相同 |
+| `obstacle_cost` | 100 | 陆地和障碍 |
+| `perception_radius_m` | 60.0 | 仿真感知半径 |
+| `detection_inflation_m` | 2.0 | 感知障碍额外膨胀 |
+| `detection_timeout_s` | 3.0 | 感知帧超时恢复基础代价 |
+| `direction_tolerance_deg` | 90.0 | 航道方向选择阈值 |
+| `direction_arrow_length_m` | 12.0 | 方向箭头长度 |
+| `publish_rate_hz` | 5.0 | 输出刷新频率上限 |
+
+航道内代价为 `方向基础代价 + round(lane_center_cost × 横断面归一化偏心量)`。
+偏心量在中心为 0、侧边为 1，沿 S-57 航道方向的法线求当前横断面；凹多边形使用包含
+查询点的交点区间，航段端盖不作为侧岸。中心指所属单向航道的中心。栅格为整数代价，
+中心附近存在低代价平带；这是可绕障的软偏好，不保证每个轨迹点严格压在中心线上。
+重叠航段取较低代价，陆地与障碍始终最后覆盖。
+参数必须满足 `same_direction_cost + lane_center_cost < open_water_cost` 且
+`opposite_direction_cost + lane_center_cost < 75`，避免破坏通行优先级或进入规划器禁行区。
+修改配置后重启航道节点生效。
+
+## ROS 接口
+
+输入：
+
+| 话题 | 类型 | 说明 |
+| --- | --- | --- |
+| `/chart_costmap` | `nav_msgs/OccupancyGrid` | 静态地图尺寸、原点和基础障碍 |
+| `/chart_lane_data` | `std_msgs/String` | 航道方向和暗礁几何 JSON |
+| `/odom` | `nav_msgs/Odometry` | 本船位置和姿态 |
+| `/goal_pose` | `geometry_msgs/PoseStamped` | 目标方向；没有目标时参考船体朝向 |
+| `/obstacle_detections` | `usv_interfaces/ObstacleDetectionArray` | 感知障碍完整快照 |
+
+输出：
+
+| 话题 | 类型 | 说明 |
+| --- | --- | --- |
+| `/channel_costmap` | `nav_msgs/OccupancyGrid` | 航道方向和感知障碍叠加后的代价 |
+| `/channel_navigation_markers` | `visualization_msgs/MarkerArray` | 航道轮廓和方向箭头 |
+| `/perception_markers` | `visualization_msgs/MarkerArray` | 仿真感知圆和已感知障碍 |
+
+方向箭头使用黄色表示低代价方向，红色表示高代价方向。船舶主航道靠右航行，左侧为对向航道；
+箭头方向由本船到目标点的方向（无目标时由船体朝向）选择，并沿当前闭合航道保持一致。
+
+## 感知消息规则
+
+`ObstacleDetectionArray` 的方位相对 `usv_body_rfu`：船首为 0，右侧为 `+π/2`，左侧为
+`-π/2`。航道节点根据观测时刻 TF 计算障碍物圆心，最终禁行半径为：
+
+```text
+禁行半径 = radius_m + detection_inflation_m
 ```
 
-## 7. 在 RViz 中操作
+例如障碍半径 5 m 时，代价圆半径为 7 m。收到空数组立即清除临时障碍；静态陆地和静态障碍
+始终保持代价 100。仿真感知没有建模遮挡、漏检和测距噪声。
 
-1. 等待海图、绿色主航道边框和船体出现；
-2. 点击顶部 `2D Goal Pose`；
-3. 在可航区域点击并拖动，拖动方向同时设定终点艏向；
-4. 新目标发布到 `/goal_pose`，Channel A* 更新全局路线并在
-   `/goal_pose_from_astar` 发布当前活动航点，Hybrid A* 随后重规划；
-5. 绿色边框是当前航行方向的主航道，红色边框是对向航道；
-6. `Hybrid A Star Path` 是全局轨迹，`DWA Candidates` 与
-   `DWA Optimal Trajectory` 是局部候选和最终轨迹。
-
-起点为 `[-270,-270]`，位于 `ORIENT=327°` 的 TSSLPT 分道内。初始 yaw 已换算为
-ROS ENU 下约 123°，保证初始航迹向与该分道一致。
-
-## 8. 常用参数
-
-- 航道区域偏好：`hybrid_a_star_params.yaml` 中
-  `channel.outside_lane_weight`、`channel.opposite_lane_weight`；
-- 航道外碰撞阈值：`channel.shoreline_cost_threshold`；
-- 航道障碍物碰撞阈值：`channel.obstacle_cost_threshold`；
-- 航道障碍物膨胀权重：`channel.obstacle_inflation_weight`；
-- 航行方向重新分类灵敏度：`channel_navigation.yaml` 中 `reclassify_angle`；
-- 航道中心吸引范围：`center_clearance` 和 `channel.main_center_weight`；
-- 后方目标提前翻转阈值：`reverse_enter_angle`、`reverse_complete_angle`；
-- 船速：现按要求使用 `4 m/s`（约7.78节）。本项目必须同步设置
-  `dwa_params.yaml/max_vel_x`、`hybrid_a_star_params.yaml/cruise_speed`，以及
-  `sim_params.yaml/initial_speed` 和 `max_linear_speed`。当前四项均为 4.0。
-  DWA 的 `speed_weight=30.0` 使安全直航候选明确优先达到该速度；
-  `max_lookahead_distance=10.0` 为高速航行提供足够前视。急转弯、临近终点或
-  避碰时仍会自动降速，不能为了保持最高速度绕过安全约束。
-  `goal_deceleration=0.5` 为终点制动速度上限提供依据，防止高速绕终点。
-
-船体与避碰域现在为：本船半径1.5m、目标船半径2m、冗余4m，中心间硬距离
-7.5m；追越硬距离9m；青色软域9m；当前距离小于8m发布停车命令。
-目标船显示长1m、宽1.5m，其2m避碰半径是独立保守包络，不等于显示尺寸。
-风险圆层说明见根目录 `COLREGS_GUIDE.md`，各包操作见 `NAVIGATION_PACKAGES_GUIDE.md`。
-
-### 8.1 Hybrid A* 平滑参数
-
-以下参数都在 `hybrid_a_star_params.yaml` 中。安全检查始终生效，平滑参数不能
-让轨迹穿越河岸、障碍物或动态船硬安全域。
-
-| 参数 | 当前值 | 增大后的效果 | 减小后的效果 |
-|---|---:|---|---|
-| `stability.reference_path_weight` | 0.5 | 相邻周期更稳定，但可能更依赖上一条路线 | 更容易响应新环境，但周期间跳动可能增加 |
-| `stability.reference_path_max_distance` | 12 m | 旧路线在更远范围仍有影响 | 旧路线影响更局部 |
-| `stability.steering_change_weight` | 1.0 | 更少左右反打舵和短小圆弧 | 转向选择更灵活，但容易出现细碎摆动 |
-| `stability.steering_magnitude_weight` | 1.0 | 更少持续大舵角和宽大 S 弯 | 更容易采用大曲率绕行 |
-| `smoothing.resample_spacing` | 1.0 m | 点更稀疏、计算更快，但显示可能不够细 | 点更密、曲线显示更细，计算量增加 |
-| `smoothing.iterations` | 120 | 更接近平滑收敛结果，超过一定值收益变小 | 计算更快，但可能残留弯折 |
-| `smoothing.smooth_weight` | 0.26 | 加强相邻点局部平滑 | 更多保留局部弯折 |
-| `smoothing.data_weight` | 0.015 | 更贴近原始 Hybrid A* 路线，实际会降低平滑程度 | 允许更大修正，轨迹更加平滑 |
-| `smoothing.long_range_points` | 6 | 观察范围更长，更能消除宽大 S 弯 | 主要处理较短尺度弯折 |
-| `smoothing.long_range_weight` | 0.12 | 更强地拉直整体蛇形 | 更多保留航线原有大尺度形状 |
-| `smoothing.max_deviation` | 6 m | 平滑器有更大调整空间 | 更严格贴近原始安全路线 |
-
-推荐每次只修改一类参数：
-
-1. 整体仍有宽大 S 弯：先把 `long_range_weight` 从 0.12 调到 0.14 或 0.16；
-   仍不够时把 `long_range_points` 从 6 调到 8。
-2. 只有局部小波浪：把 `smooth_weight` 从 0.26 调到 0.28，或把
-   `iterations` 从 120 调到 150。
-3. 路线仍过度贴着原始折线：把 `data_weight` 从 0.015 降到 0.010。
-4. 平滑后切弯过多：降低 `long_range_weight`，或把 `max_deviation` 从 6 m
-   降到 4 m。
-5. 相邻周期轨迹跳动：略微提高 `reference_path_weight`，建议每次增加 0.2；
-   不建议超过 1.5，以免妨碍突发障碍物响应。
-
-修改 YAML 后需要重新启动节点。若使用普通 `colcon build` 而非
-`--symlink-install`，还需要重新编译才能把 YAML 复制到 `install`。
-
-## 9. 状态检查
+## 测试
 
 ```bash
-ros2 topic echo /channel/status
-ros2 topic echo /channel/lane_costmap --once
-ros2 topic echo /hybrid_a_star_trajectory --once
-ros2 topic echo /optimal_path --once
-```
-
-`/channel/status` 会显示实际航迹向、用于规划的策略航向、`reverse_intent`、
-所在 lane_id 和 MAIN/OPPOSITE/OUTSIDE。
-
-## 10. 本版验证结果
-
-自动测试命令：
-
-```bash
-cd /home/l/work_ws
-source /opt/ros/$ROS_DISTRO/setup.bash
-source install/setup.bash
-colcon test --packages-select channel_navigation_manager hybrid_a_star_planner dwa_deep river_chart
+colcon test --packages-select channel_navigation_manager
 colcon test-result --verbose
 ```
 
-当前共有 47 项自动测试，0 error、0 failure。除几何、海图解析和既有 COLREG
-用例外，新增测试覆盖以下行为：
-
-- 主航道中心栅格代价低于边沿，边沿仍保持可通行；
-- 北航时东北、西北目标不误触发反向航道，南向后方目标触发提前翻转；
-- Hybrid A* 全局平滑显著缩短人工锯齿路线，同时保持起终点不变；
-- 50 m 波长的整体蛇形路线波峰至少降低 35%；
-- 平滑后的每一段都不能切入动态船的时间同步硬安全域；
-- Hybrid A* 仍能通过对遇、右舷交叉、左舷交叉（含 Rule 17 接管）、追越和开阔水域用例。
-
-实际整链路远目标测试从 `[-270,-270]` 规划到约 `[-324,-101]`，首条轨迹在
-0.36 秒内生成，共 918 个点。首条轨迹 100% 位于当时的主航道，进入边沿高代价
-带的比例为 0；之后连续 8 次重规划全部发布非空路径，首次成功后空路径数量为 0，
-RViz 不再周期性闪烁。
-
-轨迹稳定采用两层保护：静态场景不创建重复时间状态，并使用二维水域引导搜索
-穿过弯曲河道；新目标只清空旧路径一次，之后 RViz 保留最近有效轨迹。DWA 的
-`path_stale_timeout` 为 3 秒，若规划器持续没有新轨迹，控制器仍会停车。
-
-后方目标测试中，船体实际航迹向仍为 123° 时，策略航向会立即切换为 -57°并
-报告 `reverse_intent=true`，证明航道角色在船体完成掉头前切换。
-
-轨迹平滑测试会比较原始与后处理轨迹的长度、累计转向波动和安全性；运行节点仍按
-`planner_frequency` 固定频率执行完整搜索，不使用静态路径复用。
-
-整链路连续运行测试以约 1 Hz 收到 12 条非空规划；每条路线的起点均随船位更新，
-证明每周期确实重新搜索。相邻规划平均变化约 0.62 m、最大约 0.79 m；最终路线为
-87 点，中位点距约 0.99 m，说明输出已统一采样且周期间没有大幅跳线。
-
-加入长尺度约束后的同一路段连续测试仍以 1.00 s 平均间隔规划。单段最大航向变化
-约 0.016 rad（0.92°），每条路径累计转向波动约 0.28–0.51 rad；最初版本同一路线
-约为 2.96 rad。重复执行一键启动的第二个进程会在创建节点前退出。
-
-以下为此前8节版本的历史速度联调数据，不是当前4m/s配置：
-四个运行参数均读取为 `4.115552 m/s`。在获得有效全局轨迹后，
-实测 `/odom` 最高线速度为 `4.115319 m/s`（数值离散误差约 0.006%），最后 2 秒
-平均约 `4.0735 m/s`；路线弯曲时允许小幅自动降速。
+几何测试可单独运行构建出的 `test_geometry` 和 `test_perception_geometry`；Python 流水线测试
+需要 ROS 2 环境和已构建的消息包。

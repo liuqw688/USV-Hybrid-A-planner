@@ -1,0 +1,23 @@
+gnss_path_publisher:
+  ros__parameters:
+    # GNSS 文件；相对路径以 usv_map_tools 的 share 目录为基准，也可填写绝对路径。
+    trajectory_file: matlab_nv_lse_pe_gnss.txt
+    # 独立运行时使用的海图；相对路径以工作空间根目录为基准。
+    # 通过 launch 启动时会自动替换为当前测试海图。
+    chart_file: src/usv_map/resource/generated/reservoir_test_blocked.xml
+    # 输出完整海图；按 changjiang.xml 的 TSSLPT/TSSBND/TSELNE 格式追加航道。
+    output_chart: src/usv_map/resource/generated/reservoir_test_fairway.xml
+
+    # 路径几何采样间距，单位米；修改后重启节点。
+    route_spacing_m: 2.0
+    # 中心线沿闭合环内侧收窄量，单位米。
+    centerline_inset_m: 5.0
+    # 东侧向环内收拢的平滑弧度，单位米。
+    inward_bow_m: 8.0
+    # 底部圆滑量，单位米；数值越大，底部曲率越低。
+    bottom_rounding_m: 20.0
+
+    # 双向航道单侧宽度，单位米；总宽度为 2 * lane_width_m。
+    lane_width_m: 15.0
+    # 航道外沿与陆地/障碍的最小净距，单位米。
+    clearance_m: 5.0

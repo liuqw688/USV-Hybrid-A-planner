@@ -1,3 +1,8 @@
+/**
+ * @file test_geometry.cpp
+ * @brief 验证航道方向判定、多边形距离及栅格覆盖。
+ */
+
 #include <gtest/gtest.h>
 
 #include <cmath>
@@ -7,75 +12,93 @@
 
 namespace cnm = channel_navigation_manager;
 
-TEST(ChannelGeometry, S57OrientationAndLaneRole)
+TEST(ChannelGeometry, ConvertsS57DirectionAndClassifiesTraffic)
 {
   EXPECT_NEAR(cnm::s57OrientationToYaw(90.0), 0.0, 1.0e-9);
   EXPECT_NEAR(cnm::s57OrientationToYaw(0.0), M_PI / 2.0, 1.0e-9);
-  cnm::Lane lane{1, 90.0, {{0, 0}, {5, 0}, {5, 5}, {0, 5}, {0, 0}}};
-  EXPECT_EQ(cnm::laneValue(0.0, lane), cnm::kMainLane);
-  EXPECT_EQ(cnm::laneValue(M_PI, lane), cnm::kOppositeLane);
+  cnm::Lane lane{1, 90.0, {{0, 0}, {5, 0}, {5, 5}, {0, 5}, {0, 0}}, "CW"};
+  EXPECT_EQ(cnm::laneValue(0.0, lane), cnm::kSameDirectionCost);
+  EXPECT_EQ(cnm::laneValue(M_PI, lane), cnm::kOppositeDirectionCost);
 }
 
-TEST(ChannelGeometry, PolygonFill)
+TEST(ChannelGeometry, TrafficDirectionIsStableAcrossCurvedLaneSections)
 {
-  const std::vector<cnm::Point2D> polygon{{1, 1}, {4, 1}, {4, 4}, {1, 4}, {1, 1}};
+  cnm::Lane first;
+  first.direction = "cw";
+  cnm::Lane second;
+  second.direction = "CW";
+  cnm::Lane opposite;
+  opposite.direction = "CCW";
+
+  EXPECT_TRUE(cnm::sameTrafficDirection(first, second));
+  EXPECT_FALSE(cnm::sameTrafficDirection(first, opposite));
+}
+
+TEST(ChannelGeometry, FillsPolygon)
+{
+  const cnm::Polygon polygon{{1, 1}, {4, 1}, {4, 4}, {1, 4}, {1, 1}};
   EXPECT_TRUE(cnm::pointInPolygon(2.0, 2.0, polygon));
   EXPECT_FALSE(cnm::pointInPolygon(5.0, 2.0, polygon));
-  std::vector<int8_t> data(36, 45);
-  cnm::fillPolygon(data, 6, 6, 1.0, 0.0, 0.0, polygon, cnm::kMainLane);
-  EXPECT_EQ(data[2 * 6 + 2], 0);
-  EXPECT_EQ(data[0], 45);
+  std::vector<int8_t> data(36, static_cast<int8_t>(cnm::kOpenWaterCost));
+  cnm::fillPolygon(data, 6, 6, 1.0, 0.0, 0.0, polygon, cnm::kSameDirectionCost);
+  EXPECT_EQ(data[2 * 6 + 2], cnm::kSameDirectionCost);
+  EXPECT_EQ(data[0], cnm::kOpenWaterCost);
 }
 
-TEST(ChannelGeometry, CenterIsStronglyCheaperThanEdgeButEdgeRemainsMain)
+TEST(ChannelGeometry, SensorDistanceIncludesPolygonInterior)
 {
-  std::vector<int8_t> data(24 * 24, 45);
-  const std::vector<cnm::Point2D> polygon{{2, 2}, {22, 2}, {22, 22}, {2, 22}, {2, 2}};
-  cnm::fillPolygon(data, 24, 24, 1.0, 0.0, 0.0, polygon, cnm::kMainLane);
-  cnm::applyMainLaneCenterGradient(data, 24, 24, 1.0, 20, 16.0);
-  const int edge = data[12 * 24 + 2];
-  const int center = data[12 * 24 + 12];
-  EXPECT_LT(center, edge);
-  EXPECT_EQ(center, 0);
-  EXPECT_LE(edge, 20);
-  EXPECT_LT(edge, cnm::kOutsideChannel);
-  EXPECT_EQ(data[0], 45);
+  const cnm::Polygon reef{{10, 10}, {12, 10}, {12, 12}, {10, 12}, {10, 10}};
+  EXPECT_DOUBLE_EQ(cnm::pointPolygonDistance(11.0, 11.0, reef), 0.0);
+  EXPECT_LE(cnm::pointPolygonDistance(0.0, 11.0, reef), 40.0);
+  EXPECT_GT(cnm::pointPolygonDistance(100.0, 100.0, reef), 40.0);
 }
 
-TEST(ChannelGeometry, NarrowLaneCenterIsAlsoZero)
+// 覆盖缓存必须使用地图原点和米制分辨率，不能将世界坐标直接作为栅格下标。
+TEST(ChannelGeometry, CachedCellsUseGridOriginAndResolution)
 {
-  std::vector<int8_t> data(20 * 20, 45);
-  const std::vector<cnm::Point2D> lane{{6, 2}, {14, 2}, {14, 18}, {6, 18}, {6, 2}};
-  cnm::fillPolygon(data, 20, 20, 1.0, 0.0, 0.0, lane, cnm::kMainLane);
-  cnm::applyMainLaneCenterGradient(data, 20, 20, 1.0, 20, 16.0);
-  EXPECT_EQ(data[10 * 20 + 10], 0);
-  EXPECT_GT(data[10 * 20 + 6], data[10 * 20 + 10]);
+  const cnm::Polygon polygon{{-3, 10}, {1, 10}, {1, 14}, {-3, 14}, {-3, 10}};
+  const std::vector<std::size_t> expected{1, 2, 4, 5};
+  EXPECT_EQ(cnm::polygonCells(3, 3, 2.0, -5.0, 10.0, polygon), expected);
 }
 
-TEST(ChannelGeometry, OnlyRearGoalPreselectsReverseDirection)
+TEST(ChannelGeometry, CachedCellsClipOutsideMapAndIgnoreEmptyGeometry)
 {
-  const double north = M_PI / 2.0;
-  const double threshold = 110.0 * M_PI / 180.0;
-  EXPECT_FALSE(cnm::isReverseTask(north, 0, 0, 10, 10, threshold, 5.0));
-  EXPECT_FALSE(cnm::isReverseTask(north, 0, 0, -10, 10, threshold, 5.0));
-  EXPECT_TRUE(cnm::isReverseTask(north, 0, 0, 0, -20, threshold, 5.0));
+  const cnm::Polygon polygon{{-10, -10}, {1, -10}, {1, 1}, {-10, 1}, {-10, -10}};
+  const std::vector<std::size_t> expected{0, 1};
+  EXPECT_EQ(cnm::polygonCells(3, 3, 1.0, 0.0, 0.0, polygon), expected);
+  EXPECT_TRUE(cnm::polygonCells(3, 3, 1.0, 0.0, 0.0, {}).empty());
+  EXPECT_TRUE(cnm::polygonCells(0, 3, 1.0, 0.0, 0.0, polygon).empty());
 }
 
-TEST(ChannelGeometry, WindingLaneRolePropagatesLocallyBeyondInitialNinetyDegrees)
+TEST(ChannelGeometry, CenterOffsetUsesBanksInsteadOfSectionEndCaps)
 {
-  auto square = [](double x, double y) {
-      return std::vector<cnm::Point2D>{{x, y}, {x + 8, y}, {x + 8, y + 8},
-        {x, y + 8}, {x, y}};
-    };
-  // S-57 directions 90 -> 35 -> 350 accumulate a 100 degree bend.  The last
-  // segment is opposite to the initial course if classified in one step, but
-  // it is a valid continuation through two locally smooth bends.
-  std::vector<cnm::Lane> lanes{
-    {0, 90.0, square(0, 0)}, {1, 35.0, square(15, 0)}, {2, 350.0, square(30, 0)},
-    {3, 270.0, square(0, 10)}, {4, 215.0, square(15, 10)}, {5, 170.0, square(30, 10)}};
-  const auto main = cnm::continuousMainLaneMask(
-    lanes, cnm::s57OrientationToYaw(90.0), 4.0, 4.0, 20.0, 80.0 * M_PI / 180.0);
-  ASSERT_EQ(main.size(), lanes.size());
-  EXPECT_TRUE(main[0]); EXPECT_TRUE(main[1]); EXPECT_TRUE(main[2]);
-  EXPECT_FALSE(main[3]); EXPECT_FALSE(main[4]); EXPECT_FALSE(main[5]);
+  cnm::Lane lane{1, 0.0, {{-10, 0}, {10, 0}, {10, 100}, {-10, 100}}, "CW"};
+  EXPECT_NEAR(cnm::laneCenterOffset({0, 0.01}, lane), 0.0, 1e-12);
+  EXPECT_NEAR(cnm::laneCenterOffset({0, 99.99}, lane), 0.0, 1e-12);
+  EXPECT_NEAR(cnm::laneCenterOffset({5, 40}, lane), 0.5, 1e-12);
+  EXPECT_NEAR(cnm::laneCenterOffset({-10, 40}, lane), 1.0, 1e-12);
+}
+
+TEST(ChannelGeometry, CenterOffsetFollowsRotatedAndTaperedSections)
+{
+  cnm::Lane lane{1, 90.0, {{0, -4}, {40, -8}, {40, 8}, {0, 4}}, "CW"};
+  EXPECT_NEAR(cnm::laneCenterOffset({20, 0}, lane), 0.0, 1e-12);
+  EXPECT_NEAR(cnm::laneCenterOffset({20, 3}, lane), 0.5, 1e-12);
+  for (auto & p : lane.points) {
+    const double x = p.x, y = p.y;
+    p = {(x - y) / std::sqrt(2.0), (x + y) / std::sqrt(2.0)};
+  }
+  lane.orient_deg = 45.0;
+  EXPECT_NEAR(cnm::laneCenterOffset({17/std::sqrt(2.0), 23/std::sqrt(2.0)}, lane),
+    0.5, 1e-12);
+}
+
+TEST(ChannelGeometry, CenterOffsetSelectsContainingIntervalInConcavePolygon)
+{
+  cnm::Lane lane{1, 0.0,
+    {{-10, 0}, {10, 0}, {10, 20}, {4, 20}, {4, 4}, {-4, 4}, {-4, 20}, {-10, 20}}, "CW"};
+  EXPECT_NEAR(cnm::laneCenterOffset({-7, 10}, lane), 0.0, 1e-12);
+  EXPECT_NEAR(cnm::laneCenterOffset({7, 10}, lane), 0.0, 1e-12);
+  EXPECT_NEAR(cnm::laneCenterOffset({5.5, 10}, lane), 0.5, 1e-12);
+  EXPECT_DOUBLE_EQ(cnm::laneCenterOffset({0, 0}, {}), 0.0);
 }

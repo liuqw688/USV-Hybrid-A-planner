@@ -1,58 +1,57 @@
 channel_navigation_node:
   ros__parameters:
-    # river_chart 一次性发布的 TSSLPT 多边形和 ORIENT 数据。
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
-    lane_data_topic: /chart_lane_data
-    # 仅用它的尺寸、分辨率和原点生成完全对齐的航道策略栅格。
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
-    costmap_topic: /local_costmap
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
+    # usv_map 的静态海图接口；输出地图完整复制它的 width/height/resolution/origin。
+    chart_costmap_topic: /chart_costmap
+    chart_lane_topic: /chart_lane_data
+
+    # 船位和 RViz 目标。目标存在时使用“本船 -> 目标点”的方向判断同向/反向航道。
     odom_topic: /odom
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
     goal_topic: /goal_pose
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
-    lane_costmap_topic: /channel/lane_costmap
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
-    marker_topic: /channel/navigation_markers
-    # [作用与调节] ROS消息接口名称（列表按目标对应）。修改需同时匹配发布方/订阅方及RViz；名称大小没有调参含义，失配会收不到数据并等待/停车。
-    status_topic: /channel/status
+    # 多航点任务：根据首段选择 CW/CCW，之后沿整条航道保持该方向。
+    goal_path_topic: /path
 
-    # 策略层编码：主航道=0..20，航道外=45，对向航道=75。
-    # Hybrid A* 使用独立权重，数值只表示区域类别，不是碰撞概率。
-    # [作用与调节] 航道外类别编码。不是物理风险值；改变大小要同步全局/Hybrid/DWA类别约定。
-    outside_value: 45
-    # [作用与调节] 左/对向航道类别编码。不是膨胀距离；改变编码要同步各规划器，否则分类失配。
-    opposite_value: 75
-    # 主航道中心为低代价，边沿最大为20；20仍属于可通行主航道。
-    # 增大该值会更强地排斥边沿，但必须小于 outside_value。
-    # [作用与调节] 主航道边沿软梯度上限。增大：边沿代价更高、更靠中心；减小：可贴边抄近路；须不超过各规划器主航道上界。
-    main_lane_edge_value: 20
-    # 距边界16m内形成连续中心梯度。该范围覆盖大部分分道宽度，使远目标
-    # 不会仅为缩短欧氏距离而长期贴着主航道左/右边沿。
-    # [作用与调节] 中心梯度的边界作用距离(m)。增大：更宽范围受到边沿排斥；减小：只有贴边才有代价；窄航道仍做中心处理。
-    center_clearance: 16.0
+    # 航道代价地图与 RViz Marker 输出。
+    channel_costmap_topic: /channel_costmap
+    marker_topic: /channel_navigation_markers
 
-    # 速度低于该值时保持上一次有效航行方向，避免停车时航道反复翻转。
-    # [作用与调节] 更新COG所需最小速度(m/s)。增大：低速时更多保持旧方向；减小：低速噪声更易翻转角色；不是最低实际船速。
-    minimum_course_speed: 0.10
-    # 实际航迹向变化超过约 12° 才重新分类，降低整幅策略图发布频率。
-    # [作用与调节] COG策略变化触发语义重建的角度(rad)。增大：重建少、方向更新迟；减小：更灵敏但更吃资源且可能频繁触发全局纠偏。
-    reclassify_angle: 0.2094395102
-    # 弯曲航道不再让所有区域都与“起始艏向”比较，而是从本船附近分道开始，
-    # 沿相邻航段的 ORIENT 连续传播。同一方向允许相邻段逐步转弯，但不会跨到
-    # 约180°相反的对向分道。
-    # [作用与调节] 传播时航段多边形邻接距离(m)。增大：易连通断段、也易误连支流；减小：更严格、可能漏掉同向航段。
-    lane_adjacency_distance: 160.0
-    # [作用与调节] 邻接航段ORIENT最大变化(rad)。增大：接受急弯但更易串错航道；减小：同向急弯可能断开；不是全图与船头夹角。
-    lane_continuity_angle: 1.3962634016  # 80 degrees
+    # 感知输入为“当前帧完整列表”；空列表立即清除临时障碍，不依赖海图中的暗礁真值。
+    detections_topic: /obstacle_detections
+    # 观测/消息超过此秒数后失效并恢复基础代价，避免节点退出后残留障碍（仿真策略）。
+    detection_timeout_s: 3.0
+    # 感知圆形障碍额外膨胀，单位 m；最终禁行半径 = 消息 radius_m + 此值。
+    # 只在代价节点膨胀一次，不改变传感器发布的实际大小。
+    detection_inflation_m: 2.0
 
-    # 新目标与当前航迹向相差超过 110° 时，提前按目标方向翻转主航道。
-    # 因此北航时东北/西北目标不翻转，南方目标会在掉头前切到西侧航道。
-    # [作用与调节] 后方目标提前反向的方位差门槛(rad)。增大：更难触发翻转；减小：侧方目标也可能翻转，切目标时更易误分类。
-    reverse_enter_angle: 1.9198621772
-    # 船的实际航迹向接近新方向 35° 后，结束提前翻转状态，恢复按 COG 更新。
-    # [作用与调节] COG接近反向任务方位后结束提前翻转的容差(rad)。增大：更早交回COG；减小：保持反向意图更久；需配合进入门槛。
-    reverse_complete_angle: 0.6108652382
-    # 太近的目标不触发整套反向航道切换，防止终点附近抖动。
-    # [作用与调节] 允许提前反向的最小目标距离(m)。增大：近目标不会翻转；减小：近目标也可能反复改角色。
-    minimum_reverse_goal_distance: 10.0
+    # 四类基础代价；航道内部额外叠加横断面偏心软代价。
+    same_direction_cost: 0
+    opposite_direction_cost: 20
+    open_water_cost: 20
+    obstacle_cost: 100
+    # 横断面中心增加 0、边缘增加本值；0 关闭居中偏好。
+    # 默认同向 0~8、普通水域 20、对向 20~28、障碍物 100；绕障可离开中心。
+    lane_center_cost: 8
+
+    # 本船附近航段的 ORIENT 与任务方向夹角阈值，单位度。
+    # 选定 CW/CCW 后沿整条弯曲航道保持一致，避免每个转弯重新反转代价。
+    direction_tolerance_deg: 90.0
+    # 动态航道方向箭头长度，单位米；黄色为低代价，红色为高代价。
+    direction_arrow_length_m: 12.0
+    # 输出频率上限，单位 Hz；仅在底图、航道、船位、目标或探测快照发生更新时发布。
+    # 静态几何的栅格覆盖缓存复用，地图/航道更新后自动重建。
+    publish_rate_hz: 5.0
+
+# 仿真传感器节点；切换真实感知时关闭此节点，由实际传感器适配器发布同类型话题。
+obstacle_perception_sim_node:
+  ros__parameters:
+    # 真值仅供仿真节点使用，读取其中 kind=REEF 的多边形。
+    chart_lane_topic: /chart_lane_data
+    odom_topic: /odom
+    detections_topic: /obstacle_detections
+    marker_topic: /perception_markers
+    # 360° 圆形探测范围，单位 m；最近边缘进入圆时，报告标签、方位、距离和包围半径。
+    perception_radius_m: 60.0
+    # 船位接收或观测时间超过此秒数后，停止探测并发布空快照。
+    # 里程计失效超时(s)，应大于实际发布间隔，并留出通信抖动余量。
+    odom_timeout_s: 3.0
+    # Hz；无目标也持续发送空快照。感知未建模遮挡、漏检或测距噪声。
+    publish_rate_hz: 5.0
